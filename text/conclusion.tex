@@ -1,0 +1,61 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+In this paper we have adapted symbolic execution techniques to verify DSLTrans
+model transformations. As well, we have presented an algorithm to prove model syntax
+relation properties by building all possible path conditions for a
+transformation.
+
+The concrete contributions of our work are the following:
+
+\begin{itemize}
+\item An algorithm for constructing all path conditions representing all executions of a DSLTrans transformation.
+\item A property-checking algorithm that proves model syntax relation properties over all path conditions, and therefore over all transformation executions.
+\item Validity and completeness proofs for the path condition construction and property proof algorithms.
+\item A discussion of optimisations and scalability concerns for our methods, along with results from an industrial application.
+\end{itemize}
+
+As is the case in general for exhaustive verification methods, we have encountered theoretical and practical limitations when developing our technique. From a theoretical standpoint, not all DSLTrans transformations are currently addressed by the technique presented here. In particular, DSLTrans transformations where rules overlap in the match part (as per \cref{def:layer_transformation} in \cref{sec:formal_background}) are not currently treated. Addressing overlapping rules theoretically implies some revisions to the formalisation presented here: on the one hand, rules that overlap imply rule dependency management during path condition construction; on the other hand, the uniqueness lemma in \cref{lem:uniqueness} of \cref{sec:abstraction_relation} needs to be re-analysed under looser constraints. Note however that we have already addressed this issue in practice in~\cite{gehan:13,conf/gg/SelimLCDO14} and that we expect the impact in the theory to be relatively small.
+
+Another theoretical limitation has to do with the properties that can be proved using our technique. As expected, the chosen abstraction relation we use imposes limitations on which properties can be shown to hold or not hold on a DSLTrans transformation. In particular, because in general we only consider one rule copy in each path condition, we cannot prove properties where the pattern in the property implies the same rule matches on an input model more than once. We do not see this as a too strong limitation of our technique given that: on the one hand we are able to prove, for all executions of a DSLTrans transformation, a range of properties concerning the interaction between different rules in a DSLTrans transformation, which is where we expect most errors to occur; on the other hand we believe we can solve, at least partially, this property expressiveness problem and we have pointed some solutions to it in~\cref{subsec:expressiveness_prop}. 
+
+From a practical standpoint, we have shown with the two examples presented in \cref{sec:experiments} that there are good indicators that our technique can scale to transformations of practical interest. We have shown in \cref{sec:implementation} that the complexities of path condition generation and property proving are, as expected, exponential. Still, we are confident that we have not exhausted the set of possible optimizations in our tool and that our implementation (using typed graph manipulations in T-Core) can be made to scale well for reasonably-sized model transformations. This remains to be proved for larger model transformations. In this direction, we are currently implementing the analysis of a UML-RT to Kiltera transformation~\cite{posse:10} which includes more than twice the number of rules in the industrial case study we present in this paper. For the UML-RT to Kiltera case study we are also including element attributes in the generation of path conditions and property proof.
+
+Additionally, we have recently completed a propositional logic extension to our property language, which has already been used to express and prove meaningful properties in our industrial case study~\cite{gehan:13,conf/gg/SelimLCDO14}. This extension has been implemented in our tool, but its full impact in the theory of property proving, as explained in \cref{sec:verif_dsltrans_props}, is yet to be fully understood. A further topic of interest is that of negative DSLTrans constructs, where elements and associations of given types are prevented from being matched by a rule, and their inclusion in the property language.
+
+%We are also exploring the issue of multiplicity in our verification technique, such as determining for a path condition how many times a particular rule has executed. This information may arise from recording how many times the rule was ``glued" to the path condition in the combination step. This could enable properties to be proved over the number of times a rule has executed.
+
+% As seen in the results section, we believe our algorithms to scale to
+% industrial-sized case studies. In future work, we will apply our technique to transformations and case studies such as structural relations in
+% Simulink~\cite{feherflattening}, as well as those of interest
+% to our partners in the automotive domain.
+
+%\newpage
+
+
+%Another point that needs to be further developed in our approach is the property
+%language. In this paper we have concentrated on building the algorithms that
+%allow symbolic execution construction and property proof, but have left the
+%property language in a relatively basic state. For the time being our property
+%language allows essentially to express what is expressible in transformation
+%rules (including statements about multiples of instances of elements of the same
+%type) and transitive containment connections at the \emph{Postcondition} part of
+%he property.  We believe that the current property language can already be very
+%useful to prove many relevant properties of practical transformations, but have
+%not studied its full range yet. Regarding the possible extensions of our
+%property language, inspiration can be drawn from several proposals in the
+%literature~\cite{Narayanan:07,DBLP:journals/eceasst/CariouBBD09,DBLP:conf/icst/AsztalosLL10,DBLP:journals/ase/GuerraLWKKRSS13}.
+%One of the natural extensions of our property language is the possibility
+%to express conditions over the attributes of the elements in the properties,
+%which for the time being we do not address. During the symbolic execution
+%construction such conditions will have to be addressed symbolically, which adds
+%an additional challenge to DSLTrans' symbolic execution construction. Negative
+%links (associations, indirect links and backward links) are also part of our
+%uture tasks, both at the level of the symbolic execution construction and of
+%the property language.
+
+
+
+
+
+

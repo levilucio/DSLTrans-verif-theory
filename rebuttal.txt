@@ -1,0 +1,87 @@
+
+The authors have significantly improved the quality of their paper. 
+The changes on the paper are fine and contribute to increase readability and quality. 
+I thank the authors for having considered my comments. I believe that most of them were answered.
+The paper is now clear, and all the sections can be understood.
+The improvements made to emphasize my previous positive feeling about the quality of the contributions.
+The contribution has been formalised, and an important work has been done since the previous submission.
+I recommend publication.
+
+
+===============
+We thank the reviewer for their positive comments and appreciate their time.
+
+===============
+
+Nevertheless, I have several minor remarks.
+MINOR REMARKS
+1. Reading the letter, I was glad to see that an industrial case study has been considered. However, even if this case is one from real life, Iâm disappointed about its simplicity. In particular, it seems simpler than the case study of the paper. 
+
+==============
+
+Further industrial case studies are being examined, including a UML-RT to Kiltera transformation.
+
+==============
+
+
+Additionally to this, I still have doubts about the replication of rules (Fig. 15). I would appreciate if the table 1 detailed the number of âdisambiguationâ made (corresponding to the section 4.2) and the number of âpath condition combinationâ made for each one of the fourth possibilities (corresponding to the section 4.3). That way, it could justify the replication of rules containing only two different structures (in fact, the layer 1 describes one structure three times and layer 2 describes a second structure four times, Fig. 4)
+
+========================
+Can we do this? Possibly by hand?
+
+========================
+
+
+
+
+
+2. Several parts of the paper that were not clear or wrong in the previous submission have not been corrected but removed. I regret that choice for some of them, but I understand that the responses to reviewers (especially the formalisation) extend the paper. The paper has been deeply rewritten, and authors did choices that they have correctly justified.
+
+===========
+
+===========
+
+
+3. Something is confused for me considering the Fig. 1 and its explanations in the text.
+First, I think the section 4 could refer the Fig.1 to illustrate its explanations.
+Second, Iâm a bit confused with the difference between âa rule combinationâ and a âpath conditionâ especially regarding the fig 1(b). Here is a list of remarks about this:
+- Maybe the second paragraph of 2.3 could have a title in the same way than the following subsubsections âDisambiguating...â and âGenerating...â because these two subsubsections are dedicated to figure 1(c) and 2 respectively, whereas the 2nd paragraph of 2.3 is dedicated to figure 1(b). Moreover, these subsubsections correspond to subsection 4.1 and 4.2 whereas the 2nd paragraph of 2.3 corresponds to subsection 4.3. I recommend cross-referring those (sub)subsections.
+My confusion began with the transition between the two first paragraphs of the page 6, one ends producing ârule combinationâ, the other one begins consuming âpath conditionâ.
+My confusion is reinforced with the correspondences between the subsubsections of that section 2.3 and the subsection of section 4, especially the subsection 4.1. Is the Fig. 1(a) the result of the first part of section 4.1 or of the last part of section 4.1?
+In the same way than in my previous review, I think that a sample of âpath creationâ is illustrated too late and without being dedicated to that illustration: Fig. 7(a). I understand that it is complicated section 2.3, but it could be done section 4.1.
+- Section 2.3, first paragraph: âthe first step ...â refers the Fig 1 and âthe second step...â refers the Fig 2.
+- 4th paragraph p.6, maybe it would be more appropriate to illustrate this paragraph with the Fig. 1(c) instead of Fig. 1(a)?
+4. I appreciate that the Fig. 4 has been simplified. Unnecessary complexity has been removed. 
+I still consider that a legend would provide an immediate understanding of the arrows.
+5. Section 4.1 âTraceability Linksâ and Fig. 6: one can wonder if it is necessary to trace the links between elements?
+6. Fig. 9 is not used in the text.
+Result of Fig. 9(a) are letters different than the ones of the two source layers, but letters are the same in the two source layers and result in Fig. 9(b). Is a âworking setâ considering differently than a layer (I donât think so)?
+7. Section 4.3, the link between the enumeration (1., 2., 3., 4.) and the subsubsections could be emphasised.
+
+=================
+
+We thank the reviewer for their detailed comments. As we reorganized the paper, their suggestions have guided us in our editing process. Further precisions have been made in the areas highlighted in these comments. Due to the large changes made to the paper, we are unable to provide a point-by-point rebuttal.
+
+=================
+
+
+
+
+ 8. Iâm not convinced with the very small time to disprove a property. I understand that as soon as a counterexample is found the algorithm stops. However, Iâm wondering if the result (0.003 second) is not due to the simplicity of the property. Maybe with a complex property or just a different one, the algorithm should study more path conditions before finding a counter-example?
+ 
+==============
+
+Future work will consider the effect of the size of the property and path condition on the execution time of the algorithm. However in the section on complexity we discuss that the main complexity in this step comes from graph matching. Therefore, an efficient implementation should scale well to larger properties.
+
+What if we scanned all path conditions? How long does it take then?
+
+==============
+
+ 
+ 
+TYPOS
+p.27 âNote that the fact that thatâ: maybe one useless âthatâ. 
+p.29 âthe the propertiesâ -> âthe propertiesâ
+p.41 vâ member of V -> vâ member of Vâ ?
+p.42 <Vâ, Eâ, t> -> <Vâ, Eâ, tâ> maybe?
+

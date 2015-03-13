@@ -1,0 +1,237 @@
+\section{Validity and Completeness of Path Condition Generation}
+\label{sec:val_complete_path_cond_gen}
+\counterwithin{proposition}{section}
+\counterwithin{lemma}{section}
+\counterwithin{equation}{section}
+\setcounter{proposition}{0}
+\setcounter{lemma}{0}
+\setcounter{equation}{0}
+
+\onehalfspacing 
+
+\begin{definition}{Path Condition\\}
+\label{def:path_condition_appendix}
+\CatchFileBetweenTags{\pcdef}{text/definitions}{pcdef}{\pcdef}
+\end{definition}
+
+\CatchFileBetweenTags{\pcappendix}{text/definitions}{pcappendix}{\pcappendix}
+
+\begin{definition}{Combination of a Path Condition with a Rule}
+\label{def:combine_pc_with_rule_appendix}
+\CatchFileBetweenTags{\pccfrc}{text/definitions}{pccfrc}{\pccfrc}
+\end{definition}
+
+\CatchFileBetweenTags{\pccfrctextappendix}{text/definitions}{pccfrctextappendix}{\pccfrctextappendix}
+
+\begin{definition}{Path Condition and Rule Combination -- No Dependencies\\}
+\label{def:rule_comb_no_dependencies_appendix}
+\CatchFileBetweenTags{\nodeps}{text/definitions}{nodeps}{\nodeps}
+\end{definition}
+
+\CatchFileBetweenTags{\nodepstextappendix}{text/definitions}{nodepstextappendix}{\nodepstextappendix}
+
+\begin{definition}{Path Condition and Rule Combination -- Unsatisfied Dependencies\\} 
+\label{def:rule_comb_unsatisfied_appendix}
+\CatchFileBetweenTags{\unsatdeps}{text/definitions}{unsatdeps}{\unsatdeps}
+\end{definition}
+
+According to the pre-conditions of the equation presented in \cref{def:rule_comb_unsatisfied_appendix}, a path condition does not satisfy the dependencies present in a rule if there is no surjective typed graph homomorphism between the backward links of the rule and the symbolic traceability links of the path condition. Besides expressing the fact that all backward links must exist as symbolic traceability links the path condition, the surjective homomorphism allows modeling the case where dependencies expressed by two (or more) backward links between similarly typed elements can be satisfied one single symbolic traceability link in the path condition. 
+
+\begin{definition}{Single Partial and Total Combination of a Set of Path Conditions with a Rule\\}
+\label{def:comb_path_cond_rule_single_appendix}
+\CatchFileBetweenTags{\satdeps}{text/definitions}{satdeps}{\satdeps}
+
+\begin{align}
+\label{eq:pcomb_appendix}
+\CatchFileBetweenTags{\satdepseqone}{text/definitions}{satdepseqone}{\satdepseqone}
+\end{align}
+
+
+\begin{align}
+\label{eq:tcomb_appendix}
+\CatchFileBetweenTags{\satdepseqtwo}{text/definitions}{satdepseqtwo}{\satdepseqtwo}
+\end{align}
+
+\end{definition}
+
+
+Let us start by introducing relation $\stackrel{p\_comb}{\rightarrow}$, presented in \cref{eq:pcomb_appendix} of \cref{def:comb_path_cond_rule_single_appendix}. The relation takes as arguments a set of path conditions being accumulated for the current layer, the rule to be combined, and an $rl_{glue}$ argument indicating the place in each of the input path conditions the rule should be anchored to during the combination step. The relation's output is a new set of path conditions. This new set includes all the original path conditions, as well as each path condition in the accumulator set ``glued'' to a copy of rule being examined. Note that the relation $\stackrel{p\_total}{\rightarrow}$ in \cref{eq:tcomb_appendix} is similarly defined, except for the fact path conditions in the accumulator set are not preserved in the relation's output set.\\
+
+\setcounter{equation}{0} 
+
+Let us now define how a rule is combined with a path condition, whenever its backward links can be found several times in that path condition. We formalize it in \cref{def:comb_path_cond_rule_mul_appendix}, by means of relations $\stackrel{p\_step}{\rightarrow}$ and $\stackrel{t\_step}{\rightarrow}$. These two relations operationally describe the sequence of steps necessary to ``glue'' a rule at multiples places of a path condition. The set of places targeted in the path condition for receiving a copy of the rule is given by the sets $partialSet$ and $totalSet$ (found respectively in \cref{eq:pstep} and \cref{eq:tstep}). As expected, these sets contain the set of traceability links in the path condition where copies of the rule need to be anchored to.
+
+\begin{definition}{Multiple Partial and Total Combination of a Set of Path Conditions with a Rule\\}
+\label{def:comb_path_cond_rule_mul_appendix}
+\CatchFileBetweenTags{\satdepstwo}{text/definitions}{satdepstwo}{\satdepstwo}
+\end{definition}
+
+Having \cref{def:comb_path_cond_rule_single_appendix} and \cref{def:comb_path_cond_rule_mul_appendix} in mind, we can now proceed to define the complete combination relation of a rule with a path condition in the case of partially and totally satisfied dependencies. 
+
+\begin{definition}{Path Condition and Rule Combination -- Partially and Totally Satisfied Dependencies\\}
+\label{def:rul_comb_partial_total_appendix}
+\CatchFileBetweenTags{\satdepsthree}{text/definitions}{satdepsthree}{\satdepsthree}
+\end{definition}
+
+The top equation in \cref{def:rul_comb_partial_total_appendix} defines the $\stackrel{combine}{\rightarrow}$ relation for when rule $rl$ has dependencies that are satisfied by path condition $pc$. The pre-conditions in the equation state that the backward links in the rule are found in the path condition, as expected. Additionally, two sequential steps perform the gluing of the rule $rl$ on all path conditions in accumulator $AC$, wherever the rule is partially and/or totally found in each of those path conditions. Relations $\stackrel{p\_comb}{\rightarrow}$ and $\stackrel{t\_comb}{\rightarrow}$ presented in \cref{def:comb_path_cond_rule_mul_appendix} are used to model these two operational ``gluing'' steps. Functions $partialsat$ and $totalsat$, described in the latter part of \cref{def:rul_comb_partial_total_appendix}, are used to gather the places of path condition $pc$ where copies of the rule need to be anchored to.
+
+\begin{definition} {Combining a Path Condition with a Layer\\}
+\label{def:path_cond_layer_comb_appendix}
+\CatchFileBetweenTags{\combpclayer}{text/definitions}{combpclayer}{\combpclayer}
+\end{definition}
+
+\CatchFileBetweenTags{\combpclayertextappendix}{text/definitions}{combpclayertextappendix}{\combpclayertextappendix}
+
+\begin{definition} {Combining a Set of Path Conditions with a Layer\\}
+\label{def:path_cond_set_layer_comb_appendix}
+\CatchFileBetweenTags{\combpcsetlayer}{text/definitions}{combpcsetlayer}{\combpcsetlayer}
+\end{definition}
+
+\CatchFileBetweenTags{\combpcsetlayertextappendix}{text/definitions}{combpcsetlayertextappendix}{\combpcsetlayertextappendix}
+
+\begin{definition} {Path Condition Generation\\}
+\label{def:path_cond_gen_appendix}
+\CatchFileBetweenTags{\pathcondgen}{text/definitions}{pathcondgen}{\pathcondgen}
+\end{definition}
+
+\CatchFileBetweenTags{\pathcondgentextappendix}{text/definitions}{pathcondgentextappendix}{\pathcondgentextappendix}
+
+\begin{definition}{Abstraction of a Transformation Execution by a Path Condition\\}
+\label{def:abstraction_pc_ex_appendix}
+\CatchFileBetweenTags{\abstractionrelappendix}{text/definitions}{abstractionrelappendix}{\abstractionrelappendix}
+\end{definition}
+
+To understand the abstraction relation in \cref{def:abstraction_pc_ex_appendix}, recall
+that during the construction of a transformation execution rules are matched
+injectively in the input model. This information is present in the first
+condition of the abstraction relation (Proposition~\ref{eq:abstr_input_output_appendix})
+via the injective typed graph homomorphism between the match part of the copies
+of rules ``glued'' onto the path condition and the containment transitive
+closure of the input part of the transformation execution. This relation
+enforces the fact that certain parts of the execution were found, or matched, by
+certain parts of the path condition.
+On the other hand, the surjection from the output of the execution towards the
+apply part of the path condition models the fact that the output of the
+execution has been completely built by instantiating the apply parts of the
+rules contained in the path condition.
+
+The second condition of the abstraction relation
+(Proposition~\ref{eq:abstr_trace_appendix}) checks for the fact that symbolic
+traceability links in the path condition and traceability links in the execution
+correctly correspond to each other. This is modeled by the fact that all
+strongly connected components in the path condition, composed only of symbolic
+traceability links, are injectively found on the execution. This injection
+models the fact that traceability graphs between individual or combined rules in
+the path condition are necessarily found in the execution. Note that components
+of the path condition are considered because of the fact that disconnected rules
+in the path condition may have matched over common elements of a particular
+execution. As such, a full injection between the complete traceability graph in
+the path condition and the execution would be incorrect. Additionally, in the
+second part of Proposition~\ref{eq:abstr_trace_appendix} we check the fact that every
+traceability link in the execution can be found in the path condition. This
+additional sanity check enforces that no spurious traceability links that could
+not have been created by the rules present in the path condition exist in the
+transformation execution.
+
+Finally, the last clause of the abstraction relation states that rule copies
+that are repeated a number of times in the path condition need to be found at
+least a similar amount of times in the abstracted transformation execution.
+
+It is important to mention that another abstraction relation, weaker or
+stronger, could have been chosen. The abstraction relation presented in
+\cref{def:abstraction_pc_ex_appendix} suits our needs in the sense that it allows us to
+demonstrate the validity and completeness of our proof technique, as we will
+show in the text follows. Additionally, it is particularly interesting because
+it makes sure that, given a DSLTrans transformation, each of its transformation
+executions is abstracted by one and only one of its path conditions. This result
+adds to the consistency of our theory and is also exposed later in this section.
+
+\begin{proposition}{(Validity)}
+\label{prop:pc_validity_appendix}
+Every path condition abstracts at least one transformation execution.
+\end{proposition}
+\begin{pf}
+Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTrans transformation. We wish to demonstrate that, for all path conditions $pc\in \textsc{Pathcond}(tr)$, there exists a transformation execution $ex\in \textsc{Exec}(tr)$ of the set of rules used to build $pc$ such that $pc$ abstracts $ex$ (i.e. $ex\Vvdash pc$), as formally expressed in \cref{def:abstraction_pc_ex_appendix}. We can prove this property by induction on the set of transformations $\textsc{Transf}^{sr}_{tg}$ (see \cref{def:layer_transformation_appendix}), as follows:
+
+% We will start by showing that the property
+% holds for the path conditions that are generated for one single layer of a
+% DSLTrans transformation, which in what follows we will call lemma 1.
+% In this case the inductive proof will require the following steps:
+
+\begin{itemize}
+  \item \emph{Base case:} the base case is the case when we have $tr=[\;]$, i.e. the empty transformation. In this case, according to \cref{def:path_cond_gen_appendix}, only the empty path condition $\epsilon_{pc}$ exists in the path condition set. The empty path condition abstracts the empty transformation execution $\epsilon_{ex}$ (see \cref{def:modeltransformation_appendix}), as well as any execution for which the input model is never matched by any rule (consequently having an empty output model). For any of these transformation executions, \cref{eq:abstr_input_output} of the abstraction relation definition is satisfied, as: a) no rule copy exists in the path condition and the output of the transformation execution is empty -- empty typed graph homomorphisms thus satisfy the all the conditions of the proposition; and b) \cref{eq:abstr_trace} of the abstraction relation definition trivially holds because no traceability links exist either in the path condition or in any of the considered executions.
+
+\item \emph{Inductive case:} assuming every path condition generated for a transformation $tr$ abstracts at least one transformation execution, we need to show that every path condition generated for a transformation $tr'$, resulting from adding a layer $l\in \textsc{Layer}^{sr}_{tg}$ to $tr$, will also abstract at least one transformation execution. 
+\end{itemize}
+
+In order to demonstrate the inductive case we need to show the property holds for all path conditions resulting from combining the rules of layer $l$ with any path condition generated for $tr$. These path conditions for transformation $tr'$ are built as expressed in \cref{def:path_cond_layer_comb_appendix}. According to this definition, path conditions for $tr'$ are built by incrementally combining the path conditions generated for $tr$ with a rule of layer $l$, until all the rules in $l$ have been treated. We can thus again use induction for this proof, this time on the set of possible layers $\textsc{Layer}^{sr}_{tg}$ built as expressed in \cref{def:layer_transformation_appendix}. 
+
+\begin{itemize}
+  \item \emph{Base case:} this is the case where layer $l$ contains no rules. In this case, by the base case of definition~\ref{def:path_cond_layer_comb_appendix}, no new path condition is added to the set of path conditions generated for the transformation $tr$. As such the $tr=tr'$ and by induction hypothesis the property trivially holds for all path conditions generated for $tr'$.
+  
+  \item \emph{Inductive case:} for the inductive case (transitive case of \cref{def:path_cond_layer_comb_appendix}) we need to show that, assuming the property holds for all path conditions generated for a transformation $tr$, then the property will also hold for a transformation $tr'$ -- where $tr'$ results from adding a new rule $rl$ to the last layer of $tr$. We will thus need to consider the four cases of rule combination:\vspace{.2cm} 
+ 
+\begin{enumerate}
+\item\label{lab:rule_case1_appendix} Rule $rl$ has no dependencies (\cref{def:rule_comb_no_dependencies_appendix}).
+\item\label{lab:rule_case2_appendix} Rule $rl$ has dependencies and cannot execute (\cref{def:rule_comb_unsatisfied_appendix}).
+\item\label{lab:rule_case3_appendix} Rule $rl$ has dependencies and may and/or will execute (\cref{def:rul_comb_partial_total_appendix}).
+\end{enumerate}
+
+The property trivially holds for case~\ref{lab:rule_case2_appendix}, given that no new path conditions are added to the path condition set generated for $tr$ and that the property holds for $tr$ by induction hypothesis.
+
+When a rule $rl$ is added to the last layer of $tr$ such that cases~\ref{lab:rule_case1_appendix} or~\ref{lab:rule_case3_appendix} occur, new path conditions are added to the path condition set. Both cases are based on combining a path condition with a rule, as laid out in \cref{def:combine_pc_with_rule_appendix}. In order to demonstrate this second inductive step we then need to show that, whenever the property holds for a path condition $pc$ generated for a transformation $tr$, the combination of $pc$ with a rule $rl$ results in a new path condition where the property is respected.
+
+We start by picking for $pc$ an execution $ex$ such that $pc$ abstracts $ex$. We know such a transformation execution exists by induction hypothesis. We can then build an input model $m$ as the result of uniting the input model of $ex$ with a model that can be matched by $rl$. If we execute $tr'$ having $m$ as input model we obtain transformation execution $ex'$.
+
+Let us now demonstrate $ex'$ is abstracted by the path condition $pc'=pc\stackrel{trace}{\sqcup} rl$, the combination of $pc$ with $rl$ as shown in \cref{def:combine_pc_with_rule_appendix}. We first recall the conditions of the abstraction relation in \cref{def:abstraction_pc_ex_appendix}:
+\begin{enumerate}
+	\item\label{item:abstr_rel1} a) injective typed graph homomorphisms must exist between the match parts of all the rule copies in the path condition and the input of the execution \emph{and} b) a surjective typed graph isomorphism must exist between the output of the execution and the apply part of the path condition.
+    \item\label{item:abstr_rel2} a) injective typed graph homomorphisms must exist between all strongly connected components of the path condition composed of only symbolic traceability links \emph{and} b) all isolated traceability links in the transformation execution must be found at least once in the path condition.\vspace{.3cm}
+\end{enumerate} 
+
+Let us start by arguing for why condition~\ref{item:abstr_rel1} a) holds for $pc'$ and $ex'$. Because we know rule $rl$ has executed on the input model of $ex'$, we know by \cref{def:match_function} of the function matching a DSLTrans rule that an injective typed graph homomorphism exists between the match part of $rl$ and $ex'$. When $rl$ is combined with $pc$, its match part is preserved in $pc$ and as such an injective typed graph homomorphism must exist between it and $ex'$. By induction hypothesis and because the combination operator is additive (meaning nothing existing in $pc$ is deleted during combination) we know injective typed graph homomorphisms continue to exist between the match parts of all other rule copies in the path condition and the input of the $ex'$.\vspace{.3cm}
+
+In what concerns condition~\ref{item:abstr_rel1} b) above, we know by \cref{def:apply_function} and \cref{def:layer_step_semantics} that one or more copies of graphs isomorphic to the apply part of $rl$ are added to the output of $ex$. Also, by \cref{def:layer_step_semantics}, we know this addition preserves the output of $ex$ and we also know by hypothesis that a surjective typed graph isomorphism exists between the output of $ex$ and the apply part of $pc$. As mentioned before, the combination of $pc$ and $rl$ is additive and as such we can also deduce that a typed graph isomorphism exists between the apply part of any copy $rl$ added to $ex$ and the apply part of $rl$ added to $pc$. As such, all old and new edges and nodes in $ex'$ can be surjectively found in $pc'$.\vspace{.3cm}
+
+We will now discuss the reasons why condition~\ref{item:abstr_rel2} a) of the abstraction relation holds for $pc'$ and $ex'$. When $pc$ and $rl$ are combined, by \cref{def:combine_pc_with_rule_appendix} a copy of the rule is ``glued'' on top of $pc$. Symbolic traceability links are added between elements of the match part of the copy of the rule and of the apply copy of the rule, for those elements in the apply part of the copy of the rule not previously connected to backward links. We also know by \cref{def:apply_function} that traceability links are similarly added to the copy of $rl$ that is merged with $ex$. Because of the induction hypothesis we know that injective typed graph homomorphisms exists between all the strongly connected components composed of traceability links of $pc$ and $ex$. When $rl$ is combined with $pc$ two cases can occur: a) $rl$ has no backward links, in which the proposition trivially holds because isomorphic isolated strongly connected components are added both to $pc$ and $ex$; b) $rl$ has backward links, in which case the newly added components will connect to existing strongly connected components in $pc$ and $ex$, forming additional strongly connected components. In this case, an injective typed graph homomorphism exists between each of the newly formed strongly connected components in $pc$ and at least one newly formed strongly connected component in $ex$. This is so because, by \cref{def:abstraction_pc_ex_appendix} of the abstraction relation between a path condition and a transformation execution, the set of rules combined into $pc$ and the set of rules that have executed is the same. The combination of these rules in the path condition, according to \cref{def:combine_pc_with_rule_appendix}, replicates patterns that are produced in the execution by \cref{def:apply_function} and \cref{def:layer_step_semantics}. Note that condition~\ref{item:abstr_rel2} a) of the abstraction relation provides additional guarantee that, when multiple partially and/or totally satisfied dependencies occur during path condition combination (\cref{def:rul_comb_partial_total_appendix}), the corresponding executions are correctly abstracted given each place where the rules are ``glued'' corresponds to a different strongly connected component.\vspace{.3cm}
+ 
+Condition~\ref{item:abstr_rel2} b) of the abstraction relation trivially holds as each new traceability link added to $ex$ when $rl$ executes has at least one corresponding symbolic traceability link in $pc'$, resulting from the combination of $pc$ with $rl$.  
+
+\end{itemize}
+\end{pf}
+
+\begin{proposition}{(Completeness)}
+\label{prop:pc_completeness_appendix}
+Every transformation execution is abstracted by one path condition.
+\end{proposition}
+\CatchFileBetweenTags{\pathgencompletenessproofappendix}{text/definitions}{pathgencompletenessproofappendix}{\pathgencompletenessproofappendix} 
+
+\begin{lemma} (Uniqueness)
+\label{lem:uniqueness_appendix}
+A transformation execution is abstracted by exactly one path condition.
+\end{lemma}
+\begin{pf}
+Let $tr\in \textsc{Transf}^{sr}_{tr}$ be a model transformation. We will demonstrate that two different path conditions $pc_1, pc_2\in \textsc{Pathcond}(tr)$ cannot exist such that we have a transformation execution $ex\in \textsc{Exec}(tr)$ where $ex\Vvdash pc_1$ and $ex\Vvdash pc_2$.
+
+We will do so by attempting to to build an $ex\in \textsc{Exec}(tr)$ such that $ex\Vvdash pc_1$ and $ex\Vvdash pc_2$ and demonstrating that it is always the case that such is not possible. In order to structure our argumentation, we will consider two cases:
+% \levi{the contradiction happens because at each point of the execution, when a rule is added any two path conditions from the existing set of path conditions will represent different executions. At all points if we consider two path conditions in the PC set we have that two different executions can be created if we find a model that satisfies the first condition of the abstraction relation, and it is always the case that none of those two executions can be abstracted by the two path conditions simultaneously.}
+\begin{enumerate}
+  \item\label{item:uniqueness_rule_no_dep_appendix} the case where no rules in $tr$ have dependencies.
+  \item\label{item:uniqueness_rule_has_dep_appendix} the case where some rules in $tr$ have dependencies.
+\end{enumerate}
+
+We start by considering that $tr$ falls into case~\ref{item:uniqueness_rule_no_dep_appendix} above. By \cref{def:path_cond_gen_appendix} of path condition generation, each rule appears at most once in a path condition. Also, by construction, each path condition always contains a different combination of rules. We additionally know from \cref{def:layer_transformation_appendix} that the rules that compose $tr$ necessarily have non-overlapping matchers. We can nonetheless build a model $m$ as the typed graph union of two input models $m_1$ and $m_2$, where injective typed graph morphisms can be found between the match parts of the rule copies that form $pc_1$, and $m_1$. Injective typed graph morphisms can be found as well between the match parts of the rules that form $pc_1$, and $m_2$. We thus know that injective typed graph morphisms can be found between the rule copies that compose $pc_1$ and $pc_2$, and $m$. This satisfies the first condition of \cref{eq:abstr_input_output} in ~\cref{def:abstraction_pc_ex_appendix} of abstraction relation. 
+
+Let us now consider that $ex_1$ and $ex_2$ are obtained by executing the transformations rules combined into $pc_1$ and $pc_2$, having $m$ as input model. As mentioned above, we know that the rules in $pc_1$ and $pc_2$ are not completely overlapping. This means that, due to the way in which $m$ is built (explained above), $m$ will always have at least one input that is matched by rules of $pc_1$ but not by rules of $pc_2$ (and vice-versa). Thus, when the transformation rules combined into $pc_1$ execute having $m$ as an input model, there will always exist a traceability link generated between an input and an output element of $m$ that is not generated when the transformation rules combined into $pc_2$ execute having $m$ as an input model (and vice-versa). As such, we have that $ex_1$ is always different from $ex_2$ by at least one traceability link. Given that this traceability link is symbolically represented in either $pc_1$ or $pc_2$ (but not in both), according to condition \cref{eq:abstr_trace} in \cref{def:abstraction_pc_ex_appendix} it cannot be that either $pc_1$ or $pc_2$ abstract $ex_1$ and $ex_2$ simultaneously.\\\\
+We will now analyse the scenario where $tr$ falls into case~\ref{item:uniqueness_rule_has_dep_appendix} above, where some rules in $tr$ have dependencies. For this case, assume we have a path condition $pc_1$ contained in the set of path conditions generated for $tr$, considering layers up to layer $l$ of $tr$ have executed. Assume also we have a rule $rl$ of layer $l+1$ of $tr$ that has dependencies and can be combined with $pc$. If rule $rl$ is totally combined with path condition $pc_1$, according to \cref{def:rul_comb_partial_total_appendix} and \cref{fig:multiple_total_satisfied_dependencies}, then nothing needs to be shown as $pc_1$ is not kept in the path condition set but rather replaced by its combination with $rl$. However, in case rule $rl$ is partially combined with $pc$, as defined in \cref{def:rul_comb_partial_total_appendix} and \cref{def:comb_path_cond_rule_single_appendix}, then multiple path conditions are generated and additionally $pc_1$ is kept in the path condition set. Consider $pc_2$ is one of the newly created path conditions. In this case we can find a model $m$ that can be injectively matched by the rule copies in both $pc_1$ and $pc_2$: $m$ is the union of the input model isomorphic to the match part of $pc_1$, united with the input model isomorphic to the match part of $pc_2$ (including symbolic traceability links).\vspace{.3cm}
+
+As before, we now consider that $ex_1$ and $ex_2$ are obtained by executing the rules used to build $pc_1$ and $pc_2$, respectively, having $m$ as input model. In this case, we have that either $rl$ was ``glued'' across different rule copies in $pc_2$, or over one single rule copy of $pc_2$. In the first case, by \cref{def:transformation_rule_appendix} of transformation rule we know either a new edge between output elements or a new output element have been produced in $ex_2$, but not in $ex_1$. According to the second part of Proposition~\ref{eq:abstr_trace} in \cref{def:abstraction_pc_ex_appendix} or the second part of Proposition~\ref{eq:abstr_trace} in \cref{eq:abstr_input_output}, this makes it such that it cannot be that either $pc_1$ or $pc_2$ abstract $ex_1$ and $ex_2$ simultaneously.\vspace{.3cm}
+
+Finally, let us consider an additional path condition $pc_3$, also obtained from the partial combination of $pc_1$ with $rl$ and where $pc_3$ is different of $pc_1$. In this case we have that $pc_2$ and $pc_3$ resulted from the combination of exactly the same rules, with the difference that certain rules have been ``glued'' at more locations of one path condition than of the other. We can thus build a model $m$ that can be injectively matched by the rule copies in both $pc_1$ and $pc_2$: the model is isomorphic to the the match part of the path condition (including symbolic traceability links) that has been ``glued'' more copies of $rl$ upon. When we now obtain $ex_2$ and $ex_3$ by executing the rules in $pc_2$ and $pc_3$, we will have that one of these executions will necessarily contain more copies of $rl$'s apply pattern than the other. Given the fact that these copies will necessarily have been ``glued'' over different strongly connected graphs of $pc_2$ and $pc_3$ (because rules having no dependencies do not overlap as explained for case~\ref{item:uniqueness_rule_no_dep_appendix}), there cannot be an injective typed graph homomorphisms between all the strongly connected components formed by the traceability graphs of at least one of path conditions $pc_2$ or $pc_3$, and $ex_1$ (likewise for $ex_2$). Given this is required by the first part of Proposition~\ref{eq:abstr_trace} in \cref{eq:abstr_input_output} of the abstraction relation, it cannot be that either $pc_1$ or $pc_2$ abstract $ex_1$ and $ex_2$ simultaneously.
+
+
+
+\end{pf}
+
+
+\clearpage

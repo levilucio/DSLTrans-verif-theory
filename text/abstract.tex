@@ -1,0 +1,48 @@
+\begin{abstract}
+
+As model transformations are a required part of model-driven development, it is crucial to provide techniques that address their formal verification. One approach that has proven very successful in program verification is \emph{symbolic execution}. The symbolic abstraction in these techniques allows formal properties to be exhaustively proved for all executions of a given program.
+In our approach we apply the same abstraction principle to verify model transformations. Our algorithm builds a finite set of path conditions which represents all concrete transformation executions through a formal abstraction relation. We are then able to prove properties over all transformation executions in a model-independent way. This is done by examining if any created path condition violates a given property, which will produce a counterexample if the property does not hold for the transformation. We demonstrate that this property proving approach is both valid and complete. Implementation results are also presented here which suggest that our approach is feasible and can scale to real-world transformations. 
+
+\end{abstract}
+
+\begin{keywords}
+Model Transformations, Symbolic Verification, Translation 
+\end{keywords}
+
+% \begin{abstract}
+% In the work we present in this paper we apply the \emph{program verification}
+% concept of \emph{symbolic execution} to the verification of model
+% transformations written in the Turing-incomplete DSLTrans language. Our symbolic
+% execution construction algorithms leverage on DSLTrans' reduced expressiveness
+% in order to cope with the classical state space explosion problem typical to
+% exhaustive verification techniques. By producing a symbolic execution for a
+% DSLTrans model transformation we are able to prove precondition-postcondition
+% axioms that regard the syntactic structure of our input/output models. Our
+% property proofs are model independent, meaning a proof holds for any input model
+% that satisfies an axiom's precondition. We are also able to produce a
+% counterexample if a property does not hold. A counterexample consists of a set
+% of transformation rules that, when executed, lead to the property being violated.
+% 
+% We have used model transformation technology to build the prototype we have used
+% in the experiments with out technique we report in this paper. Metamodels and
+% model transformations are used not only to produce the intermediate models we
+% use for symbolic execution construction, but also at the core of our prototype
+% in the symbolic execution construction algorithms. 
+% \end{abstract}
+
+% In this paper we present a novel technique and a prototype implementation for
+% proving properties of model transformations expressed in the DSLTrans language.
+% The approach is based on symbolic execution and the properties we are interested
+% in concern relations between the structure of the input and output models. In
+% particular, the properties are implications of the form `if a structural
+% relation between some elements of the source model holds, then another
+% structural relation between some elements of the target model must also hold'.
+% Our technique is transformation dependent but model independent, meaning the
+% proofs we produce hold for all executions of a given DSLTrans transformation 
+% specification running on any instance of the transformation's input metamodel.
+%  
+% Our proof technique is based on (i) building the finite symbolic execution for a
+% given DSLTrans transformation and (ii) on checking whether the property holds
+% for all elements of the finite symbolic execution execution set. We explain how 
+% a symbolic execution and a proof is built with our technique by using model
+% transformations written using our T-Core framework.

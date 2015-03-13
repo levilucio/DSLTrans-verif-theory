@@ -1,0 +1,331 @@
+\section{Formal Syntax and Semantics of DSLTrans}
+\label{sec:DSLTrans_formal_appendix}
+
+\counterwithin{definition}{section}
+\setcounter{definition}{0}
+\setcounter{subsection}{0}
+
+\onehalfspacing 
+
+In this section we will formally introduce the syntax and the semantics of the DSLTrans language. The theory is based on the notion of typed graphs as described in \cref{sec:formal_background}.
+
+We will start by introducing the notion of \emph{metamodel}, which in DSLTrans is used to type the input and output models of a DSLTrans transformation. 
+
+\begin{definition}{Metamodel}
+\label{def:metamodel_appendix}
+
+\CatchFileBetweenTags{\metamodel}{text/definitions}{metamodel}{\metamodel}
+
+\end{definition}
+
+\CatchFileBetweenTags{\metamodeltextappendix}{text/definitions}{metamodeltextappendix}{\metamodeltextappendix}
+
+\begin{definition}{Expanded Metamodel}
+\label{def:expanded_metamodel_appendix}
+
+\CatchFileBetweenTags{\expandedmetamodel}{text/definitions}{expandedmetamodel}{\expandedmetamodel}
+
+\end{definition}
+
+\CatchFileBetweenTags{\expandedmetamodeltext}{text/definitions}{expandedmetamodeltext}{\expandedmetamodeltext}
+
+\begin{definition}{Metamodel Instance}
+\label{def:instance_appendix}
+
+\CatchFileBetweenTags{\metamodelinstance}{text/definitions}{metamodelinstance}{\metamodelinstance}
+
+\end{definition}
+
+\CatchFileBetweenTags{\metamodelinstancetext}{text/definitions}{metamodelinstancetext}{\metamodelinstancetext}
+
+
+
+\begin{definition}{Containment Transitive Closure}
+\label{def:instance_closure_appendix}
+
+\CatchFileBetweenTags{\instanceclosure}{text/definitions}{instanceclosure}{\instanceclosure}
+
+\end{definition}
+
+\CatchFileBetweenTags{\instanceclosuretextappendix}{text/definitions}{instanceclosuretextappendix}{\instanceclosuretextappendix}
+
+
+\begin{definition}{Model}
+\label{def:model_appendix}
+
+\CatchFileBetweenTags{\model}{text/definitions}{model}{\model}
+
+\end{definition}
+
+\CatchFileBetweenTags{\modeltextappendix}{text/definitions}{modeltextappendix}{\modeltextappendix}
+
+
+\begin{definition}{Input-Output Model\\}
+\label{def:input_output_model_appendix} 
+\CatchFileBetweenTags{\inputoutputmodel}{text/definitions}{inputoutputmodel}{\inputoutputmodel}
+
+
+\end{definition}
+
+\CatchFileBetweenTags{\inputoutputmodeltextappendix}{text/definitions}{inputoutputmodeltextappendix}{\inputoutputmodeltextappendix}
+
+
+\begin{definition}{Metamodel Pattern and Indirect Metamodel Pattern}
+\label{def:metamodel_pattern_appendix} 
+\CatchFileBetweenTags{\metamodelpattern}{text/definitions}{metamodelpattern}{\metamodelpattern}
+
+\end{definition}
+
+\CatchFileBetweenTags{\metamodelpatterntextappendix}{text/definitions}{metamodelpatterntextappendix}{\metamodelpatterntextappendix}
+
+\begin{definition}{Transformation Rule}
+\label{def:transformation_rule_appendix}
+
+\CatchFileBetweenTags{\transformationrule}{text/definitions}{transformationrule}{\transformationrule}
+\end{definition}
+
+\CatchFileBetweenTags{\transformationruletext}{text/definitions}{transformationruletext}{\transformationruletext}
+
+
+\begin{definition}{Matcher of a Transformation Rule}
+\label{def:back_match_transformation_rule_appendix}
+
+ \CatchFileBetweenTags{\backmatchtransformationrule}{text/definitions}{backmatchtransformationrule}{\backmatchtransformationrule}
+\end{definition}
+
+\cref{def:back_match_transformation_rule_appendix} \CatchFileBetweenTags{\backmatchtransformationruletext}{text/definitions}{backmatchtransformationruletext}{\backmatchtransformationruletext}
+
+
+
+\begin{definition}{Expanded Transformation Rule}
+\label{def:transformation_rule_expansion_appendix}
+
+\CatchFileBetweenTags{\expandedtransformationrule}{text/definitions}{expandedtransformationrule}{\expandedtransformationrule}
+
+\end{definition}
+\CatchFileBetweenTags{\expandedtransformationruletext}{text/definitions}{expandedtransformationruletext}{\expandedtransformationruletext}
+
+
+\begin{definition}{Layer, Transformation}
+\label{def:layer_transformation_appendix}
+
+\CatchFileBetweenTags{\layertransformation}{text/definitions}{layertransformation}{\layertransformation}
+\end{definition}
+
+\CatchFileBetweenTags{\layertransformationtextappendix}{text/definitions}{layertransformationtextappendix}{\layertransformationtextappendix}
+
+\subsubsection{\textbf{Notation:}}
+
+\CatchFileBetweenTags{\notationtextappendix}{text/definitions}{notationtextappendix}{\notationtextappendix}
+
+
+% We naturally extend the notion of union (definition~\ref{def:typed_graph_union})
+% to models (definition~\ref{def:metamodelmodel}), match-apply models
+% (definition~\ref{def:match_apply_model}) and transformation rules 
+% (definition~\ref{def:transformation_rule}). We also extend the notion of
+% indirect typed subgraph (definition~\ref{def:indirecttypedsubgraph}) to
+% transformation rules (definition~\ref{def:transformation_rule}) and match-apply
+% models (definition~\ref{def:match_apply_model}). Finally, we extend the notion
+% of typed graph equivalence (definition~\ref{def:typed_graph_equivalence}) to
+% transformation rules (definition~\ref{def:transformation_rule}).
+
+\subsubsection{Transformation Language Semantics}
+
+We will now address the semantics of the DSLTrans language. We will start by defining a match function that, given an input-output model and a transformation rule, returns all subgraphs of that input-output model where the rule's match pattern (including backward links) is found.  
+
+% \levi{Need to be careful throughout all this section to understand whether we model the match and apply functions as functions or relations. Because of the non-deterministic generation of new vertices in the definition of apply function~\ref{def:apply_function}, relations are used in the definitions that follow to evaluate a transformation. This is an issue of the formalism used to model, should we make it explicit?}
+
+\begin{definition}{Match Function}
+\label{def:match_function}
+
+Let $m_{in}\in \textsc{Iom}^{sr}_{tr}$ be a input-output model and $rl\in \textsc{Rule}^{sr}_{tg}$ be a transformation
+rule. The $match : \textsc{Iom}^{sr}_{tg}\times \textsc{Rule}^{sr}_{tg}\rightarrow
+\mathcal{P}(\textsc{Iom}^{sr}_{tg})$ function is defined as follows: $$match_{rl}(m_{in})= \big\{ glue_{noind}\;|\;
+glue\sqsubseteq m_{in}^{*} \land glue \cong \Vert rl\Vert\big\}$$
+
+where $glue\in \textsc{Iom}^{sr}_{tr}$ is an input-output model and $glue_{noind}$ is a version of $glue$ where the indirect links have been removed.
+% \levi{all backward links are replaced by trace links such that the matching using subgraph isomorphim can work.}
+% 
+% \levi{Where $rl^{-}$ is rule $rl$ without nodes in the apply part that are not connected to \emph{trace links}, as well as links adjacent to those nodes. $mg^{-ind}$ is the match graph without indirect links that come from the rule, given those cannot be part of the intermediate $MAM$ match result since that result is going to be united with the original $MAM$ (this was incorrect in the original SLE paper).}
+% \levi{The matcher function returns all graphs of the input MAM that are matched by a rule, including its backward links. Note that to find a subgraph ($\sqsubseteq$) of the input MAM that is isomorphic ($\cong$) to the rule being matched because the graph rewriting is achieved by joint union of the match graph extended by the new rewrite node, and the original MAM.}
+% \levi{TODO: review the $mg^{-ind}$ and the $rl^{-}$ notations.}
+
+% Due to the fact that the $\cong$ relation is based on the notion of graph
+% isomorphism, permutations of the same match result may exist in the
+% $\big\{g\;|\; g\lhd m \land g \cong strip(tr)\big\}$ set. The --- undefined ---
+% $remove:\mathcal{P}(TR^{s}_{t})\rightarrow \mathcal{P}(TR^{s}_{t})$ function is such that
+% it removes such undesired permutations.
+
+%The $strip:TR^{s}_{t}\rightarrow TR^{s}_{t}$ function is such that
+%$$strip(\big\langle V,E,T,\langle V_m,E_m,T_m,s\rangle,\langle V_a,E_a,T_a,t\rangle,Bl,Il\big\rangle) = \big\langle V',E',T,\langle V_m,E_m,T_m\rangle,\langle V'_a,E'_a,T_a\rangle,Bl,Il\big\rangle$$
+%\begin{center}
+%where $(v'\in V'_a\Rightarrow v\rightarrow v'\in Bl)\;\land\;(v\rightarrow v'\in E'_a\Rightarrow (v\rightarrow v'\in E_m \land \{v,v'\}\subseteq V'_a))$
+%\end{center}
+\end{definition}
+
+The match function in \cref{def:match_function} looks for subgraphs ($glue\sqsubseteq m_{in}^{*}$) of an input-output model that are isomorphic to the backward matcher of the given transformation rule ($glue \cong \Vert rl\Vert$). Note that the containment transitive closure of the input-output model ($m_{in}^{*}$) is considered such that indirect links in the rule can looked for in the input model. Additionally, indirect links need to be removed from the input-output models resulting from the match function ($glue_{noind}$). This is so because indirect links are not part of the original input model, but rather an auxiliary structure.
+
+Let us now turn our attention to the apply function in \cref{def:apply_function}. Its role is extend all model fragments found by matching a rule on a given input-output model, such that each of those fragments becomes isomorphic to the complete rule (minus its backward links). This process effectively creates the new objects and relations specified in the apply part of the rule, for each of the fragments found when matching the rule.
+
+\begin{definition}{Apply Function}
+\label{def:apply_function}
+
+Let $m_{glue}\in \textsc{Iom}^{sr}_{tg}$ be a input-output model and $rl\in \textsc{Rule}^{sr}_{tg}$ a
+transformation rule. The $apply : \textsc{Iom}^{sr}_{tg}\times \textsc{Rule}^{sr}_{tg}\rightarrow \textsc{Iom}^{sr}_{tg}$ function
+is defined as follows: 
+
+$$apply_{rl}(m_{in})=\bigsqcup_{m_{glue}\in match_{rl}(m_{in})}trace_{a_{\Delta}}(m_{glue}\sqcup a_{\Delta})$$
+
+\begin{center}
+where $a_{\Delta}\in \textsc{Iom}^{sr}_{tg}$ is such that $m_{glue} \sqcup a_{\Delta}\cong rl_{noind}$.\\
+\end{center}
+
+We impose that any instance of $a_\Delta$ is always disjoint from the $m_{in}$ input-output model and also that any two instances of $a_\Delta$ used in the large union are always disjoint.
+
+Partial function $trace:\textsc{Iom}\times \textsc{Iom} \nrightarrow \textsc{Iom}$ is such that $trace_{\langle V_{\Delta},E_{\Delta},st_{\Delta},\tau_{\Delta}\rangle}(\langle V,E,st,\tau\rangle) = \langle V,E',st',\tau'\rangle$ where we have that $E\subseteq E'$, $st\subseteq st'$ (using a light notational abuse for the $s\subseteq s'$ and $t\subseteq t'$), $\tau \subseteq \tau'$ and if $v_1\xrightarrow{e} v_2\in E'\setminus E$ then $v_1\in Output(V_{\Delta})$, $v_2\in Input(V)$ and $\tau'(e)=trace$. Finally, $rl_{noind}$ is a version of $rl$ where indirect links have been removed.
+% More concretely, if we have $mam = $\big\langle V,E,st,\tau, Input,Output\big\rangle\in MAM^{sr}_{tg}$ where $Input=\langle V',E',st',\tau'\rangle\in MODEL^{sr}$ and $Output=\langle
+% V'',E'',st'',\tau''\rangle\in MODEL^{tg}$, then $trace(mam) = \big\langle V,E,st,\tau''',Input,Output\big\rangle$ where $E'\subseteq E$ and $v\rightarrow E'\setminus E$ 
+\end{definition}
+% 
+% it builds traceability edges between vertices of the output model that were newly built by the $apply$ function (the vertices in ${mg}_{\Delta}$) and all the vertices from the input part of the input-output model. It is necessary to remove the indirect links from the rule because otherwise they would be created during the rewriting by the apply function. 
+
+In \cref{def:apply_function} $a_\Delta$ is an input-output model that contains an instance of the target metamodel. These instances are created by rule $rl$ and are used to extend the sub-models found by the match function. The $trace$ function builds traceability edges between newly created vertices of the output model in $a_{\Delta}$ and all the vertices from the input part of a model fragment found by the match function.
+
+Note that, because we do not pose any constraints on $a_\Delta$ other than the fact that its union with the sub-model $m$ is isomorphic to $rl_{noind}$, the $a_\Delta$ variable can always be satisfied by an unlimited amount of input-output models. In order to avoid an infinite amounts of results when a transformation rule is executed, in what follows we will consider transformation results differ only up to typed graph isomorphism.   
+
+%  Note that because the vertices are not disjoint, when the graph produced by the apply function is united with the original match apply model the new vertices are created. It was necessary to remove the indirect links from the rule during rewriting, because otherwise those indirect links would also be rewritten.
+
+Definitions~\ref{def:match_function} and~\ref{def:apply_function} are complementary: the former gathers all the fragments of an input-output model that are matched by a transformation rule; the latter glues on the output part of each of those fragments new objects and relations created by a transformation rule. 
+
+%  The $strip$ function is used to
+%  enable matching over backward links but not elements to be created by the
+%  transformation rule. The $back$ function connects all newly created vertices
+%  to the elements of the source model that originated them.
+
+%\begin{definition}{Transformation}
+
+%Let $g\in TG$ be a typed graph. The graph transform function $transform : TR\times TG\rightarrow TG$ is recursively defined as:
+%\begin{gather*}
+%  transform_{(m,a)}(g) =
+%  \begin{cases}
+%    g  & \text{if } match_{m}(g)=\emptyset \\
+%    instance(a)\cup transform_{(m,a)}(g') &\text{if } match_{m}(g)\neq \emptyset
+%  \end{cases}
+%\end{gather*}
+%$$\text{where } g'=mark_{(m)}(g)$$
+%\end{definition}
+
+%\subsection{Transformation Semantics}
+%\begin{definition} {Layer Semantics}
+
+%Let $l\in Layer$ be a layer and $\{m,m'\} \in MAM^{s}_{t}$ be a match
+%$$\frac{}
+%{m,\emptyset \stackrel{layerstep}{\rightarrow}m}$$
+%$$\frac{tr\in layer,\; transform_{tr}(m) = m''\; m'',layer\backslash\left\{tr\right\} \xrightarrow{layerstep}	 m'}{m,layer \xrightarrow{layerstep} m'}$$
+%\end{definition}
+
+\begin{definition} {Layer Step Semantics}
+\label{def:layer_step_semantics}
+
+Let $l\in \textsc{Layer}^{sr}_{tg}$ be a Layer. The \emph{layer step relation}
+$\stackrel{layerstep}{\rightarrow}\subseteq \textsc{Iom}^{sr}_{tg}\times \textsc{Iom}^{sr}_{tg} \times \textsc{Layer}^{sr}_{tg}\times
+\textsc{Iom}^{sr}_{tg}$ is defined as follows:
+
+$$\frac{}
+{\langle m_{in},m_{glue},\emptyset\rangle \xrightarrow{layerstep}m_{in} \sqcup m_{glue}}$$
+
+\begin{multline*}
+\frac{\begin{array}{ll} rl\in l,\; apply_{rl}&(m_{in}) = m_{rout},\\
+&\langle m_{in},m_{glue}\sqcup m_{rout},l\backslash \{rl\}\rangle \xrightarrow{layerstep} m_{out}
+\end{array}}
+{\langle m_{in},m_{glue},l\rangle \xrightarrow{layerstep} m_{out}}$$
+\end{multline*}
+
+\begin{center}
+where $m_{rout} \in\textsc{Iom}^{sr}_{tg}$ and $rl\in \textsc{Rule}^{sr}_{tg}$.
+\end{center}
+ 
+We impose that all input-output models that are part of $rout$ and have been generated by rule $rl$ are disjoint from input-output models accumulated in $m_{glue}$ that have been generated by other rules.
+
+\end{definition}
+
+In \cref{def:layer_step_semantics} we build the result of executing a layer of a DSLTrans transformation. The operational semantics-like rules in the definition execute each rule $rl$ in layer $l$, in a non-deterministic order, by using the $apply$ function. The result of executing each rule is accumulated in the temporary $m_{glue}$ input-output model. Finally, when the set of transformation rules in the layer has been exhausted, the result of executing all the rules in the layer (now contained in $m_{glue}$) is united with the input-output model $m_{in}$, the input to layer $l$. Note that this final union produces the result we expect because of the fact that the $m_{glue}$ input-output model is not disjoint from $m_{in}$. The common ``glue'' parts of $m_{glue}$ that have been built by the match function and extended by the apply function are now used to built the result of executing layer $l$.
+
+\cref{def:layer_step_semantics} is the core of DSLTrans' semantics. Many model transformation languages are based on graph rewriting, where the result of each rule rewrite is immediately usable by all other rules. In DSLTrans the result of executing one layer in DSLTrans is totally produced before the input to the layer is changed. This is enforced in \cref{def:layer_step_semantics} by the fact that the apply function always executes over the same $m_{in}$ input-output model and all the results of rule execution in the same layer are added to the $m_{glue}$ structure that is write-only. Rules belonging to the same layer are thus forced to execute independently.
+
+
+\begin{definition} {Transformation Step Semantics}
+\label{def:transformation_step_semantics}
+
+Let $[l::tr]\in \textsc{Transf}^{sr}_{tg}$ be a transformation, where $l\in
+\textsc{Layer}^{sr}_{tg}$ is a Layer and $tr$ also a transformation. The \emph{transformation step relation}
+$\stackrel{trstep}{\rightarrow}\subseteq \textsc{Iom}^{sr}_{tg}\times \textsc{Transf}^{sr}_{tg}\times
+\textsc{Iom}^{sr}_{tg}$ is defined as follows: 
+$$\frac{}{\langle m,[]\rangle \xrightarrow{trstep} m}$$
+
+$$\frac{\big\langle m_{in},\epsilon,l^{\star}\big\rangle \xrightarrow{layerstep} m_{inter},\; \langle m_{inter},R\rangle \xrightarrow{trstep} m_{out}}{\langle m_{in},[l::T]\rangle \xrightarrow{trstep} m_{out}} \hspace{.3cm}$$
+
+$$\text{where } l^{\star}=\bigcup_{rl\in l}rl^{\star}$$
+\end{definition}
+
+While the execution of the rules belonging to a layer happens in parallel, the execution of the layers of a transformation happens sequentially. As per \cref{def:transformation_step_semantics}, the input-output model $m_{inter}$ is the output of executing a given layer that is passed onto the next layer as input. Note that an empty input-output model ($\epsilon$) is passed as the second argument to the $layerstep$ relation in \cref{def:transformation_step_semantics}. This is because in \cref{def:layer_step_semantics} of layer step semantics, the second argument of the relation is used as an accumulator for the model fragments that are added to be added to the output of the previous layer once all the rules in the current layer have been executed. The transformation rules in a layer are expanded before execution ($l^{\star}$) such that polymorphism in the match elements can be handled (see \cref{def:transformation_rule_expansion_appendix}). 
+
+\begin{definition} {Model Transformation Execution}
+\label{def:modeltransformation_appendix} 
+
+\CatchFileBetweenTags{\modeltransformation}{text/definitions}{modeltransformationappendix}{\modeltransformation}
+\end{definition}
+
+\CatchFileBetweenTags{\modeltransformationtextappendix}{text/definitions}{modeltransformationtextappendix}{\modeltransformationtextappendix}
+
+% A transformation execution is formed from taking the input model, and executing
+% the transformation on it to produce the output model. During this
+% transformation, traceability links will be placed between match elements and the
+% apply elements they create. Definition~\ref{def:transf_ex} expresses this
+% formally. Note that we assume that transformation executions are built following
+% the algorithm described in~\cite{DBLP:conf/sle/BarrocaLAFS10}.
+
+% \begin{definition}{Transformation Execution}
+% \label{def:transf_ex}
+% 
+% Let $t$ be a DSLTrans transformation having source metamodel $s$ and target
+% metamodel $t$. A Transformation Execution is a 6-tuple $\langle V,E\cup
+% Tl,\tau,Match,Apply,Tl\rangle$, where $\langle V,E,\tau,Match,Apply\rangle \in
+% MAP^{s}_{t}$ is a match-apply pattern. $Match=\langle V',E', \tau',s\rangle$,
+% $Apply=\langle V'',E'', \tau'',t\rangle$ and the edges $Tl\subseteq V'\times
+% V''$ are called \emph{traceability links}. The set of all transformation
+% executions having source metamodel $s$ and target metamodel $t$ is called
+% $Exec^{s}_{t}$.
+% \end{definition}
+
+We now prove two important properties about executions of transformations expressed in the subset of DSLTrans presented in this paper: \emph{confluence} and \emph{termination}. The proofs are provided at a high level, given the fact that DSLTrans essentially enforces both these properties by construction of the semantics of DSLTrans.
+
+\begin{proposition}{Confluence}
+
+Every model transformation execution is confluent up to typed graph isomorphism.
+\end{proposition}
+\begin{pf}
+We want to prove that for every model transformation execution of a transformation $tr\in \textsc{Transf}^{sr}_{tg}$ having as input a model $input \in MODEL^{s}$, its output is always the same up to typed graph isomorphism.\\
+If we assume an execution of the transformation is not confluent then this should happen because of non-determinism when the execution of a transformation is being built. Non-determinism happens during the construction of a transformation execution at two points: 
+\begin{enumerate}
+\item in definition~\ref{def:apply_function}, $a_{\Delta}$ is non-deterministic up to typed graph isomorphism, which does not contradict the proposition we are trying to prove.
+\item in definition~\ref{def:layer_step_semantics} transformation rule $rl$ is chosen non-deterministically from layer $l$. Thus, the order in which the transformation rules are treated is non-deterministic. However, by \cref{def:layer_step_semantics} rules in a layer execute independently, which means no-side effects from rule ordering influence the execution of rules in the same layer. Also, the increments to the transformation by each rule of a layer in \cref{def:layer_step_semantics} are united using $\sqcup$ (see \cref{def:typed_graph_union_appendix}), which is an operation that is commutative by construction and thus renders the transformation result from each layer deterministic. 
+\end{enumerate}
+Given there are no other sources of non-determinism when building the execution of a transformation, every model transformation execution is confluent up to typed graph isomorphism.
+\end{pf}
+
+\begin{proposition}{Termination}
+
+Every model transformation execution terminates.
+\end{proposition}
+\begin{pf}
+Let us assume that there is a transformation execution which does not terminate. In order for this to happen there must exist a part in the construction of the execution of a transformation which induces an algorithm with an infinite amount of steps. We identify three moments when this can happen:
+\begin{enumerate}
+\item if definition~\ref{def:layer_step_semantics} of execution of a layer induces an infinite amount of steps. The only possibility for this to happen is if a layer has an infinite amount of transformation rules, which is a contradiction with definition~\ref{def:layer_transformation_appendix}.
+\item if definition~\ref{def:transformation_step_semantics} of execution of a transformation induces an infinite amount of steps. Given layers are executed sequentially and no looping is allowed, the only possibility for this to happen is if the transformation has an infinite amount of layers, which contradicts definition~\ref{def:layer_transformation_appendix}.
+\item if the result of the $match_{rl}(m_{in})$ function in definition~\ref{def:match_function} is an infinite set of match-apply graphs. The input-output model $m_{in}$ is by definition finite and the matching of each rule is independent from the execution of other rules in the same layer. As such, the number of subgraphs of $m_{in}$ isomorphic to $rl$'s matcher found during the execution of $rl$ is finite.
+\end{enumerate}
+Given there are no other constructs in the semantics of a transformation that can induce an infinite amount of steps, every model transformation execution terminates.
+\end{pf}
+
+\clearpage

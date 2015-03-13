@@ -1,0 +1,93 @@
+Transformation dependent / input independent
+
+D. Varro and A. Pataricza, “Automated Formal Verification of Model Transformations,” in CSDUML, 2003, pp. 63–78.
+
+- model check the original model with the semantic property to be checked
+- transform the model and the property to be checked onto the target language
+- model check the target model against the transformed of the property to be checked
+- if a counterexample is found, debug based on the counterexample the transformation or the target language itself
+
+A.Rensink,A.Schmidt,and D.Varro,“Model Checking Graph Transformations: A Comparison of Two Approaches,” in ICGT, 2004.
+
+- graph transformation simulate reactive computations
+- model checking is done based on an initial model and as such is not transformation independent in the sense that properties can be proved for all model transformation executions
+- properties are expressed on states that are prepresented as graphs
+- the approach shares the same problems as ours in terms of graph caching and the subgraph isomorphism problem
+
+B.Becker, D.Beyer, H.Giese, F.Klein, and D.Schilling, “Symbolic Invariant Verification For Systems With Dynamic Structural Adaptation, in ICSE, 2006.
+
+- same approach as by Rensink, encode the state of a dynamic system as a graph. Use model transformations to simulate the progression of the system
+- the point is to verify that no unsafe states are reached. Instead of generating all possibilities from the (infinite) amount of initial graphs, the authors check that all (finite) unsafe states (represented symbolically) cannot be reached
+- shares with us the idea of making the unsafe patterns symbolic
+- scalable (?)
+
+M. Asztalos, L. Lengyel, and T. Levendovszky, “Towards Automated, Formal Verification of Model Transformations” in ICST, 2010.
+
+- offline technique, meaning only the metamodels and the definition of the transformation is used (similarly to ours)
+- an assertion language is developed such that statements can be made about models at a given point of the execution of the transformation
+- rules and assertions are transformed into prolog predicates (by the VTMS tool)
+- a deduction mechanism is built as prolog rules
+- proving a property corresponds to generating a proof tree in Prolog
+- very extendable mechanism, as all assertions and deductions are achieved based on prolog terms and predicates
+- attributes of models are 'simply' treated, meaning an attribute has or has not a given value
+- no scalability analysis, depends on Prolog
+
+R. F. Paige, P. J. Brooke, and J. S. Ostroff, “Metamodel-Based Model Conformance and Multi-View Consistency Checking,” ACM TOSEM, vol. 16, no. 3, pp. 1–48, 2007.
+
+H.Giese, S.Glesner, J.Leitner, W.Schafer, and R.Wagner, “Towards Verified Model Transformations,” in MODEVVA, 2006, pp. 78–93.
+
+G. Karsai and A. Narayanan, “Towards verification of model transformations via goal-directed certification,”
+ASWSD 2006, San Diego, CA, USA, March 15-17, 2006, Revised Selected Papers, pp. 67–83, 2008
+
+- at the model level, verify bisimulation for two behavioral models (in the text statecharts and EHA). Approach works for all but has to be redone for each input/output model pair
+- produce a certificate of correction
+- translate models into a format that can be analysable and use it to prove properties
+- bisimulation is used between the input and output models to guarantee reachability in the target model means the same in the input model
+- generalisation is achieved by using semantic archoring and weak bisimulation, to make the technique applicable in other contexts
+
+D. Bisztray and R. Heckel, “Rule-Level Verification of Business Process Transformations using CSP,” in ECEASST, vol. 6, 2007.
+
+J. O. Blech, S. Glesner, and J. Leitner, “Formal Verification of Java Code Generation from UML Models,” in Fujaba Days, september 2005.
+
+- Statechart to statechart transformations (non-hierarchical automata with concurrency)
+- the target statechart is coded as a Java program
+- proof is done inductively with ISABELLE
+- close to compiler proof
+- based on bisimulation
+- validates the transformation algorithm
+
+Stephan Hildebrandt, Leen Lambers and Holger Giese, "The MDELab Tool Framework for the Development of Correct Model Transformations with Triple Graph Grammars"
+
+- build tools to analyse Triple Graph Grammars at design time, and if the properties carry onto the implementation
+- validate TGGs for determinism, validity with metamodel constraints and behavior preservation
+- determinism is checked by exporting a TGG spec into AGG (by checking syntactic criteria)
+- validity for OCL constraints in output metamodels is checked by a tool that can produce counterexamples, but is not complete
+- behavior preservation under investigation, can be reduced to invariant checking for graph transformation
+- proof that the implementation conforms to TGG semantics, or, when there are too many optimizations, heuristics, etc, a test generation framework to increase the confidence in the implementation is also available
+
+Transformation dependent / input dependent
+
+A. Narayanan and G. Karsai, “Towards Verifying Model Transformations,” ENTCS, vol. 211, pp. 191–200, April 2008.
+
+J. de Lara and H. Vangheluwe, “Automating the Transformation-Based Analysis of Visual Languages,” FAC, vol. 22(3-4), pp. 297–326, 2010.
+
+A. Narayanan and G. Karsai, “Verifying Model Transformation By Structural Correspondence,” ECEASST, vol. 10, pp. 15–29, 2008.
+
+K. Anastasakis, B. Bordbar, and J. M. Kuster, “Analysis of Model Transformations via Alloy,” in MODEVVA, 2007, pp. 47–56.
+
+- translate metamodels and transformation into alloy
+- alloy can check whether there is at least a model that transformation can execute (instanstiate the model within a given bound, number of elements of the metamodel which are allowed)
+- Alloy can also check if the transformation violates some constraint
+- scalability issue for large metamodels and transformations, but can be addressed by removing metamodel elements and rules that do not concern the property of interest
+
+
+Hanh Nhi Tran and Christian Percebois, "Towards a Rule-level Verification Framework for Property-Preserving Graph Transformations" VOLT 2012
+
+Andres Toom, Arnaud Dieumegard and Marc Pantel, "Specifying and Verifying Model Transformations for Certified Systems using Transformation Models"
+
+
+Mark Asztalos, Laszlo Lengyel and Tihamer Levendovszky, "A Formal Background for the Analysis of Model Transformations"
+
+
+
+

@@ -1,0 +1,90 @@
+\section{\uppercase{Introduction}}
+\label{sec:intro}
+
+Model transformations were described as the \emph{heart and soul} of model driven
+software development (MDD) by Sendall and Kozaczynski in
+2003~\cite{Sendall2003}.  Due to their practicality and appropriate level of
+abstraction, model transformations are the current technique for performing
+computations on models. In their well-known 2006 paper `A Taxonomy of Model
+Transformations', the authors Mens, Czarnecki and Van Gorp call for the
+development of verification, validation and testing techniques for model
+transformations~\cite{Mens2006125}. Despite the many publications on this topic
+since then, the field of analysis of model transformations seems to be still in
+its (late) infancy, as evidenced by Amrani, L\'ucio \emph{et al.}~\cite{DBLP:conf/icst/AmraniLSCDVTC12}.
+
+% Since then, many model transformation languages have emerged and are being
+% used intensively not only in MDD, but also in other scopes, such as when
+% software development processes benefit from formalised translators between
+% languages.
+
+In this paper, we present our work on verification of properties on model
+transformations. Specifically, we discuss concrete algorithms that can prove
+whether properties will hold or do not hold on all executions of a
+transformation written in the DSLTrans transformation language. Properties are
+proved through a process that constructs a set of path conditions, where
+each path condition symbolically represents an infinite number of concrete transformation
+executions through an \emph{abstraction relation}.
+
+% The technique has been extended from its original presentation
+% in~\cite{Lucio:10}, ~\cite{DBLP:conf/sle/BarrocaLAFS10}, and~\cite{LucVan:13}.
+
+In our previous work~\cite{Lucio:10}, this property-proving algorithm was
+presented as a proof-of-concept. In the present work, we significantly expand
+that proof-of-concept by clarifying and offering discussions on validity and
+completeness for the presented algorithms. We also provide an implementation
+that we believe will scale to industrial applications, as validated by an
+automotive case study~\cite{gehan:13}.
+ 
+
+
+Our approach is feasible due to the use of the transformation language DSLTrans~\cite{DBLP:conf/sle/BarrocaLAFS10}. DSLTrans is
+\emph{Turing incomplete}, as it avoids constructs which imply unbounded
+recursion or non-determinism. Despite this \emph{expressiveness reduction}, we have shown via several
+examples~\cite{febavava:10,dsltrans_manual,zhang:ACP_APN:11} that DSLTrans is
+sufficiently expressive to tackle typical translation problems. This sacrifice
+of Turing-completeness allows us to construct a\\provably-finite set of path
+conditions~\cite{Lucio:10}. Our approach currently considers a core subset
+of the DSLTrans language that does not include negative conditions in rules or attribute manipulation. These features of the language will be addressed in future work.
+
+Informed by the structure of DSLTrans transformations, our approach defines an algorithm for the creation of path conditions. Each path condition that is created represents a set of concrete
+transformation executions through an \emph{abstraction relation} that we formally define. Once the set of all path conditions has been created for the transformation, we can then prove structural \emph{model syntax
+relations}~\cite{DBLP:conf/icst/AmraniLSCDVTC12} using this relation. Such properties are essentially pre-condition/post-condition axioms involving statements about whether certain elements of the input model have been correctly transformed into elements of the output model, and have been explored by several authors~\cite{Akehurst:02,Narayanan:07,DBLP:journals/eceasst/CariouBBD09,DBLP:journals/ase/GuerraLWKKRSS13}.
+In our proof technique, the properties examined can be proven to hold for all executions of a given
+model transformation, no matter the input model.
+Therefore, our technique is \emph{transformation dependent} and \emph{input
+independent}~\cite{DBLP:conf/icst/AmraniLSCDVTC12}.
+
+Our methods differ from previous work in the transformation verification field
+in that we require no intermediate representation for a specific proving
+framework (as in~\cite{ButtnerEC12,ButtnerECG12,DBLP:conf/icst/AsztalosLL10}) but instead work on DSLTrans
+transformations themselves. Along with DSLTrans rules, all of the constructs
+involved in our algorithms are typed graphs. This intuitive representation allows
+our property proving technique to be composed of relatively simple steps, as the
+metamodels, models, and properties involved are all constructed using a similar
+graphical representation.
+
+% This also provided us with performance gains over our
+% previous implementation, due to the use of efficient graph-matching libraries to manipulate the graph structures required.
+
+A large difficulty in any exhaustive proof technique is the tendency for the
+state space to explode, even when abstractions are performed to render the
+search space finite.  A later section of this work will discuss optimisation
+opportunities and performance results obtained from our implementation. The
+scalability of our approach will also be analysed in order to infer the
+algorithm's potential applicability to real-world problems. A real-world industrial case study will also be briefly presented.
+
+Our specific contributions include:
+
+\begin{itemize}
+\item An algorithm for constructing all path conditions for a given DSLTrans transformation;
+\item An algorithm that proves transformation properties over these path conditions;
+\item Validity and completeness proofs of the path condition construction and property proving algorithms;
+\item A discussion of performance and scalability results for our implementation.
+\end{itemize}
+
+This paper is organised as follows: \cref{sec:dsltrans} briefly introduces
+the DSLTrans model transformation language and its formal semantics, while the formal background for this work is presented in \cref{sec:formal_background}. The algorithms to build the complete set of path
+conditions for the transformation will be discussed in
+\cref{sec:building_pcs}. \cref{sec:abstraction_relation} will present the abstraction relation found in our technique, along with examples, while \cref{sec:verif_dsltrans_props} will examine how this abstraction relation is used in our process for proving properties. In \cref{sec:implementation} and \cref{sec:experiments}, we introduce our implementation with sample scalability results; \cref{sec:related_work} presents the related work;
+and finally in \cref{sec:conclusion} we conclude with remarks and future
+work.

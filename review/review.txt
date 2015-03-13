@@ -1,0 +1,188 @@
+
+
+19-Nov-2014
+
+Dear Dr. Lucio:
+
+I write you in regards to manuscript # SOSYM-14-00001732 entitled "Symbolic Verification of Translation Model Transformations" which you submitted to the Software and Systems Modeling.
+
+In view of the criticisms of the reviewers found at the bottom of this letter, your manuscript is not accepted for publication in the Software and Systems Modeling. I do strongly encourage you to consider resubmitting as a new SoSyM submission, a revised version of the paper that takes into consideration the reviewers' criticisms.
+
+Thank you for considering Software and Systems Modeling for the publication of your research. I hope that the comments of the reviewers will help you to improve the research described in the manuscript.
+
+Sincerely,
+Prof. Robert France
+Editor in Chief, Software and Systems Modeling
+france@cs.colostate.edu
+
+
+
+Editor' Comments to Author:
+Editor
+Comments to the Author:
+First of all, I would like to thank the authors for their remarkable work on the paper, as well as the reviewers for their comprehensive and highly competent reviews.
+
+The situation with this paper has become extremely complicated, as this was the third round of review. This is why all three reviewers, as well as this editor, had to make careful examinations of the paper.
+The paper has, however, become very long and very difficult to read and examine, which caused the review to take such a long time for both the reviewers and the editor.
+
+All three reviewers, as well as this editor, find the approach presented in the paper credible, viable, interesting, and innovative. Hence, we believe that the idea is worth pursuing and publishing, once it becomes presented in the appropriate form.
+
+However, on the other hand, the present form of the paper does not appear to be ready for publication, especially in its formal part. One reviewer has very severe objections on the correctness and preciseness of the formal statements, while the second reviewer has also objections, some of them being borderline, between minor and major. All reviewers, as well as the editor, find the formalization part extremely cumbersome and very difficult to follow and examine. As the basic idea of the approach is clear and well presented intuitively, it may seem that the main problem is in the formal presentation, as indicated and explained by the reviewers.
+
+This is why I cannot recommend acceptance of this paper in its current form, nor a minor revision. Unfortunately, as this was the third review round (with two major revisions) of the paper, we have exhausted the reviewers, and I am not able to recommend yet another major revision.
+
+However, having said all these, I believe that I can, on behalf of the reviewers and in my personal name, strongly encourage the authors to carefully address the objections and recommendations of the reviewers, invest some more work into their formal foundations and statements and revise them, and resubmit a revised version of the paper.
+
+
+
+Reviewer(s)' Comments to Author:
+Please note: Reviewers might have uploaded their review as a separate files which unfortunately are not attached to this message. To get access to these files please go to your author center in Manuscript Central and click on "Manuscripts with Decisions". Find the entry with Manuscript ID SOSYM-14-00001732 and click on the link "view decision letter" next to it. At the end of the appearing pop up window you'll find links for every attached file if exist. Please make sure that your browser does not suppress pop up windows.
+
+Reviewer: 1
+
+Public Comments (these will be made available to the author)
+Iâ€™ve read the paper with interest, it has been greatly extended with formal definitions, notation and proofs. The organisation has been improved.
+The formalisation has been asked, and I agree that it is an improvement regarding the validity of the approach, but I think that it complicates the reading of the paper. Nevertheless, the authors answer to my demands in the paper and the letter. I thank the authors for their work.
+
+
+I still recommend publication.
+
+
+I only have miscellaneous remarks:
+* p.4: ''a element'' -> ''an element''
+* definition 3: ''st'' was before ''(s, t)'' in the previous definitions (idem with ''stâ€™ ''), in the same way in definition 13, both notations are used.
+* definition 4: ''<Vâ€™, Eâ€™, st, '' -> ''<Vâ€™, Eâ€™, stâ€™, ''?
+* end of p.8: ''Section 3.2'' -> maybe 3.4 or annex B?
+* second column p.10, Section 3.2 -> annex?
+* Figures are not numbered in the order : Fig 9 before 8, and Fig 28 before 27
+* second column p.15 sentence ''Besides expressing the fact [...] path condition'' could be rephrased
+* second column p.15 ''can be satisfied one'' -> ''can satisfy one'' or ''can be satisfied by one''
+* Fig.12b, in the path condition produced: ''C B A B C'' -> ''Z Y X Y Z''
+* just before definition 27: ''thetransformation'' -> ''the transformation''
+* definition 28: ''of be'' -> ''be''
+* section 5.1.1: 
+''path condition'' -> ''path condition pc''
+''transformation execution'' -> transformation execution ex''
+''and an transformation'' -> ''and a transformation''
+* p.23 ''Figure 18b'' -> ''Figure 20b''
+* p.24 ''the all the'' -> ''all the''
+* p.25 ''the four cases'' -> ''the three cases''
+* p.26 ''to to build'' -> ''to build''
+* p.29 ''an elements'' -> ''an element''
+* proposition 3: ''or an all'' -> ''or all''
+* proof of proposition 4: ''this results follows'' -> ''this result follows''
+* end of p.33, I suppose that more complex properties will be experimented with UML-RT to Kiltera transformation only announced in the conclusion.
+* Table 1, even if it was not experimented to exceed 0.003 seconds when proving for property that does not hold, maybe it would be possible to estimate the maximum time based on that measurement and the complexity formula.
+* citation [40]: Gonzalez and Cabot just published a novel paper at ICMT14.
+
+Regards.
+
+Reviewer: 2
+
+Public Comments (these will be made available to the author)
+This paper is the second revision of a paper submitted to
+SoSyM. Compared to the previous version, the paper has changed
+considerably: the authors added a substantial amount of formal
+definitions and completely revised the proofs. The length of the paper
+has also increased considerably.
+
+The authors present a lightweight approach to formal verification of
+model transformations that is geared towards the language DSLTrans, a
+language of limited expressiveness that allows to implement an
+efficient verification procedure. The main idea is to (symbolically)
+abstract executions by path conditions and to check that a given
+property is satisfied by all path conditions.
+
+My criticism concerning this paper was not really about the method,
+but agains the presentation in the paper. The presentation has been
+revised substantially and it has mostly improved, however the paper is
+now technically very heavy und there seem to be several
+imprecisions. The main ideas are now much better presented (especially
+the examples in Section 5 help a lot), but some fundamental issues
+still require better explanation.
+
+However, in my opinion the paper can now be accepted and I would trust
+the authors to take care of the remaining problems. However, I would
+really urge them to take my comments into account. I spent a long time
+reading and trying to understand the paper and I believe that in
+several places the presentation is still suboptimal.
+
+Especially, I see the following issues:
+
+* In page 10 (answer to the reviewers) you say that rules for a 
+  layer must be parallel independent. Is this written anywhere in the
+  main part of the paper? 
+
+  While I read the paper I was completely puzzled by the definition of
+  the apply function (Def. B.13) and your confluence results and only when
+  I reread the answer section, I found this remark on parallel
+  independence. Maybe I overlooked it in the paper, but please
+  emphasize this in the text.
+
+* There is a lot of redundancy in the paper, on several levels:
+  - input-output-models, path conditions and properties are
+    all defined very similarly. Couldn't you subsume them in a single
+    definition and spell out the differences?
+  - The appendix repeats - verbatim - text and definitions from the
+    main body of the paper. I found this confusing rather than helpful
+    when reading the paper. If the appendix should be included in
+    the final version, it must be streamlined.
+
+* There are some issues in Section 6 (Verifying Properties of 
+  DSLTrans Transformations)
+
+  - You can not handle properties with multiple instances of rule 
+    element (example in Fig. 25). On p.14 in the answer section,
+    you claim that such conditions are excluded in Def. 29. However,
+    the last lines of this definition are not easy to understand.
+    Please explain why there are there (by giving the explanation
+    from the answers section.)
+
+    Without these explanations it is very hard to see why 
+    Prop. 3 should hold.
+
+  - In Def. 31 I found it confusing that - different from previous
+    definitions - the two morphisms now go in the same direction.
+    There is an explanation after Definition 31, but I found it 
+    very hard to understand.
+
+* In your definitions you rely on the \sqcup operator (sqare union),
+  the definition of which is not entirely clear.
+
+  For instance, I do not know where the operator used in Def. B13
+  is defined.
+
+  A similar operator is defined in Def. 19, but there you seem to
+  rely on the fact that some elements of the path conditions and
+  some elements of the rule are identical, otherwise the union
+  would not work. Since a rule can be applied in several places,
+  this would require a renaming of the rule elements, which - as 
+  far as I could see - is not specified.
+
+More remarks:
+
+* Please explain, earlier on, the meaning of indirect edges.
+
+* Definition 14: where does Apply' come from? Should v1 be 
+  an element of Apply?
+
+* Remarks after Def. 16: I do not fully understand why this
+  could be problematic. Do you have an example?
+
+* Def. 19, last line: Rulecop' \cup {rl}
+  I think the curly brackets for sets are missing.
+
+* Definition 28: When you define the abstraction of an execution
+  by a path condition, you require two conditions (separated by an
+  and). I have the feeling that the morphisms used in both
+  conditions should somehow be compatible to each other. However,
+  your triangle notation indicates only the existence of a morphisms.
+  How do you express that these morphisms somehow "agree"?
+
+
+
+Reviewer: 3
+
+Public Comments (these will be made available to the author)
+I've rated the paper "fair" as I am still sympatethic to its aims and approach, but "reject" because the author's haven gotten it right after two major revisions. A much more elaborate discussion can be found in the attached pdf.
+

@@ -1,0 +1,174 @@
+\section{Validity and Completeness of Property Verification}
+\label{sec:val_complete_prop_verif}
+
+\counterwithin{proposition}{section}
+\counterwithin{lemma}{section}
+\counterwithin{equation}{section}
+\setcounter{proposition}{0}
+\setcounter{lemma}{0}
+\setcounter{equation}{0}
+
+\onehalfspacing 
+
+\begin{definition}{Property of a Transformation\\}
+\label{def:trans_prop_appendix}
+\CatchFileBetweenTags{\propertydef}{text/definitions}{propertydef}{\propertydef}
+\end{definition}
+
+In \cref{def:trans_prop_appendix}, pre-conditions use the same pattern language as the match graph in
+DSLTrans rules, allowing the possibility of including several instances of
+the same metamodel element as well as indirect links in the property. Indirect links in properties have
+the same meaning as in the rule match graph -- they
+involve patterns over the transitive closure of containment links in pre-condition graphs.
+
+Post-conditions also use the same pattern language as the
+apply graphs of DSLTrans transformation rules, with the additional
+possibility of expressing indirect links in post-conditions. Traceability links can
+also be used in properties to impose traceability relations between pre-condition
+and post-condition elements.
+
+Note that \cref{def:trans_prop_appendix} includes a condition stating a surjective typed graph homomorphism needs to exist between the match part of at least one of the transformation's path condition, and the pre-condition of the property of interest. This condition makes sure that the property's pre-condition can be found at least in one execution of the transformation abstracted (the mathematical argument for this fact is given in the proof of \cref{prop:proof_validity}). This condition makes the checking the validity of a property in the transformation meaningful. If this condition would not be true then it could be that the input pattern required by the property would never be fully matched during transformation execution, making such a property not relevant\footnote{In~\cite{DBLP:conf/sle/BarrocaLAFS10} we have referred to these properties \emph{non-provable}. In the work presented here we explicitely disallow the construction of this class of properties.} for the transformation at hand.
+
+\begin{definition}{Satisfaction of a Property by an Execution of a Transformation\\}
+\label{def:sat_prop_ex_appendix}
+\CatchFileBetweenTags{\satpropexe}{text/definitions}{satpropexe}{\satpropexe}
+\end{definition}
+
+\Cref{def:sat_prop_ex_appendix} states that, every time a graph that is isomorphic to the property's pre-condition is found in (the containment transitive closure of) the input model of the transformation's execution, a graph that is isomorphic to the complete property needs to be found in (the containment transitive closure of) the transformation execution. Note that the last part of the proposition in \cref{def:sat_prop_ex_appendix} ensures that the graph that is isomorphic to the property's pre-condition and the graph that is isomorphic to the complete property overlap on their pre-condition parts.
+
+% resulting from the input pattern of $ex$ identified as pre-condition by $f$. Generally speaking, whenever the property's pre-condition is isomorphically found as a pattern of the input model of a execution, the property's post-condition must also be isomorphically found in the output generated from that input pattern. Note that, because a property may contain traceability links between the pre- and post-condition elements, it is necessary to check that those traceability links are also present in the execution. Because of this, the $g$ homomorphism in definition~\ref{def:sat_prop_ex} that checks the property's post-condition is such that it considers the same match pattern identified by the $f$ homomorphism when the pre-condition is checked.
+
+\begin{definition}{Satisfaction of a Property by a Path Condition\\}
+\label{def:sat_prop_pc_appendix}
+\CatchFileBetweenTags{\satproppc}{text/definitions}{satproppc}{\satproppc}
+\end{definition}
+
+The principle behind the satisfaction relation in \cref{def:sat_prop_pc_appendix} is the same as the one behind the satisfaction relation between a property and an execution of a transformation in \cref{def:sat_prop_ex_appendix}: whenever the property's pre-condition is found in the path condition then so is the complete property. Also, those two graphs found in the path condition share the property's pre-condition part. This last condition enforces that the pre- and post-conditions of the property are correctly linked by traceability link in the path condition.
+
+\begin{proposition}{(Validity) The result of proving a property on a set of path conditions generated for a transformation or an all executions of that transformation is the same.\\}
+\label{prop:proof_validity_appendix}
+Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a transformation and $p \in \textsc{Property}(tr)$ be a
+property of $tr$. This given, we have that transformation $tr$ satisfies property $p$ if and only if:
+\begin{equation}
+\label{eq:prop_proof_transf_appendix}
+\bigwedge_{pc\in \textsc{Pathcond}(tr)} pc\vdash p \hspace{.3cm} \Longleftrightarrow \hspace{.3cm} \bigwedge_{ex\in \textsc{Exec}(tr)}ex\models p
+\end{equation}
+\end{proposition}
+\begin{pf}
+In order to prove the proposition in \cref{eq:prop_proof_transf_appendix} we will start by demonstrating that,
+if property $p$ holds on a path condition $pc$ generated for $tr$,
+then $p$ will necessarily hold on any execution $ex$ of $tr$ that is abstracted by $pc$. On the other hand, if $p$ does not hold on $pc$ then it will not hold for at least of one execution $ex$ of $tr$ abstracted by $pc$. This lemma can be stated as follows:
+\begin{equation}
+\label{eq:prop_proof_pc_appendix}
+pc\vdash p \;\Longleftrightarrow \;\forall ex\in\{ex\in\textsc{Exec}(tr)\;|\;ex\Vvdash pc\}\;.\; ex\models p
+\end{equation}
+We thus need to demonstrate both directions of the equivalence in \cref{eq:prop_proof_pc_appendix}. On the one hand we need to prove of the left-to-right direction of the equivalence:
+\begin{multline}
+\label{eq:prop_proof_left_right_appendix}
+pc\vdash p \;\Longrightarrow \;\forall ex\in\{ex\in\textsc{Exec}(tr)\;|\;ex\Vvdash pc\}\;.\; ex\models p
+\end{multline}
+Proposition~\ref{eq:prop_proof_left_right_appendix} is shown to be true in \cref{lemma:validity1_appendix}.
+We then need to show the right-to-left direction of the equivalence:
+\begin{multline}
+\label{eq:prop_proof_right_left_appendix}
+\forall ex\in\{ex\in\textsc{Exec}(tr)\;|\;ex\Vvdash pc\}\;.\; ex\models p \;\Longrightarrow \;pc\vdash p 
+\end{multline}
+Proposition~\ref{eq:prop_proof_right_left_appendix} is shown to be true in \cref{lemma:validity2_appendix}.
+Once propositions~\ref{eq:prop_proof_left_right_appendix} and~\ref{eq:prop_proof_right_left_appendix} are proved, we know that all path conditions on which a property holds represent executions on which the property also holds. Thus, if the property holds on all path conditions then it necessarily holds on all executions. On the other hand, if a property does not hold on one path condition, making it such that the conjunction on the left side of the equivalence in \cref{eq:prop_proof_transf_appendix} is false, then according to \cref{eq:prop_proof_pc_appendix} an execution for which it also does not hold exists. This makes it such that the conjunction on the right side of the equivalence in \cref{eq:prop_proof_pc_appendix} is also false.
+\end{pf}
+
+\begin{lemma}{If a property holds for a path condition then the property holds for any transformation execution that path condition abstracts.\\}
+\label{lemma:validity1_appendix}
+Let $tr$ be a transformation, $pc\in \textsc{Pathcond}(tr)$ be a path condition of $tr$, $ex\in \textsc{Exec}(tr)$ be an execution of $tr$ and $p\in \textsc{Prop}(tr)$ be a property of $tr$. Then we have that:
+\begin{equation}
+\label{prop:validity1_appendix}
+pc\vdash p \;\Longrightarrow \;\forall ex\in\{ex\in\textsc{Exec}(tr)\;|\;ex\Vvdash pc\}\;.\; ex\models p
+\end{equation}
+\end{lemma}
+\begin{pf}
+By \cref{def:sat_prop_pc_appendix} we know that $pc\vdash p$ is equivalent to proposition $\forall f\; \exists g\,.\,\big(in\stackrel{f}{\blacktriangleleft} Pre \implies out \stackrel{g}\blacktriangleleft p\big)$, where $Pre$ is $p$'s pre-condition, $in$ is a subgraph of the containment transitive closure of the match part of $pc$, and $out$ is a subgraph of the containment transitive closure of $pc$. Additionally, by \cref{def:sat_prop_ex_appendix} we also know that $ex\models p$ is equivalent $\forall f\; \exists g\,.\,\big(Pre \stackrel{f}{\vartriangleleft} Input^{*} \implies p \stackrel{g}{\vartriangleleft} ex^*\big)$, where $Input$ is the input part of $ex$.
+
+We will show that the implication holds by analysing the three cases where, $pc\vdash p$, the left side of Proposition~\ref{prop:validity1_appendix} holds.  
+\begin{enumerate}
+  \item If the precondition of the property cannot be found in the match part of a path condition $pc$, then it cannot be found in the input part of an execution abstracted by $pc$. Formally, we have that, assuming $ex$ is abstracted by $pc$:
+\begin{equation}
+\label{item:nopre}
+\nexists f\,.\,\big(in\stackrel{f}{\blacktriangleleft} Pre\big) \implies \nexists f'\,.\, Pre \stackrel{f'}{\vartriangleleft} Input^{*}
+\end{equation}
+where, as before, $Input^{*}$ is the containment transitive closure of of the input part of $ex$ and $in$ is a subgraph of the match part of $pc$. Proposition~\ref{item:nopre} holds because of the fact that the surjection between $in$ and $Pre$ is defined such that it is in fact a set of injective typed graph homomorphisms between subgraphs of $in$ belonging to different rule copies that compose $pc$, and $Pre$. We know such a set of injective typed graph homomorphisms cannot be found from $in$ into $Pre$. However, the abstraction relation in \cref{def:abstraction_pc_ex_appendix} states that an injective typed graph homomorphism exists between each rule copy in the match part of $pc$ and $Input^{*}$. We thus know that there cannot exist an injective typed graph homomorphism between $Pre$ and $Input^{*}$. 
+  \item For certain executions, the property holds on the path condition but the property's pre-condition cannot be found in the execution.
+\begin{equation}
+\label{item:prepostnotholds}
+\forall f\; \exists g\,.\,\big(in\stackrel{f}{\blacktriangleleft} Pre \land out \stackrel{g}\blacktriangleleft p\big) \implies \nexists f'\,.\,\big(Pre \stackrel{f'}{\vartriangleleft} Input^{*}\big)
+\end{equation}
+These are the executions where a set of injective typed graph homomorphisms can be found from $in$ into $Pre$, but not from $in$ into $Input^{*}$, as required by the abstraction relation. If this is the case then this means that at least two vertices of $in$ belonging to different rule copies that were mapped by $f$ into the same vertex of $Pre$, are mapped into different vertices of $Input^{*}$ by $f'$ (or vice-versa). 
+  \item For the remaining set executions abstracted by $pc$, if the property holds on the path condition then the property holds on the execution. Formally, according to \cref{def:sat_prop_pc_appendix} and \cref{def:sat_prop_ex_appendix} we have that:
+\begin{multline}
+\label{item:prepostholds}
+\forall f\; \exists g\,.\,\big(in\stackrel{f}{\blacktriangleleft} Pre \land out \stackrel{g}\blacktriangleleft p\big) \implies \\\forall f'\; \exists g'\,.\,\big(Pre \stackrel{f'}{\vartriangleleft} Input^{*} \land p \stackrel{g'}{\vartriangleleft} ex^*\big)\\
+\text{where } Dom(g)\cap Match(pc^{*}) = Dom(f) \text{ and}\\
+V(Input)\cap CoDom(g') = CoDom(f')
+\end{multline}
+This is the case where every two vertices of $in$ belonging to different rule copies that were mapped by $f$ into a common vertex of $Pre$, are also mapped into a common vertex of $Input^{*}$ by $f'$. We thus need to show that the fact that the post-condition of the property holds on the path condition implies that the post-condition of the property also holds on the execution, i.e. that $out \stackrel{g}\blacktriangleleft p \implies p \stackrel{g'}{\vartriangleleft} ex^*$. This proposition is true because we know by \cref{def:abstraction_pc_ex_appendix} of abstraction relation that a surjective typed graph homomorphism exists between the output part of $ex$ and the apply part of $pc$. By composing this surjection with the surjection between $out$ and $p$ we take as hypothesis, we know a surjective typed graph homomorphism exists between the output of $ex$ and $p$. The inverse of this composed homomorphism contains an injective typed graph homomorphism between $p$'s post-condition and $ex$. We are thus missing accounting for the traceability links between the pre- and post-condition of property $p$, if they exist.  According to Proposition~\ref{item:prepostholds} we know that $in$ and $out$ overlap on their subgraphs that are isomorphic to $p$'s precondition. By \cref{def:abstraction_pc_ex_appendix} of the abstraction relation, we know that an injective typed graph homomorphism can be found between each strongly connected component formed of symbolic traceability links of $pc$, and $ex$. We also know that a typed graph surjective homomorphism exists between $out$ and $p$. We thus know that the traceability links between the pre- and post-condition of $p$ can be injectively found in $ex$. Note that strongly disjoint connected symbolic traceability link components mapped from $pc$ to $ex$ may be mapped onto joined traceability link components in $ex$ when disjoint vertices of the match part of $pc$ are mapped onto the same input vertex in $ex$. 
+\end{enumerate}
+
+The three cases above cover all executions that can be abstracted by a path condition, and as such we know that if the property holds on a path condition, it will necessarily hold on all the executions that path condition abstracts.
+\end{pf}
+% 
+\begin{lemma}{If a property holds for a transformation execution then the property holds for the path condition that abstracts it.\\}
+\label{lemma:validity2_appendix}
+Let $tr$ be a transformation, $pc\in \textsc{Pathcond}(tr)$ be a path condition of $tr$, $ex\in \textsc{Exec}(tr)$ be an execution of $tr$ and $p\in \textsc{Prop}(tr)$ be a property of $tr$. Then we have that:
+\begin{equation}
+\label{eq:prop_proof_right_left_appendix2}
+\forall ex\in\{ex\in\textsc{Exec}(tr)\;|\;ex\Vvdash pc\}\;.\; ex\models p\;\Longrightarrow \; pc\vdash p
+\end{equation}
+\end{lemma}
+\begin{pf}
+We will demonstrate Proposition~\ref{eq:prop_proof_right_left_appendix2} holds by contraposing it:
+% By using contraposition we can show that:
+\begin{multline}
+\label{eq:prop_proof_right_left_contra}
+\neg(pc\vdash p) \;\Longrightarrow \;\\\exists ex\in\{ex\in\textsc{Exec}(tr)\;|\;ex\Vvdash pc\}\;.\; \neg(ex\models p)
+\end{multline}
+
+By \cref{def:sat_prop_pc_appendix} we know that $pc\vdash p$ is equivalent to proposition $\forall f\; \exists g\,.\,\big(in\stackrel{f}{\blacktriangleleft} Pre \implies out \stackrel{g}\blacktriangleleft p\big)$, where $Pre$ is $p$'s pre-condition, $in$ is a subgraph of the containment transitive closure of the match part of $pc$, and $out$ is a subgraph of the containment transitive closure of $pc$. We also know by \cref{def:sat_prop_ex_appendix} that $ex\models p$ is equivalent $\forall f\; \exists g\,.\,\big(Pre \stackrel{f}{\vartriangleleft} Input^{*} \implies p \stackrel{g}{\vartriangleleft} ex^*\big)$, where $Input$ is the input part of $ex$. After replacing the left and the right hand side of Proposition~\ref{eq:prop_proof_right_left_contra} by equivalent formulas and solving the negations we reach the conclusion we need to prove:
+\begin{multline}
+\label{eq:prop_proof_right_left_contra_neg}
+\exists f\; \forall g\,.\,\big(in\stackrel{f}{\blacktriangleleft} Pre \land \neg(out \stackrel{g}\blacktriangleleft p)\big) \;\Longrightarrow \;\\\exists ex\in\{ex\in\textsc{Exec}(tr)\;|\;ex\Vvdash pc\}\;.\;\\ \exists f'\; \forall g'\,.\,\big(Pre \stackrel{f'}{\vartriangleleft} Input^{*} \implies \neg(p \stackrel{g'}{\vartriangleleft} ex^*)\big)
+\end{multline}
+
+We thus need to demonstrate that whenever the pre-condition of the property is found at least once in a path condition, but not its corresponding post-condition, then the same thing happens for at least one of the executions abstracted by that path condition. We know by Proposition~\ref{eq:prop_proof_right_left_contra_neg} that $in\stackrel{f}{\blacktriangleleft} Pre$, i.e. the precondition of the property is found at least once in the path condition. We thus know that there exists one execution for which $Pre \stackrel{f'}{\vartriangleleft} Input^{*}$ holds, which is the execution for which the surjective typed graph homomorphism $f$ maps vertices belonging to the match parts of different rule copies in the same fashion that the set of injective typed graph homomorphisms from the abstraction relation in \cref{def:abstraction_pc_ex_appendix} maps to the match part of $pc$ onto $input^{*}$.
+
+In order to complete the proof we need to show that the fact that $\neg(out \stackrel{g}\blacktriangleleft p)$, i.e. if the complete property cannot be found in the path condition, then $\neg(p \stackrel{g'}{\vartriangleleft} ex^*)$, i.e. the complete property cannot be found in the execution. Note that, according to \cref{def:sat_prop_pc_appendix} and \cref{def:sat_prop_ex_appendix}, we know the considered complete property graphs both in $p$ and $ex$ found by $g$ and $g'$ are anchored on the pre-condition graphs of the property found by $f$ and $f'$. Because of the abstraction relation, we know a surjective typed graph homomorphism between the output of $ex^{*}$ and the apply part of $pc$ exists. Given a surjective typed graph homomorphism does not exist between $pc$ and $p$, we know certain vertices and/or edges that exist in $p$, either in its apply part or in its symbolic traceability links, do not exist in $pc$. If the missing vertices and/or edges are part of the $apply$ part of $p$ then we are sure an injective typed graph homomorphism cannot exist between $p$ and $ex$ because $ex$ also does not contain those vertices or edges. If the missing edges are symbolic traceability edges then, according to the condition on strongly connected components in the abstraction relation in \cref{def:abstraction_pc_ex_appendix}, we know that the traceability links in $ex$ can be surjectively mapped onto $pc$. Because some of those traceability links are missing in $p$, an injective typed graph homomorphism cannot exist between $p$ and $ex$. 
+
+
+% We only need to worry about the case where we have  $ex\Vvdash pc\land
+% \neg(pc\vdash p)$ given our property proof results are meaningful only for
+% transformation executions which are abstracted by the path condition being
+% examined\levi{because by the unicity result one execution is only abstracted by one path condition}. In this
+% case we have that, because $ex\Vvdash pc$, by \cref{def:abstraction_pc_ex} we know
+% that there is a surjective typed graph homomorphism between between the apply
+% pattern of transformation execution $ex$ and the apply pattern of the path
+% condition $pc$. Given we know that $\neg(pc\vdash p)$, then we know that an
+% injective type graph homomorphism does not exist between $p$ and $pc$. This
+% means that, by the \cref{def:typed_graph_homomorphism} of injective typed graph
+% homomorphism, there exists a type $T$ which is instantiated in $pc$ but not in
+% $prop$. However, because of the fact that $ex\Vvdash pc$ we know that $T$ is
+% instantiated in $ex$ because a surjective typed graph homomorphism exists
+% between $ex$ and $pc$, implying type $T$ is instantiated at least once in $ex$.
+% We thus can deduce that we have $\neg(ex\models p)$ given that $ex\models p$
+% implies that there exists an injective type graph homomorphism between property
+% $p$ and execution $ex$. This injective type graph homomorphism cannot exist
+% given the fact an instance of $T$ exists in $ex$ but not in $p$.
+
+\end{pf}
+
+
+\begin{proposition}{(Completeness) Properties of a transformation can be shown to either hold for all transformation executions, or not hold for at least one transformation execution.}
+\label{prop:proof_completeness_appendix}
+\end{proposition}
+\begin{proof}
+This results follows from two previous results: \cref{prop:pc_completeness_appendix}, that tells us that every transformation execution is abstracted by one path condition; and \cref{prop:proof_validity_appendix} that shows us that every path condition is taken into consideration during property proof. Note that \cref{lem:uniqueness_appendix} guarantees consistency of our results, in the sense that the uniqueness of one path condition per transformation execution guarantees that a property cannot be proven to be both \emph{true} and \emph{false} for two path conditions representing the same transformation execution.
+\end{proof}
+
+\clearpage

@@ -1,0 +1,117 @@
+\documentclass[global,twocolumn]{svjour}
+\journalname{SoSyM}
+
+\usepackage{makeidx}
+\pagestyle{headings}
+
+\usepackage[final,pdftex]{graphicx}
+        \pdfcompresslevel=9
+        \DeclareGraphicsExtensions{.png}
+
+\usepackage{chngcntr}
+
+\usepackage{epsfig}
+\usepackage{caption}  
+\usepackage{subcaption} 
+  
+\captionsetup{compatibility=false}
+
+\usepackage{calc}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{amsmath}
+%\usepackage{multicol} 
+\usepackage{pslatex} 
+\usepackage{multirow}
+\usepackage{color, colortbl}
+\usepackage{algorithm}
+\usepackage{algpseudocode} 
+\usepackage{rotating} 
+\usepackage{nzproof}
+
+\makeatletter
+%\def\cl@chapter{\cl@chapter \@elt {theorem}}%bug in class
+\def\cl@chapter{\@elt {theorem}}
+\makeatother
+
+\usepackage[capitalise,noabbrev]{cleveref} 
+
+\usepackage{catchfilebetweentags}
+\usepackage[section]{extraplaceins}
+
+\definecolor{Gray}{gray}{0.9}
+ 
+ \usepackage{setspace}
+\onehalfspacing 
+
+%\subfigtopskip=0pt
+%\subfigcapskip=0pt
+%\subfigbottomskip=0pt
+
+\renewcommand\floatpagefraction{.9}
+\renewcommand\topfraction{.9} 
+\renewcommand\bottomfraction{.9}
+\renewcommand\textfraction{.1}   
+%\renewcommand{\baselinestretch}{1.5}
+\setcounter{totalnumber}{50}
+\setcounter{topnumber}{50}
+\setcounter{bottomnumber}{50}
+\setlength{\intextsep}{8pt} % Vertical space above & below [h] floats
+\setlength{\textfloatsep}{8pt} % Vertical space below (above) [t] ([b]) floats
+\setlength{\abovecaptionskip}{5pt}
+\setlength{\belowcaptionskip}{5pt}
+
+\newcommand{\chunk}[2]{% 
+	\fcolorbox{black}{yellow}{\bfseries\sffamily\scriptsize#1}%
+   {$\blacktriangleright$#2$\blacktriangleleft$}%
+}
+\newcommand{\bentley}[1]{\chunk{Bentley}{\textbf{\textcolor{green}{\textsl{#1}}}}}
+\newcommand{\levi}[1]{\chunk{Levi}{\textbf{\textcolor{red}{\textsl{#1}}}}}
+
+\raggedbottom  
+
+\usepackage{url}
+\urldef{\maila}\path|{levi, hv}@cs.mcgill.ca, bentley.oakes@mail.mcgill.ca|
+
+\begin{document}
+%
+%\mainmatter              % start of the contributions
+%\  
+
+\title{Symbolic Verification of Translation Model Transformations}  
+
+ 
+\author{Levi \textsc{L\'ucio}\inst{1}\and Bentley James \textsc{Oakes}\inst{1}\and and Hans \textsc{Vangheluwe}\inst{2}\inst{1}}
+
+\institute{School of Computer Science, McGill University, Canada\and
+University of Antwerp, Belgium}
+
+\maketitle              % typeset the title of the contribution  
+
+\input{text/abstract}
+\input{text/introduction} 
+\input{text/dsltrans}
+\input{text/formal_background} 
+\input{text/building_path_conditions}
+\input{text/abstraction_relation}  
+\input{text/property_verification}
+\input{text/implementation}
+\input{text/related_work}
+\input{text/conclusion}
+
+\section*{Acknowledgements} 
+ 
+ \noindent The authors would like to deeply thank D\'aniel Varr\'o, Clark Verbrugge and the anonymous reviewers for their detailed and helpful comments.
+ \noindent This work has been developed in the context of the NECSIS project, funded by Automotive Partnership Canada.
+
+\bibliographystyle{splncs}
+\bibliography{bibliography}
+
+\clearpage 
+
+\appendix
+\input{text/appendix_formal_background}
+\input{text/appendix_DSLTrans}
+\input{text/appendix_abstraction_relation}
+\input{text/appendix_property_proof}
+\end{document}

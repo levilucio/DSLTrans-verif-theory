@@ -1,0 +1,478 @@
+\section{Formal Background}
+\label{sec:formal_background}
+
+In this section we will introduce the formal concepts that will be used throughout all this paper. We start in \cref{sec:typed_graphs} by a few (typed) graph concepts that will be used as mathematical building blocks throughout this paper. In particular we will introduce the notion of typed graph, typed graph union and subset, and useful relations between typed graphs based on homomorphisms. Notice that these concepts are well known from graph theory and are only slightly customized for our purposes.
+
+Armed with the fundamental notion of typed graph, we can then introduce other formal concepts in Sections~\ref{sec:DSLTrans_formal}, \ref{sec:DSLTrans_syntax} and \ref{sec:DSLTrans_semantics} which describe the artifacts from the modeling and transformation world that we require for our verification technique. Naturally, we start by introducing the central notion of \emph{metamodel}, allowing the description of the inputs and outputs of a model transformation. Other fundamental notions we will define in this section are \emph{model}, \emph{transformation rule}, \emph{transformation} and the semantic concept of \emph{model transformation execution}. Several auxiliary and intermediate notions for defining the syntax and semantics of our techniques will also be introduced here. 
+
+Note that this section presents a collection of formal tools that are used in the subsequent sections of this paper where the contributions of this paper are presented. It is meant as a formal reference for the upcoming formal development. This section can be safely skipped or skimmed by the reader, who can return to these definitions punctually to understand the detailed formal underpinning of our approach. 
+
+\subsection{Typed Graphs}
+\label{sec:typed_graphs}
+% We begin this section by formally defining the graphs and graph instances used in our algorithm as fundamental structures.
+% \begin{definition}{Typed Graph}
+% \label{def:typed_graph}
+% A typed graph is a triple $\langle V,E,\tau\rangle$ where $V$ is a finite set of
+% vertices, $E\subseteq V\times V$ is a set of edges connecting the vertices and
+% $\tau:V\rightarrow Type$ is a typing function for the elements of V, where $Type$ is
+% a set of type names. Edges $(v,v')\in E$ are noted $v\rightarrow v'$. The set of
+% all typed graphs is called $TG$.
+% \end{definition}
+% 
+% Definition~\ref{def:typed_graph_homomorphism} describes when a typed graph is said to be homomorphic to another.
+% 
+% \begin{definition}{Typed Graph Homomorphism  / Typed Graph Instance}
+% \label{def:typed_graph_homomorphism}
+% 
+% Let $\langle V,E,\tau\rangle=g,\langle V',E',\tau'\rangle=g'\in TG$ be typed
+% graphs. There is a typed graph homomorphism between $g'$ and $g$ if and only if
+% there exists a graph homomorphism $f:V'\rightarrow V$ such that for all $v'\in
+% V$ we have that $\tau'(v')=\tau(f(v'))$. Note that, trivially, a typed graph
+% homomorphism is a formal homomorphism. We denote an \emph{injective} typed graph
+% homomorphism between typed graphs $g$ and $g'$ by $g' \vartriangleleft g$.
+% \end{definition}
+% 
+% In the text that follows we will use the terms \emph{typed graph homomorphism}
+% and \emph{typed graph instance} interchangeably.
+% 
+% Definition~\ref{def:typed_graph_strict_instance} is stricter than
+% definition~\ref{def:typed_graph_homomorphism}, and indicates that there is a
+% strict many-to-one type correspondence of the nodes of two graphs and their
+% relations.
+% 
+% \begin{definition}{Typed Graph Strict Instance}
+% \label{def:typed_graph_strict_instance}
+% 
+% Let $\langle V,E,\tau\rangle=g,\langle V',E',\tau\rangle=g'\in TG$ be typed
+% graphs. $g'$ is a typed graph strict instance of $g$, noted $g'
+% \blacktriangleleft g$, if and only if there exists a surjective
+% typed graph homomorphism between $g'$ and $g$.
+% 
+% \end{definition}
+% 
+% In order to simplify the subsequent development we will often
+% use the notation ${\langle V,E,\tau\rangle}^*$ to represent the transitive
+% closure of the edges of typed graph  $\langle V,E,\tau\rangle$.
+
+% \begin{definition}{Typed Graph}
+% \label{def:typed_graph}
+% A typed graph is a triple $\langle V,E,\tau\rangle$ where $V$ is a finite set of
+% vertices, $E\subseteq V\times V$ is a set of edges connecting the vertices and
+% $\tau:V\rightarrow Type$ is a typing function for the elements of V, where $Type$ is
+% a set of type names. Edges $(v,v')\in E$ are noted $v\rightarrow v'$. The set of
+% all typed graphs is called $TG$.
+% \end{definition}
+
+% \begin{definition}{Typed Graph and Indirect Typed Graph}
+% \label{def:typed_graph}
+% 
+% A typed graph is a triple $\langle V,E,\tau\rangle$ where $V$ is a finite set of
+% vertices, $E\subseteq V\times V$ is a finite set of directed edges connecting the vertices and $\tau:V\cup E \rightarrow Type\cup\{containment,reference\}$ is a typing function for the elements of V and E. Typing function $\tau$ is such that $\tau(v)\in Type$ if $v\in V$ and $\tau(e)\in \{containment,reference\}$\footnote{By using \emph{containment} and \emph{reference} as types for edges we allow modeling the different types of associations between the elements of a metamodel or a model. In particular, the fact that the subgraph of containment relations in a typed graph is acyclic models EMF containment associations.} if $e\in E$.  Edges $(v,v')\in E$ are noted $v\rightarrow v'$. We furthermore impose that the graph $\langle V,\{v\rightarrow v'\in E|\tau(v\rightarrow v')=containment\}\rangle$ is acyclic. The set of all typed graphs is called $TG$.
+% 
+% An indirect typed graph is a 4-tuple $\langle V,E,T,Il\rangle$, where $\langle V,E,T\rangle$ is a typed graph and $Il\subseteq E$ is a set of edges called \emph{indirect links}. The set of all indirect typed graphs is called $ITG$.
+% \end{definition}
+
+ 
+
+\CatchFileBetweenTags{\typedgraphtext}{text/definitions}{typedgraphtext}{\typedgraphtext}
+
+\begin{definition}{Typed Graph\\}
+\label{def:typed_graph}
+\CatchFileBetweenTags{\typedgraph}{text/definitions}{typedgraph}{\typedgraph}
+\end{definition}
+
+\CatchFileBetweenTags{\typedgraphuniontext}{text/definitions}{typedgraphuniontext}{\typedgraphuniontext}
+
+\begin{definition}{Typed Graph Union\\}
+\label{def:typed_graph_union}
+\CatchFileBetweenTags{\typedgraphunion}{text/definitions}{typedgraphunion}{\typedgraphunion}
+\end{definition}
+
+\CatchFileBetweenTags{\typedgraphhomomorphismtext}{text/definitions}{typedgraphhomomorphismtext}{\typedgraphhomomorphismtext}
+
+\begin{definition}{Typed Graph Homomorphism\\}
+\label{def:typed_graph_homomorphism}
+\CatchFileBetweenTags{\typedgraphhomomorphism}{text/definitions}{typedgraphhomomorphism}{\typedgraphhomomorphism}
+\end{definition}
+
+Note that, trivially, a typed graph homomorphism is a graph homomorphism.
+
+% \begin{lemma}{The Union of Two Typed Graph Homomorphisms is a Typed Graph Homomorphism}
+% 
+% Let $g=\langle V_g,E_g,st_g,\tau_g\rangle$, $g'=\langle
+% V'_g,E'_g,st'_g,\tau'_g\rangle$, $h=\langle V_h,E_h,st_h,\tau_h\rangle$,
+% $h'=\langle V'_h,E'_h,st'_h,\tau'_h\rangle$ be typed graphs, where $g$ and $h$
+% are potentially joint, as well as $g'$ and $h'$. Let also $f:V_g\rightarrow V'_g$ and
+% $i:V_h\rightarrow V'_h$ be a typed graph homomorphisms between $g$ and $g'$ and
+% $h$ and $h'$, respectively. Let us show that $f\cup i$ is a typed graph homomorphism between $g\sqcup g'$ and $h\sqcup h'$.
+% The proof is trivial if $g$ and $h$, as well as $h$ and $h'$ are disjoint. If $g$ and $h$ are joint over a vertex $v$, we know that $(f\cup i)(v)$
+% \end{lemma}
+% 
+% \begin{lemma}{The Union of Two Surjective Typed Graph Homomorphisms is a Surjective Typed Graph Homomorphism}
+% \levi{finish this proof}
+% \end{lemma}
+
+% \levi{changed the direction of the triangle for the surjective type graph homomorphism. Typed graph homomorphisms make sure that ALL connections between two nodes in the first graph also exists in the two mapped nodes of the second graph.}
+
+% \begin{definition}{Strict Typed Graph Homomorphism}
+% \label{def:strict_typed_graph_homomorphism}
+% 
+% Let $\langle V,E,\tau\rangle=g,\langle V',E',\tau\rangle=g'\in TG$ be typed
+% graphs. $g'$ is a typed graph strict instance of $g$, noted $g'
+% \blacktriangleleft g$, if and only if there exists a surjective
+% typed graph homomorphism between $g'$ and $g$.
+
+\CatchFileBetweenTags{\typedsubgraphtext}{text/definitions}{typedsubgraphtext}{\typedsubgraphtext}
+
+\begin{definition}{Typed Subgraph\\}
+\label{def:typedsubgraph}
+\CatchFileBetweenTags{\typedsubgraph}{text/definitions}{typedsubgraph}{\typedsubgraph}
+
+% An indirect typed graph $\langle V',E',\tau',Il\rangle \in ITG$ is an indirect typed
+% subgraph of a typed graph $\langle V,E,\tau\rangle \in TG$, written $\langle
+% V',E',\tau',Il\rangle \lhd \langle V,E,\tau\rangle$ iff:
+% 
+% \begin{enumerate}
+% \item $\langle V',E'\setminus Il,\tau'\rangle \blacktriangleleft \langle V, E,\tau\rangle$
+% \item if $v_i\rightarrow v_i'\in Il$ then there exists $v\rightarrow v'\in E_{c}^{*}$ where $\tau(v_i)=\tau(v)$, $\tau(v_i')=\tau(v')$ and $E_{c}^{*}$ is obtained by the transitive closure of $E_{c}=\{v\rightarrow v'\in E|\tau(v\rightarrow v')=containment\}$.
+% \end{enumerate}
+\end{definition} 
+
+\CatchFileBetweenTags{\typedgraphisomorphismtext}{text/definitions}{typedgraphisomorphismtext}{\typedgraphisomorphismtext}
+
+\begin{definition}{Typed Graph Isomorphism\\}
+\label{def:typed_graph_isomorphism}
+\CatchFileBetweenTags{\typedgraphisomorphism}{text/definitions}{typedgraphisomorphism}{\typedgraphisomorphism}
+\end{definition}
+% \begin{definition}{Typed Graph Connected Component}
+% \label{def:typed_graph_connected_component}
+% 
+% Let $g \in \textsc{TG}$ be a typed graph. We say that $\langle V,E,st,\tau\rangle \sqsubseteq g$ is a connected component of $g$ if for any pair of vertices $v,v'\in V$ there exists a path between $v$ and $v'$, where the direction of the edges between $v$ and $v'$ does not matter.
+% \end{definition}
+
+% \begin{definition}{Typed Graph Instance}
+% \label{def:typed_graph_instance}
+% 
+% Let $\langle V,E,\tau\rangle=g,\langle V',E',\tau\rangle=g'\in TG$ be typed graphs.
+% $g'$ is a typed graph instance of $g$, written $g'\Vdash g$, iff for all $v_{1}'\rightarrow v_{2}'\in E'$ there is a $v_{1}\rightarrow v_{2}\in E$ such that $\tau(v_{1}')=\tau(v_1)$, $\tau(v_{2}')=\tau(v_2)$ and $\tau(v_{1}'\rightarrow v_{2}')=\tau(v_{1}\rightarrow v_{2})$.
+% \end{definition}
+
+%Notice that we only enforce that connections between vertices of $g'$ must exist also in $g$ and have the same type.
+
+% \levi{Note that each edge between two nodes in the first graph has to exist in the second graph and vice-versa.}
+% \levi{in the sections that follow we will formally elaborate on relevant concepts that are introduced.}
+
+\paragraph{\textbf{Notation:}}
+\CatchFileBetweenTags{\notationformalbackground}{text/definitions}{notationformalbackground}{\notationformalbackground}
+
+\subsection{Metamodel and Model-Related Constructs}
+\label{sec:DSLTrans_formal}
+
+% This section will formally describe the DSLTrans constructs that are required in
+% our property-proving algorithm. The definitions presented strongly rely on the concepts of typed graphs, just introduced in \cref{sec:typed_graphs}.
+
+We will start by introducing the notion of \emph{metamodel}, which in DSLTrans is used to type the input and output models of a DSLTrans transformation.  Two metamodels, the \emph{organization language} and \emph{gender language} are depicted in \cref{fig:squadmetamodel}.
+
+\begin{definition}{Metamodel\\}
+\label{def:metamodel}
+\CatchFileBetweenTags{\metamodel}{text/definitions}{metamodel}{\metamodel}
+\end{definition}
+
+\CatchFileBetweenTags{\metamodeltext}{text/definitions}{metamodeltext}{\metamodeltext}
+
+\begin{definition}{Expanded Metamodel\\}
+\label{def:expanded_metamodel}
+\CatchFileBetweenTags{\expandedmetamodel}{text/definitions}{expandedmetamodel}{\expandedmetamodel}
+\end{definition}
+
+\CatchFileBetweenTags{\expandedmetamodeltext}{text/definitions}{expandedmetamodeltext}{\expandedmetamodeltext}
+
+\begin{definition}{Metamodel Instance\\}
+\label{def:metamodelinstance}
+\CatchFileBetweenTags{\metamodelinstance}{text/definitions}{metamodelinstance}{\metamodelinstance}
+\end{definition}
+
+\CatchFileBetweenTags{\metamodelinstancetext}{text/definitions}{metamodelinstancetext}{\metamodelinstancetext}
+
+
+
+\begin{definition}{Containment Transitive Closure\\}
+\label{def:instance_closure}
+\CatchFileBetweenTags{\instanceclosure}{text/definitions}{instanceclosure}{\instanceclosure}
+
+\end{definition}
+
+\CatchFileBetweenTags{\instanceclosuretext}{text/definitions}{instanceclosuretext}{\instanceclosuretext}
+
+
+
+\begin{definition}{Model\\}
+\label{def:model}
+\CatchFileBetweenTags{\model}{text/definitions}{model}{\model}
+\end{definition}
+
+\CatchFileBetweenTags{\modeltext}{text/definitions}{modeltext}{\modeltext}
+
+
+
+\begin{definition}{Input-Output Model\\}
+\label{def:input_output_model}
+\CatchFileBetweenTags{\inputoutputmodel}{text/definitions}{inputoutputmodel}{\inputoutputmodel}
+\end{definition}
+
+%Change if needed
+\CatchFileBetweenTags{\inputoutputmodeltext}{text/definitions}{inputoutputmodeltext}{\inputoutputmodeltext}
+
+\begin{definition}{Metamodel Pattern and Indirect Metamodel Pattern\\}
+\label{def:metamodel_pattern} 
+\CatchFileBetweenTags{\metamodelpattern}{text/definitions}{metamodelpattern}{\metamodelpattern}
+\end{definition}
+
+\CatchFileBetweenTags{\metamodelpatterntext}{text/definitions}{metamodelpatterntext}{\metamodelpatterntext}
+
+
+\subsection{Syntactic Transformation Constructs}
+\label{sec:DSLTrans_syntax}
+
+This section will detail the abstract syntax of the constructs involved in a DSLTrans transformation.
+
+\begin{definition}{Transformation Rule\\}
+\label{def:transformation_rule}
+\CatchFileBetweenTags{\transformationrule}{text/definitions}{transformationrule}{\transformationrule}
+\end{definition}
+
+\CatchFileBetweenTags{\transformationruletext}{text/definitions}{transformationruletext}{\transformationruletext}
+
+
+\begin{definition}{Matcher of a Transformation Rule\\}
+\label{def:back_match_transformation_rule}
+\CatchFileBetweenTags{\backmatchtransformationrule}{text/definitions}{backmatchtransformationrule}{\backmatchtransformationrule}
+\end{definition}
+
+\Cref{def:back_match_transformation_rule} \CatchFileBetweenTags{\backmatchtransformationruletext}{text/definitions}{backmatchtransformationruletext}{\backmatchtransformationruletext}
+
+
+\begin{definition}{Expanded Transformation Rule\\}
+\label{def:transformation_rule_expansion}
+\CatchFileBetweenTags{\expandedtransformationrule}{text/definitions}{expandedtransformationrule}{\expandedtransformationrule}
+\end{definition}
+\CatchFileBetweenTags{\expandedtransformationruletext}{text/definitions}{expandedtransformationruletext}{\expandedtransformationruletext}
+
+\begin{definition}{Layer, Model Transformation\\}
+\label{def:layer_transformation}
+\CatchFileBetweenTags{\layertransformation}{text/definitions}{layertransformation}{\layertransformation}
+\end{definition}
+
+\CatchFileBetweenTags{\layertransformationtext}{text/definitions}{layertransformationtext}{\layertransformationtext}
+
+\paragraph{\textbf{Notation:}}
+
+\CatchFileBetweenTags{\notationtext}{text/definitions}{notationtext}{\notationtext}
+
+
+% We naturally extend the notion of union (definition~\ref{def:typed_graph_union})
+% to models (definition~\ref{def:metamodelmodel}), match-apply models
+% (definition~\ref{def:match_apply_model}) and transformation rules 
+% (definition~\ref{def:transformation_rule}). We also extend the notion of
+% indirect typed subgraph (definition~\ref{def:indirecttypedsubgraph}) to
+% transformation rules (definition~\ref{def:transformation_rule}) and match-apply
+% models (definition~\ref{def:match_apply_model}). Finally, we extend the notion
+% of typed graph equivalence (definition~\ref{def:typed_graph_equivalence}) to
+% transformation rules (definition~\ref{def:transformation_rule}).
+
+% \subsubsection{Transformation Language Semantics}
+% 
+% We will now address the semantics of the DSLTrans language. We will start by defining a match function that, given an input-output model and a transformation rule, returns all subgraphs of that input-output model where the rule's match pattern (including backward links) is found.  
+% 
+% % \levi{Need to be careful throughout all this section to understand whether we model the match and apply functions as functions or relations. Because of the non-deterministic generation of new vertices in the definition of apply function~\ref{def:apply_function}, relations are used in the definitions that follow to evaluate a transformation. This is an issue of the formalism used to model, should we make it explicit?}
+% 
+% \begin{definition}{Match Function}
+% \label{def:match_function}
+% 
+% Let $m_{in}\in \textsc{Iom}^{sr}_{tr}$ be a input-output model and $rl\in \textsc{Rule}^{sr}_{tg}$ be a transformation
+% rule. The $match : \textsc{Iom}^{sr}_{tg}\times \textsc{Rule}^{sr}_{tg}\rightarrow
+% \mathcal{P}(\textsc{Iom}^{sr}_{tg})$ function is defined as follows: $$match_{rl}(m_{in})= \big\{ glue_{noind}\;|\;
+% glue\sqsubseteq m_{in}^{*} \land glue \cong rl^{backM}_{trace}\big\}$$
+% 
+% where $glue$ is an input-output model. Additionally we have that: $rl_{trace}$ is a version of $rl$ where edges of type \emph{backward} have been replaced by edges of type \emph{trace}; $glue_{noind}$ is a version of $glue$ where the indirect links have been removed.
+% % \levi{all backward links are replaced by trace links such that the matching using subgraph isomorphim can work.}
+% % 
+% % \levi{Where $rl^{-}$ is rule $rl$ without nodes in the apply part that are not connected to \emph{trace links}, as well as links adjacent to those nodes. $mg^{-ind}$ is the match graph without indirect links that come from the rule, given those cannot be part of the intermediate $MAM$ match result since that result is going to be united with the original $MAM$ (this was incorrect in the original SLE paper).}
+% % \levi{The matcher function returns all graphs of the input MAM that are matched by a rule, including its backward links. Note that to find a subgraph ($\sqsubseteq$) of the input MAM that is isomorphic ($\cong$) to the rule being matched because the graph rewriting is achieved by joint union of the match graph extended by the new rewrite node, and the original MAM.}
+% % \levi{TODO: review the $mg^{-ind}$ and the $rl^{-}$ notations.}
+% 
+% % Due to the fact that the $\cong$ relation is based on the notion of graph
+% % isomorphism, permutations of the same match result may exist in the
+% % $\big\{g\;|\; g\lhd m \land g \cong strip(tr)\big\}$ set. The --- undefined ---
+% % $remove:\mathcal{P}(TR^{s}_{t})\rightarrow \mathcal{P}(TR^{s}_{t})$ function is such that
+% % it removes such undesired permutations.
+% 
+% %The $strip:TR^{s}_{t}\rightarrow TR^{s}_{t}$ function is such that
+% %$$strip(\big\langle V,E,T,\langle V_m,E_m,T_m,s\rangle,\langle V_a,E_a,T_a,t\rangle,Bl,Il\big\rangle) = \big\langle V',E',T,\langle V_m,E_m,T_m\rangle,\langle V'_a,E'_a,T_a\rangle,Bl,Il\big\rangle$$
+% %\begin{center}
+% %where $(v'\in V'_a\Rightarrow v\rightarrow v'\in Bl)\;\land\;(v\rightarrow v'\in E'_a\Rightarrow (v\rightarrow v'\in E_m \land \{v,v'\}\subseteq V'_a))$
+% %\end{center}
+% \end{definition}
+% 
+% The match function in definition~\ref{def:match_function} looks for subgraphs ($glue\sqsubseteq m_{in}^{*}$) of an input-output model that are isomorphic to the backward matcher of the given transformation rule ($glue \cong rl^{backM}_{trace}$). Note that the containment transitive closure of the input-output model ($m_{in}^{*}$) is considered such that indirect links in the rule can looked for. Additionally, indirect links need to be removed from the input-output models resulting from the match function ($glue_{noind}$). This is do because indirect links are not part of the original input model but rather an auxiliary structure.
+% 
+% Let us now turn our attention to the apply function in definition~\ref{def:apply_function}. Its role is extend each of the sub-models found by the a match function for a given input-output model and a given transformation rule, such that they become isomorphic to the complete rule (minus its backward links). This process effectively creates the new objects and relations specified in the apply part of the rule for each of the sub-models found by the match function.
+% 
+% \begin{definition}{Apply Function}
+% \label{def:apply_function}
+% 
+% Let $m_{glue}\in \textsc{Iom}^{sr}_{tg}$ be a input-output model and $rl\in \textsc{Rule}^{sr}_{tg}$ a
+% transformation rule. The $apply : \textsc{Iom}^{sr}_{tg}\times \textsc{Rule}^{sr}_{tg}\rightarrow \textsc{Iom}^{sr}_{tg}$ function
+% is defined as follows: 
+% 
+% $$apply_{rl}(m_{in})=\bigsqcup_{m_{glue}\in match_{rl}(m_{in})}trace_{a_{\Delta}}(m_{glue}\sqcup a_{\Delta})$$
+% 
+% \begin{center}
+% where $a_{\Delta}\in \textsc{Iom}^{sr}_{tg}$ is such that $m_{glue} \sqcup a_{\Delta}\cong rl_{noind}$.\\
+% \end{center}
+% 
+% We impose that any instance of $a_\Delta$ is always disjoint from the $m_{in}$
+% input-output model and also that any two instances of $a_\Delta$ used in the
+% large union are always disjoint. Partial function $trace:\textsc{Iom}\times
+% \textsc{Iom} \nrightarrow \textsc{Iom}$ is such that $trace_{\langle
+% V_{\Delta},E_{\Delta},st_{\Delta},\tau_{\Delta}\rangle}(\langle
+% V,E,st,\tau\rangle) = \langle V,E',st',\tau'\rangle$ where we have that
+% $E\subseteq E'$, $st\subseteq st'$ (using a light notational abuse for the $s\subseteq s'$
+% and $t\subseteq t'$), $\tau \subseteq \tau'$ and if $v_1\xrightarrow{e}
+% v_2\in E'\setminus E$ then $v_1\in Output(V_{\Delta})$, $v_2\in Input(V)$ and
+% $\tau'(e)=trace$. Finally, $rl_{noind}$ is a version of $rl$ where indirect
+% links have been removed.
+% % More concretely, if we have $mam = $\big\langle V,E,st,\tau, Input,Output\big\rangle\in MAM^{sr}_{tg}$ where $Input=\langle V',E',st',\tau'\rangle\in MODEL^{sr}$ and $Output=\langle
+% % V'',E'',st'',\tau''\rangle\in MODEL^{tg}$, then $trace(mam) = \big\langle V,E,st,\tau''',Input,Output\big\rangle$ where $E'\subseteq E$ and $v\rightarrow E'\setminus E$ 
+% \end{definition}
+% % 
+% % it builds traceability edges between vertices of the output model that were newly built by the $apply$ function (the vertices in ${mg}_{\Delta}$) and all the vertices from the input part of the input-output model. It is necessary to remove the indirect links from the rule because otherwise they would be created during the rewriting by the apply function. 
+% 
+% In definition~\ref{def:apply_function} $a_\Delta$ is an input-output model that contains an instance of the target metamodel. These instances are created by rule $rl$ and are used to extend the sub-models found by the match function. The $trace$ function builds traceability edges between vertices of the output model in $a_{\Delta}$ and all the vertices from the input part of a model fragment found by the match function.
+% 
+% Note that, because we do not pose any constraints on $a_\Delta$ other than the fact that its union with the sub-model $m$ is isomorphic to $rl_{noind}$, the $a_\Delta$ variable can always be satisfied by an unlimited amount of input-output models. In order to avoid an infinite amounts of results when a transformation rule is executed, in what follows we will consider transformation results differ only up to typed graph isomorphism.   
+% 
+% %  Note that because the vertices are not disjoint, when the graph produced by the apply function is united with the original match apply model the new vertices are created. It was necessary to remove the indirect links from the rule during rewriting, because otherwise those indirect links would also be rewritten.
+% 
+% Definitions~\ref{def:match_function} and~\ref{def:apply_function} are complementary: the former gathers all the sub-models of an input-output model that are matched by a transformation rule; the latter glues on the output part of each of those sub-models new objects and relations created by a transformation rule. 
+% 
+% %  The $strip$ function is used to
+% %  enable matching over backward links but not elements to be created by the
+% %  transformation rule. The $back$ function connects all newly created vertices
+% %  to the elements of the source model that originated them.
+% 
+% %\begin{definition}{Transformation}
+% 
+% %Let $g\in TG$ be a typed graph. The graph transform function $transform : TR\times TG\rightarrow TG$ is recursively defined as:
+% %\begin{gather*}
+% %  transform_{(m,a)}(g) =
+% %  \begin{cases}
+% %    g  & \text{if } match_{m}(g)=\emptyset \\
+% %    instance(a)\cup transform_{(m,a)}(g') &\text{if } match_{m}(g)\neq \emptyset
+% %  \end{cases}
+% %\end{gather*}
+% %$$\text{where } g'=mark_{(m)}(g)$$
+% %\end{definition}
+% 
+% %\subsection{Transformation Semantics}
+% %\begin{definition} {Layer Semantics}
+% 
+% %Let $l\in Layer$ be a layer and $\{m,m'\} \in MAM^{s}_{t}$ be a match
+% %$$\frac{}
+% %{m,\emptyset \stackrel{layerstep}{\rightarrow}m}$$
+% %$$\frac{tr\in layer,\; transform_{tr}(m) = m''\; m'',layer\backslash\left\{tr\right\} \xrightarrow{layerstep}	 m'}{m,layer \xrightarrow{layerstep} m'}$$
+% %\end{definition}
+% 
+% \begin{definition} {Layer Step Semantics}
+% \label{def:layer_step_semantics}
+% 
+% Let $l\in \textsc{Layer}^{sr}_{tg}$ be a Layer. The \emph{layer step relation}
+% $\stackrel{layerstep}{\rightarrow}\subseteq \textsc{Iom}^{sr}_{tg}\times \textsc{Iom}^{sr}_{tg} \times \textsc{Layer}^{sr}_{tg}\times
+% \textsc{Iom}^{sr}_{tg}$ is defined as follows:
+% 
+% $$\frac{}
+% {\langle m_{in},m_{glue},\epsilon\rangle \xrightarrow{layerstep}m_{in} \sqcup m_{glue}}$$
+% 
+% $$\frac{\begin{array}{ll}& rl\in l,\; apply_{rl}(m_{in}) = m_{rout},
+% \langle m_{in},m_{glue}\sqcup m_{rout},l\backslash \{rl\}\rangle \xrightarrow{layerstep} m_{out}
+% \end{array}}
+% {\langle m_{in},m_{glue},l\rangle \xrightarrow{layerstep} m_{out}}$$
+% 
+% \begin{center}
+% where $m_{rout} \in\textsc{Iom}^{sr}_{tg}$ and $rl\in \textsc{Rule}^{sr}_{tg}$.
+% \end{center}
+%  
+% We impose that all input-output models that are part of $rout$ and have been generated by rule $rl$ are disjoint from input-output models accumulated in $m_{glue}$ that have been generated by other rules.
+% 
+% \end{definition}
+% 
+% In definition~\ref{def:layer_step_semantics} we build the result of executing a layer of a DSLTrans transformation. The operational semantics-like rules in the definition execute each rule $rl$ in layer $l$, in a non-deterministic order, by using the $apply$ function. The result of executing each rule is accumulated in the temporary $m_{glue}$ input-output model. Finally, when the set of transformation rules in the layer has been exhausted, the result of executing all the rules in the layer (now contained in $m_{glue}$) is united with the input-output model $m_{in}$, the input to layer $l$. Note that this final union produces the result we expect because of the fact that the $m_{glue}$ input-output model is not disjoint from $m_{in}$. The common ``glue'' parts of $m_{glue}$ that have been built by the match function and extended by the apply function are now used to built the result of executing layer $l$.
+% 
+% Definition~\ref{def:layer_step_semantics} is the core of DSLTrans' semantics. Many model transformation languages are based on graph rewriting, where the result of each rule rewrite is immediately usable by all other rules. In DSLTrans the result of executing one layer in DSLTrans is totally produced before the input to the layer is changed. This is enforced in definition~\ref{def:layer_step_semantics} by the fact that the apply function always executes over the same $m_{in}$ input-output model and all the results of rule execution in the same layer are added to the $m_{glue}$ structure that is write-only. Rules belonging to the same layer are thus forced to execute independently.
+% 
+% 
+% \begin{definition} {Transformation Step Semantics}
+% \label{def:transformation_step_semantics}
+% 
+% Let $[l::tr]\in \textsc{Transf}^{sr}_{tg}$ be a transformation, where $l\in
+% \textsc{Layer}^{sr}_{tg}$ is a Layer and $tr$ also a transformation. The \emph{transformation step relation}
+% $\stackrel{trstep}{\rightarrow}\subseteq \textsc{Iom}^{sr}_{tg}\times \textsc{Transf}^{sr}_{tg}\times
+% \textsc{Iom}^{sr}_{tg}$ is defined as follows: 
+% $$\frac{}{\langle m,[]\rangle \xrightarrow{trstep} m}$$
+% 
+% $$\frac{\big\langle m_{in},\epsilon,l^{\star}\big\rangle \xrightarrow{layerstep} m_{inter},\; \langle m_{inter},R\rangle \xrightarrow{trstep} m_{out}}{\langle m_{in},[l::T]\rangle \xrightarrow{trstep} m_{out}} \hspace{.3cm} \text{where} \hspace{.3cm} l^{\star}=\bigcup_{rl\in l}rl^{\star}$$
+% \end{definition}
+% 
+% While the execution of the rules belonging to a layer happens in parallel, the execution of the layers of a transformation happens sequentially. 
+% As per definition~\ref{def:transformation_step_semantics}, the input-output model $m_{inter}$ is the output of executing a given layer that is passed onto the next layer as input. The transformation rules in a layer are expanded before execution ($l^{\star}$) such that polymorphism in match elements can be handled (see definition~\ref{def:transformation_rule_expansion}). 
+
+\subsection{Semantic Transformation Constructs}
+\label{sec:DSLTrans_semantics}
+
+In the definition that follows we introduce the notion of execution of a DSLTrans model transformation. For our purposes it is sufficient to introduce it as an input-output model (see \cref{def:input_output_model}), containing the input model for the transformation, the produced output, and the traceability links built during execution. Due to space limitations, we cannot introduce the semantics of DSLTrans in the main text of this paper. We thus refer the reader to \cref{sec:DSLTrans_formal} for a formal description on how DSLTrans transformation executions are built. 
+
+\begin{definition} {Model Transformation Execution\\}
+\label{def:modeltransformation} 
+\CatchFileBetweenTags{\modeltransformation}{text/definitions}{modeltransformation}{\modeltransformation}
+\end{definition}
+
+\CatchFileBetweenTags{\modeltransformationtext}{text/definitions}{modeltransformationtext}{\modeltransformationtext}
+
+% A transformation execution is formed from taking the input model, and executing
+% the transformation on it to produce the output model. During this
+% transformation, traceability links will be placed between match elements and the
+% apply elements they create. Definition~\ref{def:transf_ex} expresses this
+% formally. Note that we assume that transformation executions are built following
+% the algorithm described in~\cite{DBLP:conf/sle/BarrocaLAFS10}.
+
+% \begin{definition}{Transformation Execution}
+% \label{def:transf_ex}
+% 
+% Let $t$ be a DSLTrans transformation having source metamodel $s$ and target
+% metamodel $t$. A Transformation Execution is a 6-tuple $\langle V,E\cup
+% Tl,\tau,Match,Apply,Tl\rangle$, where $\langle V,E,\tau,Match,Apply\rangle \in
+% MAP^{s}_{t}$ is a match-apply pattern. $Match=\langle V',E', \tau',s\rangle$,
+% $Apply=\langle V'',E'', \tau'',t\rangle$ and the edges $Tl\subseteq V'\times
+% V''$ are called \emph{traceability links}. The set of all transformation
+% executions having source metamodel $s$ and target metamodel $t$ is called
+% $Exec^{s}_{t}$.
+% \end{definition}
+
+% We now prove two important properties about DSLTrans' transformations.
+% 
+% \begin{proposition}{Confluence}
+% 
+% Every model transformation is confluent up to typed graph isomorphism.
+% \end{proposition}
+% 
+% \begin{proposition}{Termination} 
+% 
+% Every model transformation terminates.
+% \end{proposition}
+
+
+% The language to describe properties is in fact very similar to the language to
+% express transformations, with the additional possibility of expressing indirect
+% links in the $apply$ pattern --- thus allowing more abstract patterns than the
+% ones expressed in transformations. This is natural given that the properties of
+% a transformation can be more abstract than the rules implementing them.
