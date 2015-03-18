@@ -23,4 +23,26 @@ Again, using the Stations Rule in Figure \ref{fig:dsltransformation}, the set of
 $(S_O,S_G,T)$ where $S_O$ represents the set of all station instances from the orgnization language, $S_G$, the corresponding set of the gender language, and $T$ the set of a trace links between a pair of instances.
 \end{example}
 
+\subsection{Semantics of DSLTrans}
 
+\begin{definition}{Set of Rule Executions.}
+\label{def:rule_exec_set}
+Let $rl\in \textsc{Rule}^{sr}_{tg}$ be a DSLTrans rule. The set of all rule
+executions is a set of graph relations, built inductively as follows:
+\begin{align*}
+\llbracket rl\rrbracket =\big\{&(i',o')\in \textsc{Gr}\;\lvert\;(i',o') =
+(rl_{\emptyset},rl_{\emptyset})\;\lor \\&(i',o') = (o,o\sqcup rl_{pat})\land
+(i,o)\in \llbracket rl\rrbracket \big\}\\\\
+&\text{where } rl_{pat} \text{ is a pattern over } rl
+\end{align*} 
+\end{definition}
+
+A set of rule executions is the set of all input/output pairs resulting from
+executing one rule over any input model. It is built inductively by starting
+from $rl_{\emptyset}$ (any graph where the rule does not match) and adding to it
+any patterns of $rl$, meaning $rl$ has executed any number of times.
+
+\levi{the definition of sets of rule executions is based on the notion of
+patterns over rules from Bernhard's text. I think I got the intent of
+\ref{def:rule_pattern}, but more discussion is needed such that I'm sure of my
+definition.}
