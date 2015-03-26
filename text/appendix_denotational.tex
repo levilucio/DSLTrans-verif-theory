@@ -1,3 +1,5 @@
+% !TEX root = ../main.tex
+
 \section{Definitions and Proofs of the Denotational Semantics}
 \label{sec:proofs_denotation}
 
@@ -8,9 +10,9 @@
 A \emph{pattern} over a given set of vertex types $\mathcal{VT} = \{ \mathcal{V}_1,\dots,\mathcal{V}_k\}$ and a given set of edge types $\mathcal{ET} = \{ \mathcal{E}_1, \dots,\mathcal{E}_l \} \subseteq \{ (\mathcal{V}_i \times \mathcal{V}_j \mid 1 \leq i,j \leq k \}$ is defined as the structure $(V_1,\dots,V_m,E_1,\dots E_n)$ with $V_i \in \mathcal{VT}$ for $i \leq i \leq m$ and $E_i \in \mathcal{ET}$ for $1 \leq i \leq n$. It represents an instantiable graph pattern by describing the vertices and edges used in that rule and the set of their possible instances.
 \end{definition}
 
-\begin{example}{Pattern}
+\begin{example}
 For the Stations Rule in Figure \ref{fig:dsltransformation}, the corresponding pattern is
-$(S_O,S_G,T)$ where $S_O$ represents the set of all station instances from the orgnization language, $S_G$, the corresponding set of the gender language, and $T$ the set of a trace links between a pair of instances.
+$(S_O,S_G,T)$ where $S_O = \{ \mbox{station}_{o,1}, \mbox{station}_{o,2},\dots \}$ represents the set of all station instances from the organization language, $S_G = \{ \mbox{station}_{g,1}, \mbox{station}_{g,2},\dots \}$, the corresponding set of the gender language, and $T = S_O \times S_G$ the set of a trace links between a pair of instances.
 \end{example}
 
 \begin{definition}{Instance Graph}
@@ -18,9 +20,11 @@ $(S_O,S_G,T)$ where $S_O$ represents the set of all station instances from the o
 An \emph{instance graph} $(V,E)$ with $V = \{ v_1,\dots,v_m \}$ where $v_i \in V_i$ for $1 \leq i \leq m$ and $v_i \neq v_j$ for $i \neq j$, and $E = \{ e_1,\dots, e_n \}$ where $e_i \in E_i$ for $1 \leq i \leq n$ and $e_i \neq e_j$ for $i \neq j$ of a \emph{pattern} represents a graph instantiating a pattern, respecting the type constraints and multiplicities defined by that pattern.
 \end{definition}
 
-\begin{example}{Instance Graph}
-Again, using the Stations Rule in Figure \ref{fig:dsltransformation}, the set of corresponding instance graphs is $\{ ( \{ s_o, s_t \} , \{  \} ) \mid \}$
-$(S_O,S_G,T)$ where $S_O$ represents the set of all station instances from the orgnization language, $S_G$, the corresponding set of the gender language, and $T$ the set of a trace links between a pair of instances.
+\begin{example}
+Again, using the Stations Rule in Figure \ref{fig:dsltransformation}, the set of corresponding instance graphs is $\{ ( \{ s_o, s_g \} , \{ (s_o, s_t \} ) \mid s_o \in S_O \mbox{and} s_g \in S_G \}$. Thus, each instance graph consists of a pair of an organization station and a gender station, together with a single edge representing the trace link.
 \end{example}
 
+\begin{definition}{Transformation Rule}
+A \emph{transformation rule} over a given set of vertex types $\mathcal{VT} = \mathcal{VT}^i \cup \mathcal{VT}^o$ with $ \mathcal{VT}^i \cap \mathcal{VT}^o = emptyset$ and a given set of edge types $\mathcal{ET} =  \mathcal{ET}^i \cup \mathcal{ET}^o$ with $\mathcal{ET}^i \cap \mathcal{ET}^o = \emptyset$ is a partitioned pattern, describing a transformation by distinguishing between input elements $ \mathcal{VT}^i$ and  $\mathcal{ET}^i$ and output elements $ \mathcal{VT}^o$ and  $\mathcal{ET}^o$. 
+\end{definition}
 
