@@ -1,0 +1,25 @@
+\usepackage[normalem]{ulem} % for \sout
+\usepackage{xcolor}
+\definecolor{colgray}{gray}{0.75}
+
+% Put edit comments in a really ugly standout display
+\usepackage{ifthen}
+\usepackage{amssymb}
+\newboolean{showcomments}
+\setboolean{showcomments}{true} % toggle to show or hide comments
+\ifthenelse{\boolean{showcomments}}
+  {\newcommand{\nb}[2]{
+    \fcolorbox{gray}{yellow}{\bfseries\sffamily\scriptsize#1}
+    {$\blacktriangleright$#2$\blacktriangleleft$}
+   }
+   \newcommand{\version}{\emph{\scriptsize$-$working$-$}}
+  }
+  {\newcommand{\nb}[2]{}
+   \newcommand{\version}{}
+  }
+
+\newcommand\rs[1]{\nb{levi}{\textsl{#1}}}
+\newcommand\mf[1]{\nb{bernhard}{\textsl{#1}}}
+\newcommand\mc[1]{\nb{bentley}{\textsl{#1}}} 
+
+

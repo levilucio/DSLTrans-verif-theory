@@ -28,3 +28,61 @@ Again, using the Stations Rule in Figure \ref{fig:dsltransformation}, the set of
 A \emph{transformation rule} over a given set of vertex types $\mathcal{VT} = \mathcal{VT}^i \cup \mathcal{VT}^o$ with $ \mathcal{VT}^i \cap \mathcal{VT}^o = emptyset$ and a given set of edge types $\mathcal{ET} =  \mathcal{ET}^i \cup \mathcal{ET}^o$ with $\mathcal{ET}^i \cap \mathcal{ET}^o = \emptyset$ is a partitioned pattern, describing a transformation by distinguishing between input elements $ \mathcal{VT}^i$ and  $\mathcal{ET}^i$ and output elements $ \mathcal{VT}^o$ and  $\mathcal{ET}^o$. 
 \end{definition}
 
+
+\subsection{Semantics of DSLTrans}
+
+\begin{definition}{Set of Rule Executions.}
+\label{def:rule_exec_set}
+Let $rl\in \textsc{Rule}^{sr}_{tg}$ be a DSLTrans rule. The set of all rule
+executions is a set of graph relations, built inductively as follows:
+\begin{align*}
+\llbracket rl\rrbracket =\big\{&(i',o')\in \textsc{Gr}\;\lvert\;(i',o') =
+(rl_{\emptyset},rl_{\emptyset})\;\lor \\&(i',o') = (o,o\sqcup rl_{pat})\land
+(i,o)\in \llbracket rl\rrbracket \big\}
+\end{align*} 
+where  $rl_{pat}$ is a pattern over $rl$ and $\sqcup$
+is the tracing graph union where at least one element of $\Vert rl_{pat}\Vert$
+is disjoint with $o$.
+\end{definition}
+
+A set of rule executions is the set of all input/output pairs resulting from
+executing one rule over any input model. It is built inductively by starting
+from $rl_{\emptyset}$ (any input graph where the rule does not match) and adding
+to it any traced patterns of $rl$, meaning $rl$ has executed any number of
+times. Note that the match part of $rl_{pat}$ (denoted $\Vert rl_{pat}\Vert$)
+can overlap with the graph in $o$ by at most $n-1$ elements, being that $n$ is the amount
+of match elements in $rl_{pat}$. Traceability adds trace links between any
+elements belonging all input elements and any output elements of $rl_{pat}$ that
+is not connected to a backward link.
+
+\levi{the definition of sets of rule executions is based on the notion of
+patterns over rules from Bernhard's text. I think I got the intent of
+\ref{def:rule_pattern}, but more discussion is needed such that I'm sure of my
+definition. In particular the notion of overlap between graphs is
+underspecified regarding types (is this solved in the basic definitions?)}
+
+\begin{definition}{Set of Rule Executions for a Layer.}
+\label{def:rule_exec_set}
+Let $l\in \textsc{Layer}^{sr}_{tg}$ be a DSLTrans layer. The set of all layer
+executions is a set of graph relations, built inductively as follows:
+\begin{gather*}
+  \llbracket l\rrbracket = 
+  \begin{cases}
+    \emptyset &\text{if}\; l=\emptyset\\
+    \llbracket l_1\rrbracket \otimes \llbracket rl\rrbracket &\text{if}\;
+    l = l_1\cup rl
+  \end{cases}
+\end{gather*}  
+
+where $\textsc{Ex}_1 \otimes \textsc{Ex}_2$ is set of the unions of pairs of
+graphs $(ex_1,ex_2)\in \textsc{Ex}_1 \times \textsc{Ex}_2$ ($\textsc{Ex}_1$ and
+$\textsc{Ex}_2$ being sets of executions) where the match elements of $ex_1$ and
+the match elements of $ex_2$ may be joint.
+\end{definition}
+
+\levi{this is overapproximating the set of layer executions because of the
+corner case where the match of one rule contains the match of the other rule in
+the layer, in which case the smaller rule will necessarily execute where the
+larger one does (but not vice-versa). I think there is an elegant way to
+describe this\ldots or can we just use the overapproximation as is, given it
+does contain the set of all executions of the layer\ldots}
