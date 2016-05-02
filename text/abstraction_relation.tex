@@ -115,7 +115,7 @@ for the following figures.
 
 We begin by defining which transformation executions an empty path condition
 will abstract. \cref{fig:empty_pc} demonstrates two cases. In each, the path
-condition is on the left-hand side, and a transformation execution is on the
+condition \textit{pc} is on the left-hand side, and a transformation execution \textit{ex} is on the
 right-hand side. Note that in \cref{fig:empty_pc_success}, the path condition
 abstracts the transformation execution, while in \cref{fig:empty_pc_fail}, the
 abstraction relation does not hold.
@@ -142,7 +142,7 @@ abstraction relation does not hold.
 
 The match part of the path condition represents the pre-conditions for the path condition to be true, depending on which rules have symbolically executed in the transformation. For example, if the match graph is empty, this represents all executions where no rules have executed. 
 
-The first condition for the abstraction relation is to determine whether a typed graph injective homomorphism can be found between the match graph of the path condition, and an transformation executions. Note that in both \cref{fig:empty_pc_success} and \cref{fig:empty_pc_fail}, an empty typed graph homomorphism satisfies this condition, highlighted by blue arrows.
+The first condition for the abstraction relation is to determine whether a typed graph injective homomorphism can be found between the match graph of the path condition, and a transformation execution. Note that in both \cref{fig:empty_pc_success} and \cref{fig:empty_pc_fail}, an empty typed graph homomorphism satisfies this condition, highlighted by blue arrows.
 
 
 The second condition for the abstraction relation is whether a typed graph surjective homomorphism can be found from the transformation execution's output model to the apply graph of the path condition. This is represented by orange arrows in \cref{fig:empty_pc_success} and \cref{fig:empty_pc_fail}. This relation is surjective as there may not be any elements in the output model that are not represented by the path condition's apply graph. Note that multiple elements in the output model may match to the same element in the apply graph of the path condition. This is expected, as the structure found in the apply graph may be found multiple times in the output model.
@@ -355,7 +355,7 @@ rules used to build $pc$ such that $pc$ abstracts $ex$, as formally expressed in
   need to demonstrate that the empty path condition abstracts the empty
   transformation execution $\epsilon_{ex}$, as well as any execution for which
   the input model is never matched by any rule (consequently having an empty
-  output model). For any of these transformation executions, Proposition~\ref{eq:abstr_input_output} of the abstraction relation definition is satisfied, as no rule copy exists in the path condition and the output of the transformation execution is empty -- empty typed graph homomorphisms thus satisfy the all the conditions of the proposition. Proposition~\ref{eq:abstr_trace} of the abstraction relation definition also trivially holds because no traceability links exist either in the path condition or in any of the considered executions.
+  output model). For any of these transformation executions, Proposition~\ref{eq:abstr_input_output} of the abstraction relation definition is satisfied, as no rule copy exists in the path condition and the output of the transformation execution is empty -- empty typed graph homomorphisms thus satisfy all the conditions of the proposition. Proposition~\ref{eq:abstr_trace} of the abstraction relation definition also trivially holds because no traceability links exist either in the path condition or in any of the considered executions.
   
 %   This is so because:
 %   1) the empty typed graph homomorphism is an injective typed graph homomorphism
@@ -371,7 +371,7 @@ In order to demonstrate the inductive case we need to show the property holds fo
 \begin{itemize}
   \item \emph{Base case:} this is the case where layer $l$ contains no rules. In this case, by the base case of \cref{def:path_cond_layer_comb}, no new path condition is added to the set of path conditions generated for the transformation $tr$. As such the $tr=tr'$ and by induction hypothesis the property trivially holds for all path conditions generated for $tr'$.
   
-  \item \emph{Inductive case:} for the inductive case (transitive case of \cref{def:path_cond_layer_comb}) we need to show that, assuming the property holds for all path conditions generated for a transformation $tr$, then the property will also hold for a transformation $tr'$ -- where $tr'$ results from adding a new rule $rl$ to the last layer of $tr$. We will thus need to consider the four cases of rule combination:\vspace{.2cm} 
+  \item \emph{Inductive case:} for the inductive case (transitive case of \cref{def:path_cond_layer_comb}) we need to show that, assuming the property holds for all path conditions generated for a transformation $tr$, then the property will also hold for a transformation $tr'$ -- where $tr'$ results from adding a new rule $rl$ to the last layer of $tr$. We will thus need to consider the four \reviewer{three?} cases of rule combination:\vspace{.2cm} 
  
 \begin{enumerate}
 \item\label{lab:rule_case1} Rule $rl$ has no dependencies (\cref{def:rule_comb_no_dependencies}).
@@ -438,7 +438,7 @@ A transformation execution is abstracted by exactly one path condition.
 \begin{ps}
 Let $tr\in \textsc{Transf}^{sr}_{tr}$ be a model transformation. We will demonstrate that two different path conditions\\$pc_1, pc_2\in \textsc{Pathcond}(tr)$ cannot exist such that we have a transformation execution $ex\in \textsc{Exec}(tr)$ where $ex\Vvdash pc_1$ and $ex\Vvdash pc_2$.
 
-We will do so by attempting to to build an $ex\in \textsc{Exec}(tr)$ such that $ex\Vvdash pc_1$ and $ex\Vvdash pc_2$ and demonstrating that it is always the case that such is not possible. In order to structure our argumentation, we will consider two cases:
+We will do so by attempting to build an $ex\in \textsc{Exec}(tr)$ such that $ex\Vvdash pc_1$ and $ex\Vvdash pc_2$ and demonstrating that it is always the case that such is not possible. In order to structure our argumentation, we will consider two cases:
 % \levi{the contradiction happens because at each point of the execution, when a rule is added any two path conditions from the existing set of path conditions will represent different executions. At all points if we consider two path conditions in the PC set we have that two different executions can be created if we find a model that satisfies the first condition of the abstraction relation, and it is always the case that none of those two executions can be abstracted by the two path conditions simultaneously.}
 \begin{enumerate}
   \item\label{item:uniqueness_rule_no_dep} the case where no rules in $tr$ have dependencies.

@@ -211,7 +211,7 @@ This overlapping is modeled by the surjective typed graph homomorphisms of \cref
 
 As a result of taking rule combination (\cref{sec:building_pcs}) and overlap (\cref{sec:prop_satisfaction}) into consideration, our technique allows proving properties of transformation executions that are matched and built by multiple rules. This is the main goal of our work, as the properties we are interested in regard all possible interactions of rules in a DSLTrans transformation. However, an expressiveness limitation of the property language exists: we cannot prove properties having pre-conditions that can be found by executing the exact same rule more than once. This is natural, as by definition our abstraction only considers one exemplar of each rule per path condition having the exact same type for each match element. 
 
-In order to illustrate this limitation, consider a transformation having one single rule that matches an elements of type A and that produces an element of type X. Our technique will create a path condition as seen in \cref{fig:unprovable_pc}, abstracting over the number of times this rule has executed. According to the definition of satisfaction of a property by a path condition in \cref{def:sat_prop_pc}, the property in \cref{fig:unprovable_prop} does not hold on the path condition in \cref{fig:unprovable_pc}, although intuitively it should.
+In order to illustrate this limitation, consider a transformation having one single rule that matches an element of type A and that produces an element of type X. Our technique will create a path condition as seen in \cref{fig:unprovable_pc}, abstracting over the number of times this rule has executed. According to the definition of satisfaction of a property by a path condition in \cref{def:sat_prop_pc}, the property in \cref{fig:unprovable_prop} does not hold on the path condition in \cref{fig:unprovable_pc}, although intuitively it should.
 
 \begin{figure}[htb]
         \centering
@@ -260,7 +260,7 @@ As with the proofs for the validity and completeness of the abstraction relation
 % As well, we also prove that if a property holds or not on a specific transformation
 % execution, it will hold or not on the path condition that represents that
 % transformation execution.
-\begin{proposition}{(Validity) The result of proving a property on a set of path conditions generated for a transformation or an all executions of that transformation is the same.}
+\begin{proposition}{(Validity) The result of proving a property on a set of path conditions generated for a transformation or all executions of that transformation is the same.}
 \label{prop:proof_validity}
 
 Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a transformation and $p \in \textsc{Property}(tr)$ be a
@@ -302,7 +302,7 @@ Once \cref{eq:prop_proof_pc} is proved, we know that all path conditions on whic
 \label{prop:proof_completeness}
 \end{proposition}
 \begin{pf}
-This results follows from two previous results: \cref{prop:pc_completeness}, that tells us that every transformation execution is abstracted by one path condition; and \cref{prop:proof_validity} that shows us that every path condition is taken into consideration during property proof. Note that \cref{lem:uniqueness} guarantees consistency of our results, in the sense that the uniqueness of one path condition per transformation execution guarantees that a property cannot be proven to be both \emph{true} and \emph{false} for two path conditions representing the same transformation execution.
+This result follows from two previous results: \cref{prop:pc_completeness}, that tells us that every transformation execution is abstracted by one path condition; and \cref{prop:proof_validity} that shows us that every path condition is taken into consideration during property proof. Note that \cref{lem:uniqueness} guarantees consistency of our results, in the sense that the uniqueness of one path condition per transformation execution guarantees that a property cannot be proven to be both \emph{true} and \emph{false} for two path conditions representing the same transformation execution.
 \end{pf}
 
 % ~\newline\noindent{\bfseries Proposition \ref{prop:validity}.}

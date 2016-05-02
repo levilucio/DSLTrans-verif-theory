@@ -1,6 +1,8 @@
 \section{Related Work}
 \label{sec:related_work}
 
+\reviewer{citation [40]: Gonzalez and Cabot just published a novel paper at ICMT14.}
+
 In order to analyse the work in the literature that is close to our proposal, we will make use of the study on the formal verification of model transformations proposed in~\cite{DBLP:conf/icst/AmraniLSCDVTC12}. The study uses three dimensions to classify the analysis of model transformations. The dimensions are: 1) the \emph{kind of transformations} considered; 2) the \emph{properties} of transformations that can be verified; and 3) the \emph{verification technique} used.
 
 \subsubsection*{Kind of Transformations Considered} DSLTrans is a graph based transformation language and as such shares its principles with languages such as AGG~\cite{Taentzer2000}, AToM$^3$~\cite{atom3:2002}, VIATRA2~\cite{DBLP:conf/uml/VarroP04}, ATL~\cite{Jouault200831} or VTMS~\cite{DBLP:journals/entcs/LevendovszkyLMC05}. As mentioned previously, DSLTrans' transformation are \emph{terminating} and \emph{confluent} by construction. This is achieved by expressiveness reduction which means that constructs which imply unbounded recursion or non-determinism are avoided. DSLTrans is, to the best of our knowledge, the only graph based transformation language where these properties are enforced by construction.

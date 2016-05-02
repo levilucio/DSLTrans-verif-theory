@@ -293,7 +293,7 @@ If the backward links in R cannot be matched to symbolic traceability links in P
 \CatchFileBetweenTags{\unsatdeps}{text/definitions}{unsatdeps}{\unsatdeps}
 \end{definition}
 
-According to the pre-conditions of the equation presented in \cref{def:rule_comb_unsatisfied}, a path condition does not satisfy the dependencies present in a rule if there is no surjective typed graph homomorphism between the backward links of the rule and the symbolic traceability links of the path condition. Besides expressing the fact that all backward links must exist as symbolic traceability links the path condition, the surjective homomorphism allows modeling the case where dependencies expressed by two (or more) backward links between similarly typed elements can be satisfied one single symbolic traceability link in the path condition. This is the case, for example, of rule \emph{FemaleToFemale} in the \emph{Police Station} in \cref{fig:dsltransformation}. The two similarly typed backward links in this rule are satisfied by a path condition containing only the rule \emph{females} generated from the first layer of the transformation, holding one single symbolic traceability link.
+According to the pre-conditions of the equation presented in \cref{def:rule_comb_unsatisfied}, a path condition does not satisfy the dependencies present in a rule if there is no surjective typed graph homomorphism between the backward links of the rule and the symbolic traceability links of the path condition. Besides expressing the fact that all backward links must exist as symbolic traceability links the path condition, the surjective homomorphism allows modeling the case where dependencies expressed by two (or more) backward links between similarly typed elements can be satisfied by one single symbolic traceability link in the path condition \reviewer{Could be rephrased}. This is the case, for example, of rule \emph{FemaleToFemale} in the \emph{Police Station} in \cref{fig:dsltransformation}. The two similarly typed backward links in this rule are satisfied by a path condition containing only the rule \emph{females} generated from the first layer of the transformation, holding one single symbolic traceability link.
 
 
 \paragraph{Partially- and Totally- Satisfied Dependencies}
@@ -316,7 +316,7 @@ In the totally-satisfied case, R will be ``glued'' overtop PC, as seen in \cref{
         \begin{subfigure}[b]{0.8\textwidth}
                 \centering
                 \includegraphics[width=1\textwidth]{./figures/building_path_conditions/multiple_total_satisfied_dependencies.pdf}
-                \caption{Totally satisfied at multiple locations}
+                \caption{Totally satisfied at multiple locations - \reviewer{Fix boxes on bottom}}
                 \label{fig:multiple_total_satisfied_dependencies}
         \end{subfigure}%
         \caption{R's dependencies are totally satisfied by PC}

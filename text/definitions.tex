@@ -1,7 +1,6 @@
 %=======================================================
 
 %<*typedgraphtext>
-
 We will start by introducing the notion of typed graph. A typed graph is the essential object we will use throughout our mathematical development. Typed graphs will be used to formalise all the important graph-like structures we will present in this paper. A typed graph is a directed multigraph (a graph allowing multiple edges between two vertices) where vertices and edges are typed.
 
 %</typedgraphtext>
@@ -31,7 +30,7 @@ E',(s\cup s', t\cup t'), \tau\cup \tau', VT\cup VT', ET\cup ET'\big\rangle
 %=======================================================
 
 %<*typedgraphhomomorphismtext>
-
+\reviewer{definition 3:''st'' was before ''(s, t)'' in the previous definitions (idem with ''stâ''), in the same way in definition 13, both notations are used.}
 For the formal development of our technique, we are interested in relations between typed graphs that are structure-preserving, i.e. homomorphisms. Homomorphisms between typed graphs preserve not only structure, but also the types of vertices and edges that are mapped.
 
 %</typedgraphhomomorphismtext>
@@ -257,12 +256,14 @@ A transformation rule is the elemental block of a model transformation. Several 
 %<*backmatchtransformationrule>
 
 Let $rl = \big\langle V,E,st,\tau, Match,Apply\big\rangle$ be a transformation rule where $Match =\langle V_m, E_m, st_m, \tau_m\rangle$. We define $rl$'s matcher, noted $\Vert rl\Vert$, as the transformation rule $\big\langle V',E',st',\tau',Match,\\Apply'\big\rangle\sqsubseteq rl$ where $v_1\xrightarrow{e} v_2\in E'$ if and only if $v_1,v_2\in Match$ or $\tau(e)=trace$ and $V'=V_m\cup \big\{v_1\,|\,v_1\xrightarrow{e} v_2\in E \land \tau(e)=trace\big\}$.
-
+\reviewer{Definition 14: where does Apply' come from? Should v1 be 
+  an element of Apply?}
 %</backmatchtransformationrule>
 
 %<*backmatchtransformationruletext>
 
 %'transformation rule cref in text
+
 introduces the notion of matcher for a transformation rule which consists solely of the match pattern of a rule and its backward links, if any. The matcher of a rule constitutes the complete pattern that a DSLTrans rule attempts to match over a input-output model during rule execution. Traceability links between input and output model elements generated during transformation execution are matched by transformation rules' backward links, as informally explained in \cref{subsec:DSLTrans_constructs}.
 
 %</backmatchtransformationruletext>
@@ -302,7 +303,8 @@ A layer is a finite set of transformation rules $l\subseteq \textsc{Rule}^{sr}_{
 %</layertransformation>
 
 %<*layertransformationtext>
-
+\reviewer{I do not fully understand why this
+  could be problematic. Do you have an example?}
 \cref{def:layer_transformation} formalises the abstract syntax of a model transformation, introduced in \cref{sec:dsltrans}. An example of a model transformation can be observed in \cref{fig:dsltransformation}, the Police Station transformation. As expected, a formal DSLTrans transformation is composed of a sequence of layers where each layer is composed of a set of rules. The last condition of \cref{def:layer_transformation} imposes that, for any two pair of rules in the transformation, the matcher of the second rule never partially or totally subsumes (or contains) the matcher of the first rule, unless the second rule is in a subsequent layer and produces something more than the first rule. This condition avoids situations where the execution of a rule in a DSLTrans model transformation necessarily implies the execution of another rule (except for when rules having backward links necessarily execute because all their dependencies were created during the execution of previous layers).
 
 %\levi{At the syntactic level we have not included the expansion of a layer in the transformation. This is done at the semantic level.}
@@ -310,7 +312,8 @@ A layer is a finite set of transformation rules $l\subseteq \textsc{Rule}^{sr}_{
 %</layertransformationtext>
 
 %<*layertransformationtextappendix>
-
+\reviewer{I do not fully understand why this
+  could be problematic. Do you have an example?}
 \cref{def:layer_transformation_appendix} formalises the abstract syntax of a model transformation, introduced at the beginning of this section. An example of a model transformation can be observed in \cref{fig:dsltransformation}, the Police Station transformation. As expected, a formal DSLTrans transformation is composed of a sequence of layers where each layer is composed of a set of rules. The last condition of \cref{def:layer_transformation_appendix} imposes that, for any two pair of rules in the transformation, the matcher of the second rule never partially or totally subsumes (or contains) the matcher of the first rule, unless the second rule is in a subsequent layer and produces something more than the first rule. This condition avoids situations where the execution of a rule in a DSLTrans model transformation necessarily implies the execution of another rule (except for when rules having backward links necessarily execute because all their dependencies were created during the execution of previous layers).
 
 %\levi{At the syntactic level we have not included the expansion of a layer in the transformation. This is done at the semantic level.}
@@ -408,7 +411,13 @@ Given a path condition $pc = \big\langle V,E,st,\tau,\\Match,Apply,Rule\big\rang
 %=======================================================
 
 %<*pccfrc>
-
+\reviewer{A $\sqcup$ operator is defined in Def. 19, but there you seem to
+  rely on the fact that some elements of the path conditions and
+  some elements of the rule are identical, otherwise the union
+  would not work. Since a rule can be applied in several places,
+  this would require a renaming of the rule elements, which - as 
+  far as I could see - is not specified.}
+  
 Let $pc = \langle V',E',st',\tau',Match',Apply',Rulecop'\rangle\in\\
 \textsc{Pathcond}^{sr}_{tg}$ be a path condition and $rl = \langle
 V'',E'',st'',\tau'',\\Match'',Apply''\rangle\in \textsc{Rule}^{sr}_{tg}$ be a transformation rule, where their respective typed graphs can be joint. The union of $pc$ with $rl$ is built using the operator $\stackrel{trace}{\sqcup}:
@@ -419,7 +428,7 @@ $$pc\stackrel{trace}{\sqcup}rl = \langle V,E,st,\tau,Match,Apply,Rulecop\rangle$
 
 where we have that $V=V'\cup V''$, $E'\cup E''\subseteq E$, $st'\cup
 st''\subseteq st$, $\tau'\cup \tau''\subseteq \tau$ and if $v_1\xrightarrow{e}
-v_2\in E\setminus E'\cup E''$ then we have that $v_1\in Apply(V'')$, $v_1\notin Apply(V')$, $v_2\in Match(V'')$ and also that $\tau'(e)=trace$. Additionally, $Match = Match'\sqcup Match''$ and $Apply = Apply'\sqcup Apply''$. Finally, we have that: $Rulecop = Rulecop'\cup rl$.
+v_2\in E\setminus E'\cup E''$ then we have that $v_1\in Apply(V'')$, $v_1\notin Apply(V')$, $v_2\in Match(V'')$ and also that $\tau'(e)=trace$. Additionally, $Match = Match'\sqcup Match''$ and $Apply = Apply'\sqcup Apply''$. Finally, we have that: $Rulecop = Rulecop'\cup$ {rl}.
 
 
 % $$pc = \bigsqcup_{rl\in RC} trace(rl_{pathcond})$$
@@ -728,8 +737,7 @@ $$\frac{\begin{array}{ll}pc\in AC,\;\langle pc,\{pc\}&,layer\rangle\xrightarrow{
 
 %<*combpcsetlayertext>
 This working set of path conditions obtained for each layer is then itself combined with the rules in the next layer as in the algorithm just described, to obtain yet another working set of path conditions. This process will then continue in this layer-by-layer fashion through the transformation and is formally described in \cref{def:path_cond_gen}.\\
-After all layers have been processed, the working set of the last layer contains all the  possible path conditions of the transformation. Through our abstraction relation defined in \cref{sec:abstraction_relation}, the final set of created path conditions will represent every feasible transformation execution. \cref{sec:verif_dsltrans_props} will discuss how our algorithm proves properties on these path conditions, and thus on all executions of the
-transformation.
+After all layers have been processed, the working set of the last layer contains all the  possible path conditions of the transformation. Through our abstraction relation defined in \cref{sec:abstraction_relation}, the final set of created path conditions will represent every feasible transformation execution. \cref{sec:verif_dsltrans_props} will discuss how our algorithm proves properties on these path conditions, and thus on all executions of the transformation.
 %</combpcsetlayertext>
 
 %<*combpcsetlayertextappendix>
@@ -772,7 +780,7 @@ We will use the abbreviation $\textsc{Pathcond}(tr)$ to represent the set of pat
 
 
 Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTrans transformation. Let also $pc = \langle V,E,st,\tau,Match,Apply,Rules\rangle \in
-\textsc{Pathcond}(tr)$ of be a path condition of $tr$ and $ex = \langle V',E',st',\tau',Input,Output\rangle \in Exec(tr)$ be an execution of $tr$. We have that $ex$ is abstracted by $pc$, noted $ex\Vvdash pc$, if and only if the set of transformation rules of $tr$ combined in $pc$ and the set of transformation rules of $tr$ used to built $ex$ is the same, and:
+\textsc{Pathcond}(tr)$ of a path condition of $tr$ and $ex = \langle V',E',st',\tau',Input,Output\rangle \in Exec(tr)$ be an execution of $tr$. We have that $ex$ is abstracted by $pc$, noted $ex\Vvdash pc$, if and only if the set of transformation rules of $tr$ combined in $pc$ and the set of transformation rules of $tr$ used to built $ex$ is the same, and:
 \begin{multline}
 \label{eq:abstr_input_output}
 \big(\forall rl\in Rules\;.\;Match(rl) \vartriangleleft Input^*\big) \;\land\; Output \blacktriangleleft Apply
@@ -786,6 +794,12 @@ Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTrans transformation. Let also $pc
 % where for all $rl,rl'\in Rules$, if $rl\cong rl'$ then there exist two injective typed graph homomorphisms $f$ and $g$ such that $Match(rl)\stackrel{f}{\vartriangleleft} Input^*$, $Match(rl)\stackrel{g}{\vartriangleleft} Input^*$ and $CoDom(f)\neq CoDom(g)$.
 % $/pc/ = Apply_{ex}\cup ex|_{trace}$ is the output part of $pc$, including symbolic traceability links.
 
+\reviewer{Definition 28: When you define the abstraction of an execution
+  by a path condition, you require two conditions (separated by an
+  and). I have the feeling that the morphisms used in both
+  conditions should somehow be compatible to each other. However,
+  your triangle notation indicates only the existence of a morphisms.
+  How do you express that these morphisms somehow "agree"?}
 %</abstractionrel>
 
 %<*abstractionrelappendix>
@@ -810,6 +824,16 @@ Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTrans transformation. Let also $pc
 
 %<*propertydef>
 
+\reviewer{You can not handle properties with multiple instances of rule 
+    element (example in Fig. 25). On p.14 in the answer section,
+    you claim that such conditions are excluded in Def. 29. However,
+    the last lines of this definition are not easy to understand.
+    Please explain why there are there (by giving the explanation
+    from the answers section.)
+
+    Without these explanations it is very hard to see why 
+    Prop. 3 should hold.}
+    
 Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTrans transformation. A property of $tr$ is a 6-tuple $\langle V,E,(s,t),\tau,Pre,Post\rangle$, where $Pre = \langle V',E',st',\tau'\rangle \in \textsc{Ipattern}^{sr}$ and $Post = \langle V'',E'',st''\tau''\rangle \in\\ \textsc{Ipattern}^{tg}$ are indirect metamodel patterns. We also have that $V=V'\cup V''$, $E\subseteq E'\cup E''$ and $\tau\subseteq \tau'\cup \tau''$, where the co-domain of $\tau$ is the union of the co-domains of $\tau'$ and $\tau''$ and the set $\{trace\}$. An edge $e \in E\setminus E'\cup E''$ is called a \emph{traceability link} and is such that $s(e)\in V''$, $t(e)\in V'$ and $\tau(e)=trace$. Finally we have that there is at least one path condition $\big\langle V_{pc},E_{pc},st_{pc},\tau_{pc}, Match,Apply,Rule\big\rangle\in \textsc{Pathcond}(tr)$ for which a surjective typed graph homomorphism $m\stackrel{f}{\blacktriangleleft} Pre$ exists, where $m\sqsubseteq Match$ and $f(v)\neq f(v')$ if $v$ and $v'$ are elements of the path condition belonging to the same rule of set $Rule$. The set of all properties of transformation $tr$ is called $\textsc{Property}(tr)$.
 
 %</propertydef>
@@ -831,7 +855,10 @@ Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a transformation. Let also $p = \langle
 
 %<*satproppc>
 
-
+\reviewer{In Def. 31 I found it confusing that - different from previous
+    definitions - the two morphisms now go in the same direction.
+    There is an explanation after Definition 31, but I found it 
+    very hard to understand.}
 Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a transformation. Let also $p = \langle V,E,st,\tau,\\Pre,Post\rangle \in \textsc{Property}(tr)$ be a property of $tr$ and $pc=\big\langle V',E',\\st',\tau', Match,Apply,Rulecop\big\rangle\in \textsc{Pathcond}(tr)$ be a path condition of $tr$. Path condition $pc$ satisfies property $p$, written $pc \vdash p$, if and only if:
 \begin{multline*}
 \forall f\; \exists g\,.\,\big(in\stackrel{f}{\blacktriangleleft} Pre \implies out \stackrel{g}\blacktriangleleft p\big)\\
