@@ -51,52 +51,76 @@ Note that this section presents a collection of formal tools that are used in th
     all defined very similarly. Couldn't you subsume them in a single
     definition and spell out the differences?}
     
-\subsection{Typed Graphs}
+\subsection{Graph Structures and Functions}
 \label{sec:typed_graphs}
 
- 
 
+\subsubsection*{Typed Graph}
 We will start by introducing the notion of typed graph. A typed graph is the essential object we will use throughout our mathematical development. Typed graphs will be used to formalise all the important graph-like structures we will present in this paper. A typed graph is a directed multigraph (a graph allowing multiple edges between two vertices) where vertices and edges are typed.
 
 
 \begin{definition}{Typed Graph\\}
 \label{def:typed_graph}
-A typed graph is a 6-tuple $\langle V,E,(s,t),\tau, VT, ET\rangle$ where: $V$ is a finite set of vertices; $E$ is a finite set of directed edges connecting the vertices $V$; $(s,t)$ is a pair of functions $s: E\rightarrow V$ and $t: E\rightarrow V$ that respectively provide the source and target vertices for each edge in the graph; function $\tau:V\cup E\rightarrow VT \cup ET$ is a typing function for the elements of $V$ and $E$, where $VT$ and $ET$ are disjoint finite sets of vertex and edge type identifiers and $\tau(v)\in VT$ if $v\in V$ and $\tau(e)\in ET$ if $e\in E$. Edges $e\in E$ are noted $v\xrightarrow{e} v'$ if $s(e)=v$ and $t(e)=v'$, or simply \emph{e} if the context is unambiguous. The set of all typed graphs is called $\textsc{Tg}$. 
+A typed graph is a 6-tuple $\langle V,E,(s,t),\tau, VT, ET\rangle$ where:
+\begin{itemize}
+\item $V$ is a finite set of vertices
+\item $E$ is a finite set of directed edges connecting the vertices $V$
+\item $(s,t)$ is a pair of functions $s: E\rightarrow V$ and $t: E\rightarrow V$ that respectively provide the source and target vertices for each edge in the graph
+\item Function $\tau:V\cup E\rightarrow VT \cup ET$ is a typing function for the elements of $V$ and $E$, where $VT$ and $ET$ are disjoint finite sets of vertex and edge type identifiers and $\tau(v)\in VT$ if $v\in V$ and $\tau(e)\in ET$ if $e\in E$
+\item Edges $e\in E$ are noted $v\xrightarrow{e} v'$ if $s(e)=v$ and $t(e)=v'$, or simply e if the context is unambiguous
+\item The set of all typed graphs is called $\textsc{Tg}$. 
+\end{itemize}
 \end{definition}
 
-We now define how two typed graphs are united. A union of two typed graphs is trivially the set union of all the components of those two typed graphs. Note that we do not require the components of the two graphs to be disjoint, as in the following joint unions will be used to merge typed graphs.
+We also assume the existence of a function $\mathit{matchesOver}$ to handle polymorphism issues for $VT$ and $ET$. Let $\mathit{matchesOver}: \{VT \cup ET\} \times \{VT \cup ET\} \rightarrow \{\mathit{true}, \mathit{false}\}$ where:
+\begin{itemize}
+\item $\mathit{matchesOver}(T, T) \rightarrow \mathit{true}$
+\item $\mathit{matchesOver}(T, T') \rightarrow \mathit{true}$ if T' is a subclass of T in some defined partial ordering $\leq$
+\item Otherwise, $\mathit{false}$
+\end{itemize}
 
+\bentley{$\leq$ might need more explanation}
+
+\subsubsection*{Typed Graph Union}
+We now define how two typed graphs are united. A union of two typed graphs is trivially the set union of all the components of those two typed graphs. Note that we do not require the components of the two graphs to be disjoint, as in the following joint unions will be used to merge typed graphs.
 
 \begin{definition}{Typed Graph Union\\}
 \label{def:typed_graph_union}
 
-Let $\langle V,E,(s,t),\tau,VT,ET\rangle,\langle V',E',(s',t'),\tau',VT',ET'\rangle\in \textsc{Tg}$ be typed graphs, where $VT$ and $ET'$ are disjoint sets, as well as $VT'$ and $ET$. The typed graph union is the function $\sqcup :\textsc{Tg}\times \textsc{Tg}\rightarrow \textsc{Tg}$ defined as:
+Let $\langle V,E,(s,t),\tau,VT,ET\rangle = g$, and\\ $\langle V',E',(s',t'),\tau',VT',ET'\rangle = g'$, where $g, g' \in \textsc{Tg}$.%where $VT$ and $ET'$ are disjoint sets, as well as $VT'$ and $ET$.
+The typed graph union is the function $\sqcup :\textsc{Tg}\times \textsc{Tg}\rightarrow \textsc{Tg}$ defined as:
+
 \begin{multline*}
 \big\langle V,E,(s,t),\tau,VT,ET\big\rangle\;\sqcup\;\big\langle V',E',(s',t'),\tau',VT',ET'\big\rangle=\\\big\langle V\cup V', E\cup
 E',(s\cup s', t\cup t'), \tau\cup \tau', VT\cup VT', ET\cup ET'\big\rangle
 \end{multline*}
 \end{definition}
 
-\reviewer{Graph union (Def. 2) is only well-defined if s $\cup$ s' , t $\cup$t' and $\tau \cup \tau$' yield functions,
-which in turn is only the case if s and s' etc. coincide on common elements.
-This is neither stated as a requirement here nor checked anywhere in the use of
-the union. (Since I sure you implicitly had this restriction in mind, this may be
-counted as sloppiness; you can probably assume this to hold w.l.o.g. wherever
-you need it.)}
+Note: as a reviewer helpfully pointed out, we require that s $\cup$ s', t $\cup$t', and $\tau \cup \tau$' coincide on common elements. However, this can be assumed w. l. o. g..
 
-\reviewer{definition 3:''st'' was before ''(s, t)'' in the previous definitions (idem with ''stâ''), in the same way in definition 13, both notations are used.}
-For the formal development of our technique, we are interested in relations between typed graphs that are structure-preserving, i.e. homomorphisms. Homomorphisms between typed graphs preserve not only structure, but also the types of vertices and edges that are mapped.
+\subsubsection*{Typed Graph Homomorphism}
+For the formal development of our technique, we are interested in relations between typed graphs that are structure-preserving, i.e. homomorphisms. Homomorphisms between typed graphs preserve not only structure, but also the types of vertices and edges that are mapped. Note that, trivially, a typed graph homomorphism is a graph homomorphism.
 
 \begin{definition}{Typed Graph Homomorphism\\}
 \label{def:typed_graph_homomorphism}
-Let $\langle V,E,st,\tau,VT,ET\rangle=g$ and $\langle V',E',st',\tau',VT',ET'\rangle=g'\in \textsc{Tg}$ be typed graphs. A typed graph homomorphism between $g$ and $g'$ is a function $f:V\rightarrow V'$ such that for all $v_1 \xrightarrow{e} v_2\in E$ we have that $f(v_1) \xrightarrow{e'} f(v_2)\in E'$, where $\tau(v_1)=\tau'(f(v_1))$, $\tau(v_2)=\tau'(f(v_2))$ and also $\tau(e)=\tau(e')$. The domain of $f$ is noted $Dom(f)$ and the co-domain of $f$ is noted $CoDom(f)$. When an \emph{injective} typed graph homomorphism $f$ exists between $g$ and $g'$ we write $g \stackrel{f}{\vartriangleleft} g'$, or simply $g \vartriangleleft g'$ when the context is unambiguous. When a \emph{surjective} typed graph homomorphism $f$ exists between typed graphs $g$ and $g'$ we write $g \stackrel{f}{\blacktriangleleft} g'$, or also simply $g \blacktriangleleft g'$ in an unambiguous context. 
+Let $\langle V,E,(s,t),\tau,VT,ET\rangle=g$ and $\langle V',E',(s',t'),\tau',VT',ET'\rangle=g'\in \textsc{Tg}$, where $g, g' \in \textsc{Tg}$. A typed graph homomorphism between $g$ and $g'$ is a function $f: f_v \cup f_e$ such that:
+\begin{itemize}
+\item $f_v: V\rightarrow V'$
+\item $f_e: E\rightarrow E'$
+\item $\forall v_1 \xrightarrow{e} v_2\in E$:
+\begin{itemize}
+\item $f_v(v_1), f_v(v_2) \in V'$
+\item $f_e(e) \in E'$
+\item $s'(f_e(e)) = f_v(v_1)$, $t'(f_e(e)) = f_v(v_2)$
+\item $\mathit{matchesOver}(\tau(v_1), \tau(f_v(v_1)) \land \\\mathit{matchesOver}(\tau(v_2), \tau(f_v(v_2)) \land\\ \mathit{matchesOver}(\tau(e), \tau(f_e(e))$
+\end{itemize}
+
+%, where $\tau(v_1)=\tau'(f(v_1))$, $\tau(v_2)=\tau'(f(v_2))$ and also $\tau(e)=\tau(e')$.
+\item The domain of $f$ is noted $Dom(f)$ and the co-domain of $f$ is noted $CoDom(f)$.
+\end{itemize}  
 \end{definition}
 
-
-Note that, trivially, a typed graph homomorphism is a graph homomorphism.
-
-\reviewer{Def. 3 and all subsequent definitions g has an unexplained component st, is
-this the same as the pair (s,t) in Def. 1?}
+ When an \emph{injective} typed graph homomorphism $f$ exists between $g$ and $g'$ we write $g \stackrel{f}{\vartriangleleft} g'$, or simply $g \vartriangleleft g'$ when the context is unambiguous. When a \emph{surjective} typed graph homomorphism $f$ exists between typed graphs $g$ and $g'$ we write $g \stackrel{f}{\blacktriangleleft} g'$, or also simply $g \blacktriangleleft g'$ in an unambiguous context. 
 
 \reviewer{For multigraphs (which may contain parallel edges with the same label) it is
 necessary to include edge images in the homomorphism (Def. 3). If you do not
