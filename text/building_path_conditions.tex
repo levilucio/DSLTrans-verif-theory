@@ -3,6 +3,11 @@
 
 This section will present how path conditions are structured to represent symbolic rule execution. As well, we present our approach to building a set of path conditions to represent all executions of a DSLTrans transformation.
 
+\reviewer{In Section 4, rather than starting first with the construction of path conditions
+(Section 4,4), it would be more natural to discuss their meaning in terms of
+transformation executions (Section 5), since that should be the justification for
+your constructions.}
+
 \subsection{Symbolic Execution}
 
 Our algorithm operates on the principle of symbolic execution to build up these
@@ -80,7 +85,7 @@ briefly discuss the syntax and semantics of path conditions themselves.
 \subsubsection{Traceability}
 \label{subsubsec:traceability}
 
-DSLTrans rules allow for dependencies to be specified on which elements of the
+DSLTrans rules specify which elements of the
 output model were created from specific elements of the input model. To resolve
 these dependencies, traceability information for the transformation is created
 during the execution of a DSLTrans model transformation~\cite{DBLP:conf/sle/BarrocaLAFS10}.
@@ -117,7 +122,7 @@ it.
 \end{figure}
 
 An example of the symbolic traceability link creation process is shown in
-\cref{fig:trace_links}. Note that symbolic traceability links are a solid line between
+\cref{fig:trace_links}. Note that symbolic traceability links are solid lines between
 match and apply elements in our visual notation.
 
 
@@ -180,6 +185,15 @@ The formal definition of a path condition is presented in \cref{def:path_conditi
 \CatchFileBetweenTags{\pcdef}{text/definitions}{pcdef}{\pcdef}
 \end{definition}
 
+\reviewer{Def. 18 suddenly introduces the notion of “rule copies” (Rulecop) which are re-
+ally not explained properly. My guess is that they are isomorphic representatives
+of rules. On page 13 under ”notation” this component is called Rule and referred
+to as a relation, and in Def. 28 it is denoted as Rules and required to be “the same
+as the set of transformation rules used to build [the transformation execution]”
+(and hence not isomorphic copies?). Needless to say, these inconsistencies do
+not help understandability.}
+
+
 \CatchFileBetweenTags{\pc}{text/definitions}{pc}{\pc}
 
 \subsection{Path Condition Generation Algorithm}
@@ -212,7 +226,8 @@ The formal definition of a path condition is presented in \cref{def:path_conditi
 
 We now define what is occurring in the `combination step' in \cref{fig:next_layer}. This step begins by selecting each path condition in the working set, one at a time. Note that at the beginning of the path condition creation process, this working set consists of an empty path condition.
 
-A new set of path conditions will then be created by sequentially combining each rule in the layer with the path condition selected. Recall that a path condition represents a set of rules that have symbolically executed, thereby abstracting a set of transformation executions through our abstraction relation. Combining a path condition with a rule will produce one or more path conditions depending on how the rule combines with the rules already represented by the path condition. The pre- and post- conditions defined by the path condition will be modified according to the elements found in that rule. 
+A new set of path conditions will then be created by sequentially combining each rule in the layer with the path condition selected. Recall that a path condition represents a set of rules that have symbolically executed, thereby abstracting a set of transformation executions through our abstraction relation. \reviewer{we cannot recall this as it has not yet been presented;
+the abstraction relation is defined only in Section 5}Combining a path condition with a rule will produce one or more path conditions depending on how the rule combines with the rules already represented by the path condition. The pre- and post- conditions defined by the path condition will be modified according to the elements found in that rule. 
 
 Each of the new path conditions created from combining a rule with a path condition will then be combined with the next rule in the layer. A small example is shown in \cref{fig:layers_pc2}, where a path condition is combined with two rules. Note that a rule can combine with a path condition in multiple ways (differentiated by prime marks in the figure). \Cref{fig:all_pcs2} shows how path conditions from the previous layer are sequentially combined with all the rules from the current layer. All the path conditions for the layer are then collected to produce the final working set of path conditions for the layer.
 
@@ -232,6 +247,23 @@ We will now examine the combination step between one path condition and one rule
 \CatchFileBetweenTags{\pccfrc}{text/definitions}{pccfrc}{\pccfrc}
 \end{definition}
 
+\reviewer{Def. 19 can only be understood once it is clear that your plan is to make iso-
+morphic rule copies in which the node and edge identities already coincide with
+those in your path condition. (Hence my “isomorphic representative” guess in
+the previous remark.) This is very much nonstandard in the works of graph trans-
+formation, and poorly motivated. What are the advantages of this approach over
+relying on partial morphisms from a fixed rule to the path condition? As it is,
+you have to explain that you only consider isomorphic copies that differ in rele-
+vant parts, where “relevant” is determined by the question whether a node/edge
+identity coincides with one on the path condition. (You actually do not explain
+that at all: strictly following your definitions one would have to consider an in-
+finite number of isomorphic rule copies, assuming that the number of available
+identities is infinite (as it must be).)}
+
+\reviewer{“joint” $\rightarrow$ “overlapping”? Why are the type graphs actually not
+identical, as pc and rl are defined over the same source and target metamodels?
+Last line: “rl” $\rightarrow$ “$\{rl\}$”}
+
 \CatchFileBetweenTags{\pccfrctext}{text/definitions}{pccfrctext}{\pccfrctext}
 
 We will now discuss the combination step possibilities. Let PC be the path condition selected from layer n-1, and R the rule selected from layer n. When PC and R are combined, there are four possibilities based on the dependencies between PC and R:
@@ -245,7 +277,7 @@ We will now discuss the combination step possibilities. Let PC be the path condi
 
 These dependencies are defined by the backward links within R. As mentioned in \cref{subsubsec:traceability}, backward links enforce that the elements in the apply graph were created by the connected elements in the match graph. In the context of combining a rule and a path condition, these backward links define dependencies between the rule and the elements created by the rules represented by the path condition. 
 
-The below figures will demonstrate the four cases above. As a reminder of visual notation, the backward links are dashed lines between the match and apply graphs of the rule and path condition, while symbolic traceability links are solid lines between the two graphs.
+The figures below will demonstrate the four cases above. As a reminder of visual notation, the backward links are dashed lines between the match and apply graphs of the rule and path condition, while symbolic traceability links are solid lines between the two graphs.
 
 \subsubsection{No Dependencies}
 \label{enum:no_back}
@@ -271,6 +303,12 @@ seen in \cref{fig:no_dependencies} and formally defined in \cref{def:rule_comb_n
 \CatchFileBetweenTags{\nodeps}{text/definitions}{nodeps}{\nodeps}
 
 \end{definition}
+
+\reviewer{The right hand side of the conclusion of Def. 20 has $AC ∪ pc ′ ∈AC pc ′ $, of which
+I cannot make sense. AC is a set, but the pc' are not, so what operation is
+$\cup_{pc'\in AC} pc'$?}
+
+\reviewer{Do you mean $\sqcup_{pc'\in AC}$instead? But then the result is not a set, so how can you take its union with AC? The same problem reoccurs in other definitions.}
 
 \CatchFileBetweenTags{\nodepstext}{text/definitions}{nodepstext}{\nodepstext}
 
@@ -383,6 +421,10 @@ Having \cref{def:comb_path_cond_rule_single} and \cref{def:comb_path_cond_rule_m
 
 \CatchFileBetweenTags{\satdepsthree}{text/definitions}{satdepsthree}{\satdepsthree}
 \end{definition}
+
+\reviewer{Def. 24: it seems to me you are making a very serious mistake here. $\blacktriangleright$ tests
+for the existence of a morphism, but in Def. 19 you are relying on coincident node/edge identities. (See my remark 15.) Maybe you mean that the morphism from rl to pc should drive the choice of node/edge identity in the isomorphic copy of rl to be combined with pc, but this is really a wild guess on my part.}
+
 
 The top equation in \cref{def:rul_comb_partial_total} defines the $\stackrel{combine}{\rightarrow}$ relation for when rule $rl$ has dependencies that are satisfied by path condition $pc$. The pre-conditions in the equation state that the backward links in the rule are found in the path condition, as expected. Additionally, two sequential steps perform the gluing of the rule $rl$ on all path conditions in accumulator $AC$, wherever the rule is partially and/or totally found in each of those path conditions. Relations $\stackrel{p\_comb}{\rightarrow}$ and $\stackrel{t\_comb}{\rightarrow}$ presented in \cref{def:comb_path_cond_rule_mul} are used to model these two operational ``gluing'' steps. Functions $partialsat$ and $totalsat$, described in the latter part of \cref{def:rul_comb_partial_total}, are used to gather the places of path condition $pc$ where copies of the rule need to be anchored to.
 

@@ -48,7 +48,7 @@ In \cref{fig:dsltransformation} we present a DSLTrans transformation that involv
 that the transformation is formed
 from layers where each layer is a set of transformation rules. The
 transformation will execute layer-by-layer, where transformation rules in a layer will execute in a
-non-deterministic order but must produce a deterministic result, due to the fact that DSLTrans is confluent by construction~\cite{DBLP:conf/sle/BarrocaLAFS10}.
+non-deterministic order but will always produce a deterministic result, due to the fact that DSLTrans is confluent by construction~\cite{DBLP:conf/sle/BarrocaLAFS10}.
 
 Another important characteristic of DSLTrans transformations is that they are not Turing-complete. As discussed in~\cite{DBLP:conf/sle/BarrocaLAFS10}, non-completeness is required to make a transformation execution always terminate, but yet still allows for appropriate expressiveness.
 
@@ -64,7 +64,7 @@ in the \emph{Organization language} into two independent sets of male
 and female officers represented in the \emph{Gender language}. The command
 relations will be kept during this transformation, i.e. a female officer will
 have a direct association to all her female subordinates and likewise for male
-officers. Note that differences in the gender classification metamodel means
+officers. Note that differences in the gender classification metamodel mean
 some relations present in the input model will not be retained in the output
 model.
 
@@ -86,8 +86,11 @@ model.
         \caption{Model before and after transformation}
         \label{fig:transformationexample}
 \end{figure*}
+\reviewer{Figure 3: I would suggest adding another node f5 superviesd by f4, to illustrate the
+notion of transitive closure. Another remark: I think the black containment dia-
+monds do not belong in an instance model, as they are a metamodel notion.}
 
-An example of this transformation's execution can be observed in \cref{fig:transformationexample}, where the input model is on the left and the output model is on the right. Notice that the elements $s$, $m_k$  and $f_k$ in \cref{fig:OrganizationLanguage} are instances of the source \emph{Organization} metamodel elements $Station$, $Male$ and $Female$ respectively. The primed elements in \cref{fig:GenderLanguage} are their counterpart instances in the target \emph{Gender} metamodel.
+An example of this transformation's execution can be observed in \cref{fig:transformationexample}, where the input model is on the left and the output model is on the right. Notice that the elements $s$, $m_k$  and $f_k$ in \cref{fig:OrganizationLanguage} are instances of the source \emph{Organization} metamodel elements $Station$, $Male$ and $Female$ respectively. The primed elements in \cref{fig:police_gender} are their counterpart instances in the target \emph{Gender} metamodel.
 
 Each individual transformation rule in the transformation is composed of two graphs. The first graph
 is denoted as the \emph{match graph}, and is a pattern holding elements from the
@@ -102,7 +105,7 @@ elements in the input model which are of type \emph{Station} in the
 \emph{Organization Language}, an element of type
 \emph{Station} in the \emph{Gender Language} will be created in the output model.
 
-Note that in our approach, we require that the match graph of a rule is not a subset of the match graph of any other rule (as formally stated in \cref{def:layer_transformation} of model transformation, in \cref{sec:formal_background} of this paper). This requirement is to prevent the case where a rule could not execute independently of another rule, except for the cases when such dependency is explicitly defined by backward links. This is undesirable for the algorithm as presented here as we will explain later. However, as seen in~\cite{conf/gg/SelimLCDO14}, the expressiveness of the transformations our algorithm can examine is not restricted. In that work, we detail an operational rule processing step to handle overlapping rules.
+Note that in our approach, we require that the match graph of a rule is not a subgraph of the match graph of any other rule (as formally stated in \cref{def:layer_transformation} of model transformation, in \cref{sec:formal_background} of this paper). This requirement is to prevent the case where a rule could not execute independently of another rule, except for the cases when such dependency is explicitly defined by backward links. This is undesirable for the algorithm as presented here as we will explain later. However, as seen in~\cite{conf/gg/SelimLCDO14}, the expressiveness of the transformations our algorithm can examine \reviewer{Perhaps 'the expressiveness of the rule language'?}  is not restricted. In that work, we detail an operational rule processing step to handle overlapping rules.
 
 \reviewer{In page 10 (answer to the reviewers) you say that rules for a 
   layer must be parallel independent. Is this written anywhere in the
@@ -138,9 +141,11 @@ and the female officer will exist in the female set}''. We expect this property 
         \label{fig:properties}
 \end{figure*}
 
+\reviewer{Figure 4: The two “agent” edges in the postcondition should be marked “female”
+resp. “male”} 
 In contrast, we do not expect the property in \cref{fig:dsltrans_prop2} to always hold. This property represents the statement ``\emph{any model which includes a
 female officer will be transformed into a model where that female officer will
-always supervise another female officer}''. It is not difficult to construct an input model where the pre-condition holds, but the post-condition does not. This would be an input model that contains only one female officer, as there will only be one female officer in the output model.
+always supervise another female officer}''. It is not difficult to construct an input model where the pre-condition holds, but the post-condition does not. For example, take an input model that contains only one female officer, as there will only be one female officer in the output model.
 
 We shall discuss our property proving technique in \cref{sec:verif_dsltrans_props}. Following this, experiments in \cref{sec:experiments} will present experimental results from proving these two properties on the Police Station transformation.
 
@@ -167,7 +172,8 @@ In the DSLTrans notation as seen throughout this paper, the match elements will 
 \item \textbf{Indirect Match Links}: Indirect match links are similar to direct
 match links, but there may exist a path of containment associations between the
 matched instances. Our notion of indirect links captures only
-acyclic EMF containment associations.
+acyclic EMF containment associations. \reviewer{“a nonempty path” (I think). The label of the
+containment associations does not matter?}
 
 % As such, it avoids cycles and infinite
 % amounts of matches over the transitive closure of associations in the input

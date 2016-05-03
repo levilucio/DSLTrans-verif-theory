@@ -163,9 +163,29 @@ where $glue\in \textsc{Iom}^{sr}_{tr}$ is an input-output model and $glue_{noind
 %\end{center}
 \end{definition}
 
+\reviewer{Def. B.12. First of all, I wonder why you define match as a function rather than
+just defining what a match is; namely, an element of the set you are constructing
+here. Secondly (and more importantly), why do you not use the notion of homo-
+morphism instead of explicitly talking about ismorphic subgraphs? Your way,
+you lose the connection between glue and $||rl||$: you know they are isomorphic,
+but what if $||rl||$ has symmetries - then there is more than one match, which in
+your definition cannot be distinguished.}
+
+\reviewer{You pay the price for this loss of information in Def. B.13, which now is broken: $a\Delta$ depends on $m_{glue} $(which was called glue in Def. 12, why the change in
+notation?) in a way depending on the mapping from $m_{glue}$ to $rl$ which you have
+discarded.}
+
+\reviewer{Def. B.13 is broken in another way as well: it does not properly define E' but
+merely imposes some requirements that are also fulfilled by choosing E' = E.
+Instead I know from the discussion about traceability links in Section 4 (which
+logically comes after this appendix!) that you really want to add such links for
+all newly created nodes of the output graph to all pre-existing nodes of the input
+graph; but that is not made clear anywhere at this point.}
+
+
 The match function in \cref{def:match_function} looks for subgraphs ($glue\sqsubseteq m_{in}^{*}$) of an input-output model that are isomorphic to the backward matcher of the given transformation rule ($glue \cong \Vert rl\Vert$). Note that the containment transitive closure of the input-output model ($m_{in}^{*}$) is considered such that indirect links in the rule can looked for in the input model. Additionally, indirect links need to be removed from the input-output models resulting from the match function ($glue_{noind}$). This is so because indirect links are not part of the original input model, but rather an auxiliary structure.
 
-Let us now turn our attention to the apply function in \cref{def:apply_function}. Its role is extend all model fragments found by matching a rule on a given input-output model, such that each of those fragments becomes isomorphic to the complete rule (minus its backward links). This process effectively creates the new objects and relations specified in the apply part of the rule, for each of the fragments found when matching the rule.
+Let us now turn our attention to the apply function in \cref{def:apply_function}. Its role is to extend all model fragments found by matching a rule on a given input-output model, such that each of those fragments becomes isomorphic to the complete rule (minus its backward links). This process effectively creates the new objects and relations specified in the apply part of the rule, for each of the fragments found when matching the rule.
 
 \begin{definition}{Apply Function}
 \label{def:apply_function}
@@ -253,6 +273,18 @@ We impose that all input-output models that are part of $rout$ and have been gen
 
 \end{definition}
 
+\reviewer{Def. B.14: It seems to me rather roundabout to sequentially apply all rules, ac-
+cumulate the results and then take their union. Why do you not take the union
+simultaneously with the parallel application of all rules (of a given layer), as
+you are essentially doing for all applications of a single rule in Def. B.13? This
+would get rid of the artificial sequential ordering, and the whole issue of con-
+fluence would not even have to be raised as there is no non-determinism any
+more.}
+
+\reviewer{In the constructions defined in Appendix B, you ignore the required absence of
+containment cycles. Might such cycles not appear in the union of the graphs,
+even if the individual graphs are cycle-free?}
+
 In \cref{def:layer_step_semantics} we build the result of executing a layer of a DSLTrans transformation. The operational semantics-like rules in the definition execute each rule $rl$ in layer $l$, in a non-deterministic order, by using the $apply$ function. The result of executing each rule is accumulated in the temporary $m_{glue}$ input-output model. Finally, when the set of transformation rules in the layer has been exhausted, the result of executing all the rules in the layer (now contained in $m_{glue}$) is united with the input-output model $m_{in}$, the input to layer $l$. Note that this final union produces the result we expect because of the fact that the $m_{glue}$ input-output model is not disjoint from $m_{in}$. The common ``glue'' parts of $m_{glue}$ that have been built by the match function and extended by the apply function are now used to built the result of executing layer $l$.
 
 \cref{def:layer_step_semantics} is the core of DSLTrans' semantics. Many model transformation languages are based on graph rewriting, where the result of each rule rewrite is immediately usable by all other rules. In DSLTrans the result of executing one layer in DSLTrans is totally produced before the input to the layer is changed. This is enforced in \cref{def:layer_step_semantics} by the fact that the apply function always executes over the same $m_{in}$ input-output model and all the results of rule execution in the same layer are added to the $m_{glue}$ structure that is write-only. Rules belonging to the same layer are thus forced to execute independently.
@@ -272,6 +304,7 @@ $$\frac{\big\langle m_{in},\epsilon,l^{\star}\big\rangle \xrightarrow{layerstep}
 $$\text{where } l^{\star}=\bigcup_{rl\in l}rl^{\star}$$
 \end{definition}
 
+\reviewer{I believe tr, T and R in this definition stand for the same thing.}
 While the execution of the rules belonging to a layer happens in parallel, the execution of the layers of a transformation happens sequentially. As per \cref{def:transformation_step_semantics}, the input-output model $m_{inter}$ is the output of executing a given layer that is passed onto the next layer as input. Note that an empty input-output model ($\epsilon$) is passed as the second argument to the $layerstep$ relation in \cref{def:transformation_step_semantics}. This is because in \cref{def:layer_step_semantics} of layer step semantics, the second argument of the relation is used as an accumulator for the model fragments that are added to be added to the output of the previous layer once all the rules in the current layer have been executed. The transformation rules in a layer are expanded before execution ($l^{\star}$) such that polymorphism in the match elements can be handled (see \cref{def:transformation_rule_expansion_appendix}). 
 
 \begin{definition} {Model Transformation Execution}

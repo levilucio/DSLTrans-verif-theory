@@ -116,7 +116,7 @@ Let $mm = \langle V,E,st,\tau,\leq\rangle\in \textsc{Meta}$ be a metamodel. The 
 %<*expandedmetamodeltext>
 
 
-An expanded metamodel is an auxiliary construct where all the relations between types of a metamodel are made explicit, rather than remaining implicit in the specialization hierarchy. It is built by adding to the original metamodel typed graph a relation of type $t$ between two classes of the metamodel, whenever those classes specialize two classes that are also related by a relation of type $t$. Abstract classes and their relations do not carry over to the expanded metamodel. Expanded metamodels will be used in the subsequent text to facilitate formal the treatment of any structure involving polymorphism.
+An expanded metamodel is an auxiliary construct where all the relations between types of a metamodel are made explicit, rather than remaining implicit in the specialization hierarchy. It is built by adding to the original metamodel typed graph a relation of type $t$ between two classes of the metamodel, whenever those classes specialize two classes that are also related by a relation of type $t$. Abstract classes and their relations do not carry over to the expanded metamodel. Expanded metamodels will be used in the subsequent text to facilitate formal treatment of any structure involving polymorphism.
 
 % Definition~\ref{def:metamodel} formally states that a metamodel corresponds to a graph of typed elements where only one element for each type is represented. This definition is then used to state definition~\ref{def:pattern}, where a typed graph is combined with its metamodel.
 
@@ -133,7 +133,7 @@ An instance of a metamodel $mm = \langle V',E',st',\tau',\leq\rangle\in \textsc{
 %<*metamodelinstancetext>
 
 
-A metamodel instance is a useful intermediate formal notion that lies between metamodel and model. The injective typed graph homomorphism between a metamodel instance and metamodel models multiple ``instances'' of objects and relations being typed by one single class or relation of the metamodel. Metamodel instances do not allow cyclic containment relations, as enforced by EMF. 
+A metamodel instance is a useful intermediate formal notion that lies between metamodel and model. The injective typed graph homomorphism between a metamodel instance and metamodel models multiple ``instances'' of objects and relations being typed by one single class or relation of the metamodel. Metamodel instances do not allow cyclic containment relations, as enforced by EMF. \reviewer{Do you mean “in analogy to EMF”?}
 
 % It requires the acyclicity constraints as that is required through models, transformation rules, path conditions and properties. It can be used to define transformation rules and can be further refined to define models.
 
@@ -150,7 +150,7 @@ The containment transitive closure of a metamodel instance $\langle V',E',st',\t
 %<*instanceclosuretext>
 
 
-Given a metamodel instance, its containment transitive closure includes, besides the original graph, all the edges belonging to the transitive closure of containment links in that metamodel instance. The transitive edges are typed as \emph{indirect}. In the definitions that follow we will use the $*$ notation, as in \cref{def:instance_closure}, to denote the containment transitive closure of structures that directly or indirectly include metamodel instances. For example, $tg^{*}$ would represent the containment transitive closure of typed graph $tg$ wherever containment edges are found in the graph. Note that the $*$ notation is different from the $\star$ notation, introduced in \cref{def:expanded_metamodel} for an expanded metamodel.
+Given a metamodel instance, its containment transitive closure includes, besides the original graph, all the edges belonging to the transitive closure of containment links in that metamodel instance. The transitive edges are typed as \emph{indirect}. In the definitions that follow we will use the $*$ notation, as in \cref{def:instance_closure}, to denote the containment transitive closure of structures that directly or indirectly include metamodel instances. For example, $tg^{*}$ would represent the containment transitive closure of typed graph $tg$ wherever containment edges are found in the graph. Note that the $*$ notation is different from the $\star$ notation, introduced in \cref{def:expanded_metamodel} for an expanded metamodel. \reviewer{The difference between these stars is too small to be noticeable.}
 
 % It requires the acyclicity constraints as that is required through models, transformation rules, path conditions and properties. It can be used to define transformation rules and can be further refined to define models.
 
@@ -282,7 +282,7 @@ Let $rl = \big\langle V,E,st,\tau,Match,Apply\rangle \in \textsc{Rule}^{sr}_{tg}
 
 %<*expandedtransformationruletext>
 
-The expansion of a transformation rule is a set of transformation rules. Each rule in that set includes a possible replacement of each of the classes in the match part of the original rule by one of its subtypes. Expanded transformation rules will be important such that polymorphism is correctly handled in the developments that follow.  
+The expansion of a transformation rule is a set of transformation rules. Each rule in that set includes a possible replacement of each of the classes in the match part of the original rule by one of its subtypes. Expanded transformation rules will be important to ensure that polymorphism is correctly handled in the developments that follow.  
  
 %\levi{A transformation rule expansion simply takes a rule and builds all possible rules where a rule element is replaced by one of its subtypes.}
 
@@ -303,9 +303,9 @@ A layer is a finite set of transformation rules $l\subseteq \textsc{Rule}^{sr}_{
 %</layertransformation>
 
 %<*layertransformationtext>
-\reviewer{I do not fully understand why this
+
+\cref{def:layer_transformation} formalises the abstract syntax of a model transformation, introduced in \cref{sec:dsltrans}. An example of a model transformation can be observed in \cref{fig:dsltransformation}, the Police Station transformation. As expected, a formal DSLTrans transformation is composed of a sequence of layers where each layer is composed of a set of rules. The last condition of \cref{def:layer_transformation} imposes that, for any two pair of rules in the transformation, the matcher of the second rule never partially or totally subsumes (or contains) the matcher of the first rule, unless the second rule is in a subsequent layer and produces something more than the first rule. This condition avoids situations where the execution of a rule in a DSLTrans model transformation necessarily implies the execution of another rule (except for when rules having backward links necessarily execute because all their dependencies were created during the execution of previous layers). \reviewer{I do not fully understand why this
   could be problematic. Do you have an example?}
-\cref{def:layer_transformation} formalises the abstract syntax of a model transformation, introduced in \cref{sec:dsltrans}. An example of a model transformation can be observed in \cref{fig:dsltransformation}, the Police Station transformation. As expected, a formal DSLTrans transformation is composed of a sequence of layers where each layer is composed of a set of rules. The last condition of \cref{def:layer_transformation} imposes that, for any two pair of rules in the transformation, the matcher of the second rule never partially or totally subsumes (or contains) the matcher of the first rule, unless the second rule is in a subsequent layer and produces something more than the first rule. This condition avoids situations where the execution of a rule in a DSLTrans model transformation necessarily implies the execution of another rule (except for when rules having backward links necessarily execute because all their dependencies were created during the execution of previous layers).
 
 %\levi{At the syntactic level we have not included the expansion of a layer in the transformation. This is done at the semantic level.}
 
@@ -780,7 +780,7 @@ We will use the abbreviation $\textsc{Pathcond}(tr)$ to represent the set of pat
 
 
 Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTrans transformation. Let also $pc = \langle V,E,st,\tau,Match,Apply,Rules\rangle \in
-\textsc{Pathcond}(tr)$ of a path condition of $tr$ and $ex = \langle V',E',st',\tau',Input,Output\rangle \in Exec(tr)$ be an execution of $tr$. We have that $ex$ is abstracted by $pc$, noted $ex\Vvdash pc$, if and only if the set of transformation rules of $tr$ combined in $pc$ and the set of transformation rules of $tr$ used to built $ex$ is the same, and:
+\textsc{Pathcond}(tr)$ of a path condition of $tr$ and $ex = \langle V',E',st',\tau',Input,Output\rangle \in Exec(tr)$ be an execution of $tr$. We have that $ex$ is abstracted by $pc$, noted $ex\Vvdash pc$, if and only if the set of transformation rules of $tr$ combined in $pc$ and the set of transformation rules of $tr$ used to build $ex$ is the same, and:
 \begin{multline}
 \label{eq:abstr_input_output}
 \big(\forall rl\in Rules\;.\;Match(rl) \vartriangleleft Input^*\big) \;\land\; Output \blacktriangleleft Apply
@@ -806,7 +806,7 @@ Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTrans transformation. Let also $pc
 
 
 Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTrans transformation. Let also $pc = \langle V,E,st,\tau,Match,Apply,Rules\rangle \in
-\textsc{Pathcond}(tr)$ of be a path condition of $tr$ and $ex = \langle V',E',st',\tau',Input,Output\rangle \in Exec(tr)$ be an execution of $tr$. We have that $ex$ is abstracted by $pc$, noted $ex\Vvdash pc$, if and only if the set of transformation rules of $tr$ combined in $pc$ and the set of transformation rules of $tr$ used to built $ex$ is the same, and:
+\textsc{Pathcond}(tr)$ of be a path condition of $tr$ and $ex = \langle V',E',st',\tau',Input,Output\rangle \in Exec(tr)$ be an execution of $tr$. We have that $ex$ is abstracted by $pc$, noted $ex\Vvdash pc$, if and only if the set of transformation rules of $tr$ combined in $pc$ and the set of transformation rules of $tr$ used to build $ex$ is the same, and:
 \begin{multline}
 \label{eq:abstr_input_output_appendix}
 \big(\forall rl\in Rules\;.\;Match(rl) \vartriangleleft Input^*\big) \;\land\; Output \blacktriangleleft Apply

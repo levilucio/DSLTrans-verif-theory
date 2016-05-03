@@ -63,6 +63,16 @@ our property proving technique to be composed of relatively simple steps, as the
 metamodels, models, and properties involved are all constructed using a similar
 graphical representation.
 
+\reviewer{On Page 2, left, mid-page you state that your methods “differ from previous
+work”in that you require no intermediate representation. It is certainly not preor-
+dained that this difference is an advantage: such an intermediate representation
+typically gives access to general-purpose tooling, e.g., for model checking or
+theorem proving. You would have to argue that you are better off reimplement-
+ing that functionality in your own setting. Is there any evidence for that? An
+example of such evidence (in a somewhat different context) is for instance pro-
+vided by Pennemann in his PhD thesis, where by experiments he shows that his
+dedicated, graph-based resolution outperforms that of a general-purpose theorem
+prover.}
 % This also provided us with performance gains over our
 % previous implementation, due to the use of efficient graph-matching libraries to manipulate the graph structures required.
 
@@ -88,3 +98,17 @@ conditions for the transformation will be discussed in
 \cref{sec:building_pcs}. \cref{sec:abstraction_relation} will present the abstraction relation found in our technique, along with examples, while \cref{sec:verif_dsltrans_props} will examine how this abstraction relation is used in our process for proving properties. In \cref{sec:implementation} and \cref{sec:experiments}, we introduce our implementation with sample scalability results; \cref{sec:related_work} presents the related work;
 and finally in \cref{sec:conclusion} we conclude with remarks and future
 work.
+
+\reviewer{The paper is inconsistent (maybe due to the iteration of submitted versions) in
+what it says about its own structure. Page 2, right, 1st paragraph states that the
+language and its samentcs are presented in Section 2; Section 2 (1st paragraph)
+says that the semantics is presented in Appendix B; most of it is actually in
+Section 3. Appendix B indeed repeats essentially all of Section 3, a duplication
+which certainly serves no purpose and should be remedied. In fact, I would much
+prefer all of Appendix B to be moved to the main text, as the only part that is
+now only in the appendix, the definition of a transformation, is absolutely central
+to the paper.
+As it currently stands, Section 3.4 has a similar problem: first it states that the
+semantics is not in the main text, then it refers to Section 3.2 for the semantics
+(which the reader has just gone through), then in Def. 17 jumps to a notation that
+is only introduced in Appendix B.}

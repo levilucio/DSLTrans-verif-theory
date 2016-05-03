@@ -3,6 +3,45 @@
 
 In this section we will introduce the formal concepts that will be used throughout all this paper. We start in \cref{sec:typed_graphs} by a few (typed) graph concepts that will be used as mathematical building blocks throughout this paper. In particular we will introduce the notion of typed graph, typed graph union and subset, and useful relations between typed graphs based on homomorphisms. Notice that these concepts are well known from graph theory and are only slightly customized for our purposes.
 
+\reviewer{Your formalisation is made more complex than necessary because you do not put
+the power of typed graphs to work. If your source and target metamodels have
+disjoint types (which you can assume without loss of generality) you can take
+their union, augmented with trace edge types from all target node types to all
+source node types, and take that to be the meta-model for an input-output model,
+and also for a rule. Suddenly you don’t have to carry arround the distinction be-
+tween Match and Apply (for rules) or input and output (for input-output models)
+around any more: they are just the projections onto the types of the source, resp.
+target metamodel.}
+
+\reviewer{Section 4.2.2 on “backward links” is rather confusing, as it speaks about trace-
+ability links being added to rules. You never add traceability links to rules any-
+where in the paper; in fact, your formal notion of a rule has no room for them.
+Instead, rules only have backward links. (The clarity of the the situation is not
+improved by the fact that those are labelled trace.)}
+
+\reviewer{I think the situation would be much more clear if you were to use the common
+notion of left hand side and right hand side of a rule. The left hand side of a
+rule rl is precisely your ||rl||, the right hand side is the entire rl augmented by
+your traceability links, as in 4.2.2. Suddenly we are back in a well-known graph
+transformation formalism, and your rules are in fact so simple (no deletion, no
+negative application conditions, injective matching) that I believe it makes no
+difference whether you use algebraic graph transformation or some more con-
+structively defined variant. The only standard notion is that of transitive closure
+in the left hand side; but there are plenty of GT tools that offer this extension.
+In fact I see no reason why your rule application would then not precisely coin-
+cide with the the same notion in, say, SPO graph rewriting; and I hope you agree
+that this would help you no end in explaining what you are doing. (If, on the
+other hand, there is after all some difference then this, too, would be interesting
+to know, as that difference is not at all apparent right now.)}
+
+\reviewer{Viewed like this, moreover, I think your notions of input-output models and rules
+are very close to triple graph transformation as used by Schrr at all. I think the
+main (if not only) difference lies in the fact that your "glue graph" is actually not
+a graph; instead, you use traceability edges directly from the target model to the
+source model. If you were to turn those edges into nodes with source and target
+edges, even that difference would disappear.}
+
+
 Armed with the fundamental notion of typed graph, we can then introduce other formal concepts in Sections~\ref{sec:DSLTrans_formal}, \ref{sec:DSLTrans_syntax} and \ref{sec:DSLTrans_semantics} which describe the artifacts from the modeling and transformation world that we require for our verification technique. Naturally, we start by introducing the central notion of \emph{metamodel}, allowing the description of the inputs and outputs of a model transformation. Other fundamental notions we will define in this section are \emph{model}, \emph{transformation rule}, \emph{transformation} and the semantic concept of \emph{model transformation execution}. Several auxiliary and intermediate notions for defining the syntax and semantics of our techniques will also be introduced here. 
 
 Note that this section presents a collection of formal tools that are used in the subsequent sections of this paper where the contributions of this paper are presented. It is meant as a formal reference for the upcoming formal development. This section can be safely skipped or skimmed by the reader, who can return to these definitions punctually to understand the detailed formal underpinning of our approach. 
@@ -93,6 +132,12 @@ Note that this section presents a collection of formal tools that are used in th
 \CatchFileBetweenTags{\typedgraphunion}{text/definitions}{typedgraphunion}{\typedgraphunion}
 \end{definition}
 
+\reviewer{Graph union (Def. 2) is only well-defined if s $\cup$ s' , t $\cup$t' and $\tau \cup \tau$' yield functions,
+which in turn is only the case if s and s' etc. coincide on common elements.
+This is neither stated as a requirement here nor checked anywhere in the use of
+the union. (Since I sure you implicitly had this restriction in mind, this may be
+counted as sloppiness; you can probably assume this to hold w.l.o.g. wherever
+you need it.)}
 \CatchFileBetweenTags{\typedgraphhomomorphismtext}{text/definitions}{typedgraphhomomorphismtext}{\typedgraphhomomorphismtext}
 
 \begin{definition}{Typed Graph Homomorphism\\}
@@ -103,6 +148,19 @@ Note that this section presents a collection of formal tools that are used in th
 
 Note that, trivially, a typed graph homomorphism is a graph homomorphism.
 
+\reviewer{Def. 3 and all subsequent definitions g has an unexplained component st, is
+this the same as the pair (s,t) in Def. 1?}
+
+\reviewer{For multigraphs (which may contain parallel edges with the same label) it is
+necessary to include edge images in the homomorphism (Def. 3). If you do not
+do that, then graphs with parallel edges are isomorphic to graphs with single
+edges (between the same nodes), so you might as well restrict to simple graphs.}
+
+\reviewer{
+Concretely: Right now the def. requires the existence of \textit{some} unfixed e' in the
+target graph, but in fact \textit{f} should be extended to E $\rightarrow$ E' so that e' = f (e) in this
+situation.
+}
 % \begin{lemma}{The Union of Two Typed Graph Homomorphisms is a Typed Graph Homomorphism}
 % 
 % Let $g=\langle V_g,E_g,st_g,\tau_g\rangle$, $g'=\langle
@@ -184,12 +242,33 @@ We will start by introducing the notion of \emph{metamodel}, which in DSLTrans i
 \CatchFileBetweenTags{\metamodel}{text/definitions}{metamodel}{\metamodel}
 \end{definition}
 
+\reviewer{Def. 6: Since the codomain of $\tau$ is apparently VT $\times$ {abstract, concrete} $\cup$ ET $\times$
+{containment, reference}, it is certainly never going to be a bijection. However,
+I think you actually only want injectiveness; what purpose is served by requiring
+it to be surjective?}
+
+\reviewer{As an aside, I think this is quite an awkward way to encode the notions of ab-
+stractness and containment: I think it would be much more elegant to define
+abstractness as a predicate over VT and containment as a predicate over ET. To
+go even one step further, it would in fact be more natural (and more standard)
+to equate the notions of type graph and metamodel altogether, as they certainly
+serve the same conceptual purpose.
+}
+
+\reviewer{Def. 6 and many other places A word in math mode should always
+be in $\backslash$mathit to avoid ugly spacing as in $re f erence$.}
+
 \CatchFileBetweenTags{\metamodeltext}{text/definitions}{metamodeltext}{\metamodeltext}
 
 \begin{definition}{Expanded Metamodel\\}
 \label{def:expanded_metamodel}
 \CatchFileBetweenTags{\expandedmetamodel}{text/definitions}{expandedmetamodel}{\expandedmetamodel}
 \end{definition}
+
+\reviewer{Def. 7: is an expanded metamodel a metamodel? Then you need to allow non-
+injective $\tau$, at least on edges, as the requirement $\tau$(e) = $\tau$(e') in the third bullet
+will certainly cause non-inejectiveness.}
+
 
 \CatchFileBetweenTags{\expandedmetamodeltext}{text/definitions}{expandedmetamodeltext}{\expandedmetamodeltext}
 
@@ -200,6 +279,30 @@ We will start by introducing the notion of \emph{metamodel}, which in DSLTrans i
 
 \CatchFileBetweenTags{\metamodelinstancetext}{text/definitions}{metamodelinstancetext}{\metamodelinstancetext}
 
+
+\reviewer{Def. 9 and many thereafter incrementally define new concepts on top of graphs.
+Most of these definitions are rather hard to read, for several reasons:}
+
+\begin{itemize}
+\item It is common to use an unprimed version for the original object and a
+primed version for the constructed object, whereas you turn this conven-
+tion around
+%\item Sloppiness: in more than 50 percent of all cases the ⊆ should be ⊇ or vice versa;
+%in this particular instance, you really mean τ ′ ⊇ τ and E = E ′ ∪ E c ∗ .
+
+\item It is really more readable to define the construction as a construction, so:
+\begin{itemize}
+\item  $E = E'\cup E^{\star}_{C}$
+\item $s = s' \cup {(e_1 \dots e_n , s(e_1)) | e_1 \dots e_n \in E^{\star}_{C} }$
+\item $t = t' \cup {(e_1 \dots e_n ,t(e_n )) | e_1 \dots e_n \in E^{\star}_{C} }$
+\item $\tau = \tau' \cup {(e, indirect) | e \in E^{\star}_{C} }$
+\end{itemize}
+\begin{itemize}
+\item Note that this also takes care of s and t, which you have forgotten here
+and in all other similar definitions.)
+\item The set $E^{\star}_{C}$should itself also be more carefully defined, as $E^{\star}_{C} = {e_1 \dots e_n \in E^∗' | \forall1 \leq i < n.t(e_i ) = s(e_{i+1} )}$
+\end{itemize}
+\end{itemize}
 
 
 \begin{definition}{Containment Transitive Closure\\}
@@ -217,8 +320,17 @@ We will start by introducing the notion of \emph{metamodel}, which in DSLTrans i
 \CatchFileBetweenTags{\model}{text/definitions}{model}{\model}
 \end{definition}
 
+\reviewer{Def. 10: Here you certainly should not require $\tau$ to be injective. The requirement
+on containment relations is mathematical nonsense: if $e' \in E'$ has target b then
+$b \in V'$ and so f (b) does not exist, and most certainly is not the source of any edge
+in E. In fact, I really have no idea what you want to say here; the explanation
+below the definition does not clarify matters at all.}
+
+
 \CatchFileBetweenTags{\modeltext}{text/definitions}{modeltext}{\modeltext}
 
+
+\reviewer{“the cardinality of the target class”?? Are you talking about edge multiplicities here (which you have chosen not to include)?}
 
 
 \begin{definition}{Input-Output Model\\}
@@ -226,6 +338,9 @@ We will start by introducing the notion of \emph{metamodel}, which in DSLTrans i
 \CatchFileBetweenTags{\inputoutputmodel}{text/definitions}{inputoutputmodel}{\inputoutputmodel}
 \end{definition}
 
+\reviewer{Why is Input a model and Output a metamodel instance? Note that
+$\backslash$ binds stronger than $\cup$ in $E \backslash E' \cup E$ ′′ . “match-apply patterns” → “input-output
+patterns”}
 %Change if needed
 \CatchFileBetweenTags{\inputoutputmodeltext}{text/definitions}{inputoutputmodeltext}{\inputoutputmodeltext}
 
@@ -247,6 +362,8 @@ This section will detail the abstract syntax of the constructs involved in a DSL
 \CatchFileBetweenTags{\transformationrule}{text/definitions}{transformationrule}{\transformationrule}
 \end{definition}
 
+\reviewer{e in $\tau(e) = \mathit{trace}$ is still bound by $\nexists$, so “and” should be $\land$}
+
 \CatchFileBetweenTags{\transformationruletext}{text/definitions}{transformationruletext}{\transformationruletext}
 
 
@@ -255,6 +372,10 @@ This section will detail the abstract syntax of the constructs involved in a DSL
 \CatchFileBetweenTags{\backmatchtransformationrule}{text/definitions}{backmatchtransformationrule}{\backmatchtransformationrule}
 \end{definition}
 
+\reviewer{Def. 14: According to your own criterion, $||rl||$ is not a rule as it does not create
+either a node or an edge.}
+
+
 \Cref{def:back_match_transformation_rule} \CatchFileBetweenTags{\backmatchtransformationruletext}{text/definitions}{backmatchtransformationruletext}{\backmatchtransformationruletext}
 
 
@@ -262,12 +383,24 @@ This section will detail the abstract syntax of the constructs involved in a DSL
 \label{def:transformation_rule_expansion}
 \CatchFileBetweenTags{\expandedtransformationrule}{text/definitions}{expandedtransformationrule}{\expandedtransformationrule}
 \end{definition}
+
+\reviewer{The first bullet is a special case of the second, so can be removed.}
 \CatchFileBetweenTags{\expandedtransformationruletext}{text/definitions}{expandedtransformationruletext}{\expandedtransformationruletext}
 
 \begin{definition}{Layer, Model Transformation\\}
 \label{def:layer_transformation}
 \CatchFileBetweenTags{\layertransformation}{text/definitions}{layertransformation}{\layertransformation}
 \end{definition}
+
+\reviewer{The second half of Def. 16 raises a lot of questions. First of all, neither $\sqsubseteq 	 $ nor
+$\cong$ are defined over rules; however, I can imagine what it would look like. Then,
+what role does rl play; do you just mean $||rl_1 || \sqsubseteq ||rl_2 ||$ given a suitable isomorphic copy? What if $||rl_1 || \cong ||rl_2 || $(as a special case); is your condition then not
+unsatisfiable as $rl_1$ must appear after $rl_2$ as well as vice versa?}
+
+
+\reviewer{More importantly though, why do you care? Your semantics makes sure that
+rules are never considered for application twice in succession, so dependencies
+are always resolved unambiguously.}
 
 \CatchFileBetweenTags{\layertransformationtext}{text/definitions}{layertransformationtext}{\layertransformationtext}
 
@@ -436,6 +569,10 @@ This section will detail the abstract syntax of the constructs involved in a DSL
 \label{sec:DSLTrans_semantics}
 
 In the definition that follows we introduce the notion of execution of a DSLTrans model transformation. For our purposes it is sufficient to introduce it as an input-output model (see \cref{def:input_output_model}), containing the input model for the transformation, the produced output, and the traceability links built during execution. Due to space limitations, we cannot introduce the semantics of DSLTrans in the main text of this paper. We thus refer the reader to \cref{sec:DSLTrans_formal} for a formal description on how DSLTrans transformation executions are built. 
+
+\reviewer{Definition 17: There is a copy/paste error w.r.t. Def. B.16 (which only serves to
+strengthen my point, made above, about avoiding this kind of duplication). In
+this case, B.16 is the correct version.}
 
 \begin{definition} {Model Transformation Execution\\}
 \label{def:modeltransformation} 
