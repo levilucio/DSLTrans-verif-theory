@@ -109,7 +109,7 @@ We assume the existence of a number of functions in our formalization to aid the
 \end{itemize}
 \end{itemize}
 
-For simplification purposes, we will not model the association cardinalities given by a metamodel in our notion of typed graph. Note that in fact require these cardinalities to be relaxed to perform our graph rewriting.
+For simplification purposes, we will not model the edge cardinalities given by a metamodel in our notion of typed graph. Note that in fact require these cardinalities to be relaxed to perform our graph rewriting.
 
 \subsubsection*{Typed Graph Union}
 We now define how two typed graphs are united. A union of two typed graphs is trivially the set union of all the components of those two typed graphs. Note that we do not require the components of the two graphs to be disjoint, as in the following joint unions will be used to merge typed graphs.
@@ -184,175 +184,77 @@ We say that $g$ and $g'$ are isomorphic, written $g\cong g'$, iff there exists a
 \bentley{Try to cut this as much as possible}
 In order to simplify our notation, when the context is unambiguous we will abbreviate a typed graph $\langle V,E,st,\\\tau,\VT, \ET\rangle$ as as 4-tuple $\langle V,E,st,\tau\rangle$. Also, given a typed graph $g\in \textsc{Tg}$, will use the notation $Components(g)$ to describe the set of strongly connected typed graphs in $g$. Finally, we will use the notation $g|_{t}$ to refer to the restriction of graph $g$ to its subgraph containing only edges of type $t$.
 
-\subsection{Metamodel and Model-Related Constructs}
+
+\subsubsection*{Transitive Closure}
+
+DSLTrans matching constructs allow for the matching of indirect links, where as described in Section~\ref{subsec:DSLTrans_constructs}, rules may match over indirect paths between elements. This transitive closure allow for the explicit creation of all edges implied by these indirect links to aid in matching.
+
+
+\begin{definition}{Transitive Closure\\}
+\label{def:instance_closure}
+
+Let $g$ be a graph $\langle V,E,(s, t),\tau\rangle \in \textsc{Tg}$. Then the transitive closure $g^{*} = \langle V,E',(s, t),\tau\rangle \in \textsc{Tg}$, where:
+
+$E' = E \cup $ the transitive closure of $\big\{v\xrightarrow{e}v' | \mathit{isIndirect(e)} \big\}$
+\end{definition}
+
+
+Given a graph, its transitive closure includes, besides the original graph, all the edges belonging to the transitive closure of indirect links in that graph. Note that these transitive edges are given by the function $\mathit{isIndirect}$.
+
+In the definitions that follow we will use the $*$ notation, as in \cref{def:instance_closure}, to denote the transitive closure of our structures.
+
+
+\subsection{DSLTrans Constructs}
 \label{sec:DSLTrans_formal}
 
 
-\subsubsection*{Metamodel}
-We will start by introducing the notion of \emph{metamodel}, which in DSLTrans is used to type the input and output models of a DSLTrans transformation.  Two metamodels, the \emph{organization language} and \emph{gender language} are depicted in \cref{fig:squadmetamodel}.
-
-\begin{definition}{Metamodel\\}
-\label{def:metamodel}
-A metamodel is a 5-tuple $\langle V,E,st,\tau,\leq\rangle$ where $\langle V,E,st,\tau\rangle\in \textsc{Tg}$ is a typed graph, $(V,\leq)$ is a partial order and $\tau$ is a bijective typing function. Additionally we also have that: if $v\in V$ then $\tau(v)\in VT\times \{abstract,concrete\}$, where $VT$ is the set of vertex type names; if $e\in E$ then $\tau(e)\in ET\times \{containment,\\reference\}$, where $ET$ is a set of edge type names. The set of all metamodels is called $\textsc{Meta}$.
-\end{definition}
-
-\reviewer{Def. 6: Since the codomain of $\tau$ is apparently VT $\times$ {abstract, concrete} $\cup$ ET $\times$
-{containment, reference}, it is certainly never going to be a bijection. However,
-I think you actually only want injectiveness; what purpose is served by requiring
-it to be surjective?}
-
-\reviewer{As an aside, I think this is quite an awkward way to encode the notions of ab-
-stractness and containment: I think it would be much more elegant to define
-abstractness as a predicate over VT and containment as a predicate over ET. To
-go even one step further, it would in fact be more natural (and more standard)
-to equate the notions of type graph and metamodel altogether, as they certainly
-serve the same conceptual purpose.
-}
-
-\reviewer{Def. 6 and many other places A word in math mode should always
-be in $\backslash$mathit to avoid ugly spacing as in $re f erence$.}
-
-A formal metamodel is a particular kind of typed graph where vertices represent classes and edges represent relations between those classes. A typed graph representing a metamodel has two special characteristics: on the one hand, the typing function for vertices and edges is bijective. This means that each type occurs only once in the metamodel, as is to be expected. On the other hand, a metamodel is equipped with a partial order between vertices. This partial order is used to model inheritance at the level of the metamodel's classes. Note that here we have overridden the co-domain of the typing function in the original typed graph presented in \cref{def:typed_graph} in order to allow distinguishing between \emph{abstract} and \emph{concrete} classes, as well as between \emph{containment} and \emph{reference} edges in our metamodels. 
-
-\begin{definition}{Expanded Metamodel\\}
-\label{def:expanded_metamodel}
-Let $mm = \langle V,E,st,\tau,\leq\rangle\in \textsc{Meta}$ be a metamodel. The expansion of $mm$, noted $mm^{\star}$, is a typed graph $\langle V',E',st',\tau'\rangle\in \textsc{Tg}$ built as follows:
-\begin{itemize}
-  \item $V' = V\setminus \{v\in V\,|\,\tau(v)=(\cdot\footnote{In our mathematical development we use a `dot' notation to represent that we do not care about the value of a particular variable in a given context.},abstract)\}$;
-  \item $v_1\xrightarrow{e}v_2\in E'$ if $v_1\xrightarrow{e}v_2\in E$ and $\tau(v_1)=(\cdot,concrete)$ and $\tau(v_2)=(\cdot,concrete)$;
-  \item if $v_1\xrightarrow{e}v_2\in E$ we have that $v'_1\xrightarrow{e'}v'_2\in E'$, where $v'_1\leq v_1$, $v'_2\leq v_2$ and $\tau'(e') = \tau(e)$;
-  \item for all $v\in V'$ and $e\in E'$ we have that $\tau'(v)=\tau(v)$ and that $\tau'(e)=\tau(e)$.
-%   \item $(v,(tv,concrete))\in \tau'$ if $(v,(tv,concrete))\in \tau$ (where $tv$ is a vertex type);
-%   \item $(v_1\xrightarrow{e}v_2,(te,concrete))\in \tau'$ if $(v_1\xrightarrow{e}v_2,(te,concrete))\in \tau$ ($te$ ia an edge type).
-\end{itemize}
-%The set of all expanded metamodels in called $META^{\star}$.
-\end{definition}
-
-\reviewer{Def. 7: is an expanded metamodel a metamodel? Then you need to allow non-
-injective $\tau$, at least on edges, as the requirement $\tau$(e) = $\tau$(e') in the third bullet
-will certainly cause non-inejectiveness.}
-
-
-
-An expanded metamodel is an auxiliary construct where all the relations between types of a metamodel are made explicit, rather than remaining implicit in the specialization hierarchy. It is built by adding to the original metamodel typed graph a relation of type $t$ between two classes of the metamodel, whenever those classes specialize two classes that are also related by a relation of type $t$. Abstract classes and their relations do not carry over to the expanded metamodel. Expanded metamodels will be used in the subsequent text to facilitate formal treatment of any structure involving polymorphism.
-
-% Definition~\ref{def:metamodel} formally states that a metamodel corresponds to a graph of typed elements where only one element for each type is represented. This definition is then used to state definition~\ref{def:pattern}, where a typed graph is combined with its metamodel.
-
-
-\begin{definition}{Metamodel Instance\\}
-\label{def:metamodelinstance}
-
-An instance of a metamodel $mm = \langle V',E',st',\tau',\leq\rangle\in \textsc{Meta}$ is a typed graph $\langle V,E,st,\tau\rangle\in \textsc{Tg}$, where the co-domain of $\tau$ equals the co-domain of $\tau'$. Also, there is a typed graph homomorphism $f:V\rightarrow V'$ from $\langle V,E,st,\tau\rangle$ to the expanded metamodel $mm^{\star}$ and the graph $\big\langle V,\{e\in E\,|\,\tau(e)=(\cdot,containment)\}\big\rangle$ is acyclic. The set of all instances for a metamodel $mm$ is called $\textsc{Instance}^{mm}$.
-
-\end{definition}
-
-
-
-A metamodel instance is a useful intermediate formal notion that lies between metamodel and model. The injective typed graph homomorphism between a metamodel instance and metamodel models multiple ``instances'' of objects and relations being typed by one single class or relation of the metamodel. Metamodel instances do not allow cyclic containment relations, as enforced by EMF. \reviewer{Do you mean “in analogy to EMF”?}
-
-% It requires the acyclicity constraints as that is required through models, transformation rules, path conditions and properties. It can be used to define transformation rules and can be further refined to define models.
-
-
-\reviewer{Def. 9 and many thereafter incrementally define new concepts on top of graphs.
-Most of these definitions are rather hard to read, for several reasons:}
-
-\begin{itemize}
-\item It is common to use an unprimed version for the original object and a
-primed version for the constructed object, whereas you turn this convention around
-\item Sloppiness: in more than 50 percent of all cases the $\subseteq$ should be $\supseteq$ or vice versa
-\begin{itemize}
-\item In this particular instance, you really mean $\tau' \supseteq \tau$ and $E = E' \cup E_c^∗$ .
-\end{itemize}
-
-\item It is really more readable to define the construction as a construction, so:
-\begin{itemize}
-\item  $E = E'\cup E^{\star}_{C}$
-\item $s = s' \cup {(e_1 \dots e_n , s(e_1)) | e_1 \dots e_n \in E^{\star}_{C} }$
-\item $t = t' \cup {(e_1 \dots e_n ,t(e_n )) | e_1 \dots e_n \in E^{\star}_{C} }$
-\item $\tau = \tau' \cup {(e, indirect) | e \in E^{\star}_{C} }$
-\end{itemize}
-\begin{itemize}
-\item Note that this also takes care of s and t, which you have forgotten here
-and in all other similar definitions.)
-\item The set $E^{\star}_{C}$should itself also be more carefully defined, as $E^{\star}_{C} = {e_1 \dots e_n \in E^∗' | \forall1 \leq i < n.t(e_i ) = s(e_{i+1} )}$
-\end{itemize}
-\end{itemize}
-
-
-\begin{definition}{Containment Transitive Closure\\}
-\label{def:instance_closure}
-
-The containment transitive closure of a metamodel instance $\langle V',E',st',\tau'\rangle\in \textsc{Instance}^{mm}$ is a typed graph $\langle V,E,st,\tau\rangle$ where we have that $V=V'$, $\tau' \supseteq \tau$ and $\tau$'s co-domain is the union of the co-domain of $\tau'$ and the set $\{indirect\}$. We also have that $E' = E\cup E^*_c$ where $E^*_c$ is the transitive closure of the set $\big\{v\xrightarrow{e}v'\,|\,\tau(v\xrightarrow{e}v') = (\cdot,containment)\big\}$ and if $e\in E\setminus E'$ then $\tau(e) = indirect$.  We denote $mi^{*}$ the containment closure of a metamodel instance $mi\in \textsc{Instance}^{mm}$.
-
-\end{definition}
-
-
-Given a metamodel instance, its containment transitive closure includes, besides the original graph, all the edges belonging to the transitive closure of containment links in that metamodel instance. The transitive edges are typed as \emph{indirect}. In the definitions that follow we will use the $*$ notation, as in \cref{def:instance_closure}, to denote the containment transitive closure of structures that directly or indirectly include metamodel instances. For example, $tg^{*}$ would represent the containment transitive closure of typed graph $tg$ wherever containment edges are found in the graph. Note that the $*$ notation is different from the $\star$ notation, introduced in \cref{def:expanded_metamodel} for an expanded metamodel. \reviewer{The difference between these stars is too small to be noticeable.}
-
-% It requires the acyclicity constraints as that is required through models, transformation rules, path conditions and properties. It can be used to define transformation rules and can be further refined to define models.
-
-
-
-\begin{definition}{Model\\}
-\label{def:model}
-
-A model of a  metamodel $mm = \langle V',E',st',\tau',\leq\rangle\in \textsc{Meta}$ is a metamodel instance $\langle V,E,st,\tau\rangle\in \textsc{Instance}^{mm}$, such that: there exists an injective typed graph homomorphism $f:V\rightarrow V'$ from $\langle V,E,st,\tau\rangle$ to metamodel $mm^{\star}$ where, if $b\in V$ and there exists an edge $a'\xrightarrow{e'} f(b)\in E'$ where $\tau(e') = (t,containment)$, then we also have that $a\xrightarrow{e} b\in E$, $f(a) = a'$ and $\tau(e)=t$. The set of all models for a metamodel $mm$ is called $\textsc{Model}^{mm}$.
-
-\end{definition}
-
-\reviewer{Def. 10: Here you certainly should not require $\tau$ to be injective. The requirement
-on containment relations is mathematical nonsense: if $e' \in E'$ has target b then
-$b \in V'$ and so f (b) does not exist, and most certainly is not the source of any edge
-in E. In fact, I really have no idea what you want to say here; the explanation
-below the definition does not clarify matters at all.}
-
-
-
-A model, as per \cref{def:model}, is a metamodel instance where all the containment relations are respected. This means that if an object that is contained (as per the metamodel) exists in the model, then the model will also contain an instance of that containment relation together with an object that contains it. Two models can be observed in \cref{fig:transformationexample}, which are respectively instances of the \emph{Organization language} and \emph{Gender language} found in \cref{fig:squadmetamodel}.\\
-Note that the containment constraint does not necessarily lead to infinite models in the case of containment relations with the same source and target classes. In fact, if the cardinality of the target class is allowed to be zero, then it is not necessary that the containment relation is instantiated. For example, this is the case for the containment relation \emph{supervise} in the metamodel of~\cref{fig:OrganizationLanguage}.
-
-
-\reviewer{“the cardinality of the target class”?? Are you talking about edge multiplicities here (which you have chosen not to include)?}
-
-
-\begin{definition}{Input-Output Model\\}
-\label{def:input_output_model}
-An input-output model is a 6-tuple $\big\langle V,E,(s,t),\tau,Input,\\Output\big\rangle$, where: $Input=\langle V',E',st',\tau'\rangle\in \textsc{Instance}^{sr}$ is a model; $Output=\langle V'',E'',st'',\tau''\rangle\in \textsc{Instance}^{tg}$ is a metamodel instance; $Input$ and $Output$ are disjoint. Additionally we have that $V=V'\cup V''$, $E\subseteq E'\cup E''$ and $\tau\subseteq \tau'\cup \tau''$, where the co-domain of $\tau$ is the union of the co-domains of $\tau'$ and $\tau''$ and the set $\{trace\}$. An edge $e \in E\setminus E'\cup E''$ is called a \emph{traceability link} and is such that $s(e)\in V''$, $t(e)\in V'$ and $\tau(e)=trace$. The set of all match-apply patterns for a source metamodel $sr$ and a target metamodel $tg$ is called $\textsc{Iom}^{sr}_{tg}$.
-\end{definition}
-
-\reviewer{Why is Input a model and Output a metamodel instance? Note that
-$\backslash$ binds stronger than $\cup$ in $E \backslash E' \cup E$ ′′ . “match-apply patterns” → “input-output
-patterns”}
-%Change if needed
-% \levi{A match-apply model is the union of an input and output models, plus potential traceability links between those models. Traceability links are now typed using the typing function $\tau$. A traceability link it typed with type ``trace''. This makes the definitions shorter and more compact, which was mentioned by one of the reviewers of the paper. However, the fact that a match-apply model is now made up of models makes it that the input and the output of the transformation are always well-formed, meaning that the containment relation is always respected. It may be that a transformation does not always produce a model respecting the containment relation, which is a problem. This can be solved however if we only consider that well-formed transformations actually have semantics.}
-
-An input-output model is an object we will use when defining the semantics of a DSLTrans model transformation in \cref{sec:DSLTrans_formal}. It is composed of two metamodel instances, one called the \emph{input} and the other one the \emph{output}. An input-output model allows the representation of intermediate operational states during the execution of a model transformation. It may include a particular type of edges called \emph{traceability links}, for keeping a history of which elements in the output model originated from which elements in the input model.
-
-\begin{definition}{Metamodel Pattern and Indirect Metamodel Pattern\\}
-\label{def:metamodel_pattern} 
-
-A pattern of a metamodel $mm\in \textsc{Meta}$ is an instance of $mm$. Given a metamodel pattern $\langle V',E',st',\tau'\rangle\in \textsc{Instance}^{mm}$ we have that $\langle V,E,st,\tau\rangle$ is an \emph{indirect} pattern if $V=V'$, $E'\supseteq E$ and the co-domain of $\tau$ is the union of the co-domains of $\tau'$ and the set $\{indirect\}$. Also, if $e\in E\setminus E'$, then we have that $\tau(e)=indirect$. Given a metamodel $mm$, the set of all metamodel patterns for $mm$ is called $\textsc{Pattern}^{mm}$. The set of all indirect metamodel patterns for $mm$ is called $\textsc{Ipattern}^{mm}$.
-\end{definition}
-
-
-Metamodel patterns are introduced in \cref{def:metamodel_pattern} as an intermediate notion, formally equal to metamodel instances. An \emph{indirect} metamodel pattern is a metamodel pattern that includes edges typed as \emph{indirect}. Both structures will be used as building blocks in the construction of transformation-related structures in the upcoming text.
-
-
-\subsection{Syntactic Transformation Constructs}
-\label{sec:DSLTrans_syntax}
 
 This section will detail the abstract syntax of the constructs involved in a DSLTrans transformation.
 
-\begin{definition}{Transformation Rule\\}
+As discussed in Section~\ref{subsec:DSLTrans_syntax}, DSLTrans transformations are composed of rules arranged in layers.
+
+
+\subsubsection*{DSLTrans Transformation Rule}
+
+A transformation rule is the elemental block of a model transformation. Several transformation rules can be observed in the Police Station transformation in \cref{fig:dsltransformation}. A formal transformation rule includes a non-empty match pattern and a non-empty apply pattern (also known in the model transformation literature as a rule's \emph{left hand side} and \emph{right hand side}).
+
+A match pattern can include indirect links that are used to transitively match containment relations in a model. The apply pattern of a rule always contains at least one apply element that is not connected to a backward link or an edge, meaning in practice that a rule will always produce something and not only match. An apply pattern does not include indirect links as it is used only for the construction of parts of instances of a metamodel. A transformation rule also includes backward links, as informally introduced in \cref{subsec:DSLTrans_constructs}.
+
+
+\begin{definition}{DSLTrans Transformation Rule\\}
 \label{def:transformation_rule}
 
-A transformation rule is a 6-tuple $\big\langle V,E,(s,t),\tau, Match,\\Apply\big\rangle$, where: $Match=\langle V',E',st',\tau'\rangle\in \textsc{Ipattern}^{sr}$ such that: $Match\neq \epsilon$\footnote{We use the simplified $\epsilon$ notation to denote empty n-tuples structures.} is an non-empty indirect metamodel pattern; $Apply=\langle V'',E'',st'',\tau''\rangle\in \textsc{Pattern}^{tg}$ such that $Apply\neq\epsilon$ is a metamodel pattern; $Match$ and $Apply$ are disjoint. We also have that $V=V'\cup V''$, $E\subseteq E'\cup E''$ and $\tau\subseteq \tau'\cup \tau''$, where the co-domain of $\tau$ is the union of the co-domains of $\tau'$ and $\tau''$ and the set $\{trace\}$. An edge $e \in E\setminus E'\cup E''$ is called a \emph{backward link} and is such that $s(e)\in V''$, $t(e)\in V'$ and $\tau(e)=trace$. We additionally impose that there always exists a $v_1\in V''$ in the Apply part of the rule such that $\nexists e\,.\, v_1\xrightarrow{e} v_2$ and $\tau(e)=trace$, or that $E''$ is not empty. The set of all transformation rules for a source metamodel $sr$ and a target metamodel $tg$ is called $\textsc{Rule}^{sr}_{tg}$.
+A DSLTrans transformation rule is a three-tuple $\big\langle \mathit{Match}, \mathit{Apply}, \mathit{backward}\big\rangle$, where:
+
+\begin{itemize}
+\item $\mathit{Match}, \mathit{Apply} \in \textsc{Tg}$
+\item $\mathit{Match}, \mathit{Apply} $ are non-empty and disjoint
+\item $\mathit{backward} = \{E_{back}, (s_{back}, t_{back})\}$
+\end{itemize}  
+
+Note that when we require an element of the $\mathit{Match}$ or $\mathit{Apply}$ graphs, such as the vertices, we will index the required element. For example, the vertices for the \textit{Match} graph will be $V_{\textit{Match}}$.
+
+$\mathit{backward}$ contains backward links, which as discussed in Section~\ref{subsec:DSLTrans_constructs} allow for rules to define dependencies between elements.
+\begin{itemize}
+\item $E_{back}$ contains the links
+\item $(s_{back}, t_{back})$ is a pair of functions $s_{back}: E_{back}\rightarrow V_{\textit{Apply}}$ and $t_{back}: E_{back}\rightarrow V_{\textit{Match}}$ that respectively provide the source and target vertices for each backward edge
+\begin{itemize}
+\item Note the source of backward links is a vertex in $V_{\textit{Match}}$ while the target is a vertex in $V_{\textit{Apply}}$
+\end{itemize}
+\end{itemize}
 
 \end{definition}
 
-\reviewer{e in $\tau(e) = \mathit{trace}$ is still bound by $\nexists$, so “and” should be $\land$}
+We additionally impose that for the well-formedness of a DSLTrans rule, there always exists an element or edge to be created in the \textit{Apply} graph to be created. That is, either there are edges to be created in the \textit{Apply} graph, or there is a vertex in the \textit{Apply} graph that is not the source of a backward link.
 
-A transformation rule is the elemental block of a model transformation. Several transformation rules can be observed in the Police Station transformation in \cref{fig:dsltransformation}. A formal transformation rule includes a non-empty match pattern and a non-empty apply pattern (also known in the model transformation literature as a rule's \emph{left hand side} and \emph{right hand side}). The apply pattern of a rule always contains at least one apply element that is not connected to a backward link or an edge, meaning in practice that a rule will always produce something and not only match. A match pattern can include indirect links that are used to transitively match containment relations in a model. An apply pattern does not include indirect links as it is used only for the construction of parts of instances of a metamodel. A transformation rule includes backward links, as informally introduced in \cref{subsec:DSLTrans_constructs}. Backward links are formally typed as \emph{trace}.%This eases modeling matching rules on models  by the use of typed graph homomorphisms.
+\begin{itemize}
+\item $E_{\textit{Apply}} \neq \emptyset \lor$
+\item $ \exists v \in V_{\textit{Apply}} | \big\{\forall e \in E_{back}: s(e) \neq v \big\}$
+\end{itemize}
+
+a $v_1\in V''$ in the Apply part of the rule such that $\nexists e\,.\, v_1\xrightarrow{e} v_2$ and $\tau(e)=trace$, or that $E''$ is not empty. 
+
+
 
 
 \begin{definition}{Matcher of a Transformation Rule\\}
@@ -417,6 +319,32 @@ are always resolved unambiguously.}
 
 
 We naturally extend to transformation rules (\cref{def:transformation_rule}) and transformation executions (\cref{def:modeltransformation}) the typed graph operations introduced in \cref{sec:formal_background}.  Also, given a structure such as transformation rule $rl = \langle V,E,st,\tau,Match,\\Apply\rangle$, we will refer to the structure's components by using the component's name followed by the variable that holds the structure in between parenthesis. For example, we will write $V(rl)$ to designate the $V$ component of $rl$ or $Apply(rl)$ to designate $rl$'s $Apply$ component.
+
+
+
+\begin{definition}{Input-Output Model\\}
+\label{def:input_output_model}
+An input-output model is a 6-tuple $\big\langle V,E,(s,t),\tau,Input,\\Output\big\rangle$, where:
+\begin{itemize}
+\item $Input=\langle V',E',st',\tau'\rangle\in \textsc{Instance}^{sr}$ is a model
+\item $Output=\langle V'',E'',st'',\tau''\rangle\in \textsc{Instance}^{tg}$ is a metamodel instance
+\item $Input$ and $Output$ are disjoint
+\end{itemize}
+
+Additionally we have that $V=V'\cup V''$, $E\subseteq E'\cup E''$ and $\tau\subseteq \tau'\cup \tau''$, where the co-domain of $\tau$ is the union of the co-domains of $\tau'$ and $\tau''$ and the set $\{trace\}$.
+
+An edge $e \in E\setminus E'\cup E''$ is called a \emph{traceability link} and is such that $s(e)\in V''$, $t(e)\in V'$ and $\tau(e)=trace$. 
+
+ set of all match-apply patterns for a source metamodel $sr$ and a target metamodel $tg$ is called $\textsc{Iom}^{sr}_{tg}$.
+\end{definition}
+
+\reviewer{Why is Input a model and Output a metamodel instance? Note that
+$\backslash$ binds stronger than $\cup$ in $E \backslash E' \cup E$ ′′ . “match-apply patterns” → “input-output
+patterns”}
+%Change if needed
+% \levi{A match-apply model is the union of an input and output models, plus potential traceability links between those models. Traceability links are now typed using the typing function $\tau$. A traceability link it typed with type ``trace''. This makes the definitions shorter and more compact, which was mentioned by one of the reviewers of the paper. However, the fact that a match-apply model is now made up of models makes it that the input and the output of the transformation are always well-formed, meaning that the containment relation is always respected. It may be that a transformation does not always produce a model respecting the containment relation, which is a problem. This can be solved however if we only consider that well-formed transformations actually have semantics.}
+
+An input-output model is an object we will use when defining the semantics of a DSLTrans model transformation in \cref{sec:DSLTrans_formal}. It is composed of two metamodel instances, one called the \emph{input} and the other one the \emph{output}. An input-output model allows the representation of intermediate operational states during the execution of a model transformation. It may include a particular type of edges called \emph{traceability links}, for keeping a history of which elements in the output model originated from which elements in the input model.
 
 
 \subsection{Semantic Transformation Constructs}
