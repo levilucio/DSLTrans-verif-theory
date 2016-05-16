@@ -58,6 +58,8 @@ Note that this section presents a collection of formal tools that are used in th
 \newcommand{\VT}{\mathit{VT}}
 
 
+\bentley{Make sure that terminology is consistent between elements and vertices}
+
 \subsection{Graph Structures and Functions}
 \label{sec:typed_graphs}
 
@@ -247,28 +249,32 @@ As discussed in Section~\ref{subsec:DSLTrans_syntax}, DSLTrans transformations a
 
 \subsubsection*{DSLTrans Transformation Rule}
 
-A transformation rule is the elemental block of a model transformation. Several transformation rules can be observed in the Police Station transformation in \cref{fig:dsltransformation}. A formal transformation rule includes a non-empty match pattern and a non-empty apply pattern (also known in the model transformation literature as a rule's \emph{left hand side} and \emph{right hand side}).
+A transformation rule is the elemental block of a DSLTrans transformation. Several transformation rules can be observed in the Police Station transformation in \cref{fig:dsltransformation}.
 
-A match pattern can include indirect links that are used to transitively match containment relations in a model. The apply pattern of a rule always contains at least one apply element that is not connected to a backward link or an edge, meaning in practice that a rule will always produce something and not only match. An apply pattern does not include indirect links as it is used only for the construction of parts of instances of a metamodel. A transformation rule also includes backward links, as informally introduced in \cref{subsec:DSLTrans_constructs}.
+A transformation rule includes a non-empty match pattern and a non-empty apply pattern. This is also known in the model transformation literature as a rule's \emph{left hand side} and \emph{right hand side}. A match pattern can include indirect links that are used to transitively match containment relations in a model. The apply pattern of a rule always contains at least one apply element that is not connected to a backward link or an edge, meaning in practice that a rule will always produce something and not only match. An apply pattern does not include indirect links as it is used only for the construction of parts of instances of a metamodel.
+
+A transformation rule also includes backward links, as informally introduced in \cref{subsec:DSLTrans_constructs}. As described in that section, backward links define dependencies between rules. \bentley{Expand}
 
 
 \begin{definition}{DSLTrans Transformation Rule\\}
 \label{def:transformation_rule}
 
-A DSLTrans transformation rule is a three-tuple $\big\langle \mathit{Match}, \mathit{Apply}, \mathit{backward}\big\rangle$, where:
+A DSLTrans transformation rule is a three-tuple $\big\langle \mathit{Match}$, $\mathit{Apply}$, $\mathit{backward}\big\rangle$, where:
 
 \begin{itemize}
 \item $\mathit{Match}, \mathit{Apply} \in \textsc{Tg}$
 \item $\mathit{Match}, \mathit{Apply} $ are non-empty and disjoint
 \item $\mathit{backward} = \{E_{back}, (s_{back}, t_{back})\}$
+\begin{itemize}
+\item $E_{back} \cap E_{Match} = \emptyset, E_{back} \cap E_{Apply} = \emptyset$
+\end{itemize}
 \end{itemize}  
 
 Note that when we require an element of the $\mathit{Match}$ or $\mathit{Apply}$ graphs, such as the vertices, we will index the required element. For example, the vertices for the \textit{Match} graph will be $V_{\textit{Match}}$.
 
-$\mathit{backward}$ contains backward links, which as discussed in Section~\ref{subsec:DSLTrans_constructs} allow for rules to define dependencies between elements.
 \begin{itemize}
-\item $E_{back}$ contains the links
-\item $(s_{back}, t_{back})$ is a pair of functions $s_{back}: E_{back}\rightarrow V_{\textit{Apply}}$ and $t_{back}: E_{back}\rightarrow V_{\textit{Match}}$ that respectively provide the source and target vertices for each backward edge
+\item $E_{back}$ contains the backward links
+\item $(s_{back}, t_{back})$ is a pair of functions $s_{back}: E_{back}\rightarrow V_{\textit{Apply}}$ and $t_{back}: E_{back}\rightarrow V_{\textit{Match}}$ that respectively provide the source and target vertices for each backward link
 \begin{itemize}
 \item Note the source of backward links is a vertex in $V_{\textit{Match}}$ while the target is a vertex in $V_{\textit{Apply}}$
 \end{itemize}
@@ -280,45 +286,33 @@ We additionally impose that for the well-formedness of a DSLTrans rule, there al
 
 \begin{itemize}
 \item $E_{\textit{Apply}} \neq \emptyset \lor$
-\item $ \exists v \in V_{\textit{Apply}} | \big\{\forall e \in E_{back}: s(e) \neq v \big\}$
+\item $ \exists v \in V_{\textit{Apply}} | \big\{\forall e \in E_{back}: s_{back}(e) \neq v \big\}$
 \end{itemize}
 
-a $v_1\in V''$ in the Apply part of the rule such that $\nexists e\,.\, v_1\xrightarrow{e} v_2$ and $\tau(e)=trace$, or that $E''$ is not empty. 
 
+\subsubsection*{Matcher of a Transformation Rule}
 
+To create the actual matcher construct that will be matched during a rule's execution, the rule's \textit{Match} graph is combined with backward links, as well as any \textit{Apply} vertices connected to the backward links.
 
 
 \begin{definition}{Matcher of a Transformation Rule\\}
 \label{def:back_match_transformation_rule}
 
-Let $rl = \big\langle V,E,st,\tau, Match,Apply\big\rangle$ be a transformation rule where $Match =\langle V_m, E_m, st_m, \tau_m\rangle$. We define $rl$'s matcher, noted $\Vert rl\Vert$, as the transformation rule $\big\langle V',E',st',\tau',Match,\\Apply'\big\rangle\sqsubseteq rl$ where $v_1\xrightarrow{e} v_2\in E'$ if and only if $v_1,v_2\in Match$ or $\tau(e)=trace$ and $V'=V_m\cup \big\{v_1\,|\,v_1\xrightarrow{e} v_2\in E \land \tau(e)=trace\big\}$.
-\reviewer{Definition 14: where does Apply' come from? Should v1 be 
-  an element of Apply?}
-\end{definition}
+Let the transformation rule $r = \big\langle \mathit{Match}$, $\mathit{Apply}$, $\mathit{backward}\big\rangle$.
 
-\reviewer{Def. 14: According to your own criterion, $||rl||$ is not a rule as it does not create
-either a node or an edge.}
-
-
-\Cref{def:back_match_transformation_rule} introduces the notion of matcher for a transformation rule which consists solely of the match pattern of a rule and its backward links, if any. The matcher of a rule constitutes the complete pattern that a DSLTrans rule attempts to match over a input-output model during rule execution. Traceability links between input and output model elements generated during transformation execution are matched by transformation rules' backward links, as informally explained in \cref{subsec:DSLTrans_constructs}.
-
-
-\begin{definition}{Expanded Transformation Rule\\}
-\label{def:transformation_rule_expansion}
-
-Let $rl = \big\langle V,E,st,\tau,Match,Apply\rangle \in \textsc{Rule}^{sr}_{tg}$ be a transformation rule where $Match = \langle V',E',st',\tau'\rangle$ and also we have that $sr =\langle V'',E'',st'',\tau'',\leq \rangle$. The expansion of $rl$, noted $rl^{\star}$ is a set of transformation rules built as follows:
+We define $r$'s matcher, noted $\Vert r \Vert$, to be a typed graph six-tuple $\langle V,E,(s,t),\tau, \VT, \ET\rangle$, where:
 \begin{itemize}
-  \item $rl\in rl^{\star}$;
-  \item $\big\langle V,E,st,\tau',Match,Apply\rangle\in rl^{\star}$ iff for all $v\in V'$ we have that $\tau'(v)\leq \tau(v)$.
+\item $V = V_{Match} \cup \big\{v \in V_{Apply} | \{\exists e \in E_{back} | s_{back}(e) = v\}\big\}$
+\item $E = E_{Match} \cup E_{back}$
+\item $s = s_{Match} \cup s_{back}$, $t = t_{Match} \cup t_{back}$
+\item $\tau = \tau_{Match} \cup \tau_{Apply}$
+\item $\VT = \VT_{Match} \cup \VT_{Apply}$
+\item $\ET = \ET_{Match} \cup \ET_{Apply}$
 \end{itemize}
+
 \end{definition}
 
-\reviewer{The first bullet is a special case of the second, so can be removed.}
-
-The expansion of a transformation rule is a set of transformation rules. Each rule in that set includes a possible replacement of each of the classes in the match part of the original rule by one of its subtypes. Expanded transformation rules will be important to ensure that polymorphism is correctly handled in the developments that follow.  
- 
-%\levi{A transformation rule expansion simply takes a rule and builds all possible rules where a rule element is replaced by one of its subtypes.}
-
+\subsubsection*{DSLTrans Transformation Layer}
 
 \begin{definition}{Layer, Model Transformation\\}
 \label{def:layer_transformation}
