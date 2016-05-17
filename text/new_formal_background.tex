@@ -52,7 +52,7 @@ Note that this section presents a collection of formal tools that are used in th
     definition and spell out the differences?}
 
 
-\newcommand{\defineggprime}{Let $\langle V,E,(s,t),\tau,VT,ET\rangle = g$, and\\ $\langle V',E',(s',t'),\tau',VT',ET'\rangle = g'$, where $g, g' \in \textsc{Tg}$.}
+\newcommand{\defineggprime}{Let $\langle V,E,(s,t),\tau,VT,ET\rangle = g$, and\\ $\langle V',E',(s',t'),\tau',VT',ET'\rangle = g'$, where $g, g' \in \textsc{TG}$.}
 
 \newcommand{\ET}{\mathit{ET}}
 \newcommand{\VT}{\mathit{VT}}
@@ -77,7 +77,7 @@ A typed graph is a 6-tuple $\langle V,E,(s,t),\tau, \VT, \ET\rangle$ where:
 \item $(s,t)$ is a pair of functions $s: E\rightarrow V$ and $t: E\rightarrow V$ that respectively provide the source and target vertices for each edge in the graph
 \item Function $\tau:V\cup E\rightarrow \VT \cup \ET$ is a typing function for the elements of $V$ and $E$, where $\VT$ and $\ET$ are disjoint finite sets of vertex and edge type identifiers and $\tau(v)\in \VT$ if $v\in V$ and $\tau(e)\in \ET$ if $e\in E$
 \item Edges $e\in E$ are noted $v\xrightarrow{e} v'$ if $s(e)=v$ and $t(e)=v'$, or simply e if the context is unambiguous
-\item The set of all typed graphs is called $\textsc{Tg}$
+\item The set of all typed graphs is called $\textsc{TG}$
 \item We define the empty graph to be a graph with $V = \emptyset$, $E = \emptyset$, and the other elements to be empty functions
 \end{itemize}
 \end{definition}
@@ -125,7 +125,7 @@ $g'$ is a typed subgraph of $g$, written $g'\sqsubseteq g$, iff $V'\subseteq V$,
 
 \end{definition}
 
-Given a typed graph $g\in \textsc{Tg}$, will use the notation $Components(g)$ to describe the set of strongly connected typed graphs in $g$. Also, we will use the notation $g|_{t}$ to refer to the restriction of graph $g$ to its subgraph containing only edges of type $t$.
+Given a typed graph $g\in \textsc{TG}$, will use the notation $Components(g)$ to describe the set of strongly connected typed graphs in $g$. Also, we will use the notation $g|_{t}$ to refer to the restriction of graph $g$ to its subgraph containing only edges of type $t$.
 
 
 \subsubsection*{Typed Graph Union}
@@ -134,7 +134,7 @@ We now define how two typed graphs are united. A union of two typed graphs is tr
 \begin{definition}{Typed Graph Union\\}
 \label{def:typed_graph_union}
 
-The typed graph union is the function $\sqcup :\textsc{Tg}\times \textsc{Tg}\rightarrow \textsc{Tg}$ defined as:
+The typed graph union is the function $\sqcup :\textsc{TG}\times \textsc{TG}\rightarrow \textsc{TG}$ defined as:
 \begin{multline*}
 \big\langle V,E,(s,t),\tau,\VT,\ET\big\rangle\;\sqcup\;\big\langle V',E',(s',t'),\tau',\VT',\ET'\big\rangle=\\
 \big\langle V\cup V', E\cup E',(s\cup s', t\cup t'), \tau\cup \tau', \VT\cup \VT', \ET\cup ET'\big\rangle
@@ -227,7 +227,7 @@ DSLTrans matching constructs allow for the matching of indirect links, where as 
 \begin{definition}{Transitive Closure\\}
 \label{def:instance_closure}
 
-Let $g$ be a graph $\langle V,E,(s, t),\tau\rangle \in \textsc{Tg}$. Then the transitive closure $g^{*} = \langle V,E',(s, t),\tau\rangle \in \textsc{Tg}$, where:
+Let $g$ be a graph $\langle V,E,(s, t),\tau\rangle \in \textsc{TG}$. Then the transitive closure $g^{*} = \langle V,E',(s, t),\tau\rangle \in \textsc{TG}$, where:
 
 $E' = E \cup $ the transitive closure of $\big\{v\xrightarrow{e}v' | \mathit{isIndirect(e)} \big\}$
 \end{definition}
@@ -265,7 +265,7 @@ A transformation rule also includes backward links, as informally introduced in 
 A DSLTrans transformation rule is a four-tuple $\big\langle \mathit{NAC}$, $\mathit{Match}$, $\mathit{Apply}$, $\mathit{backward}\big\rangle$, where:
 
 \begin{itemize}
-\item $\mathit{Match}, \mathit{Apply} \in \textsc{Tg}$
+\item $\mathit{Match}, \mathit{Apply} \in \textsc{TG}$
 \item $\mathit{Match}$ and $\mathit{Apply} $ are non-empty and are disjoint
 \item $\mathit{NAC}$ may be an empty graph, and is disjoint from both $\mathit{Match}$ and $\mathit{Apply} $
 \item $\mathit{backward} = \{E_{back}, (s_{back}, t_{back})\}$
@@ -283,6 +283,8 @@ Note that when we require an element of the $\mathit{Match}$, $\mathit{Apply}$, 
 \item Note the source of backward links is a vertex in $V_{\textit{Match}}$ while the target is a vertex in $V_{\textit{Apply}}$
 \end{itemize}
 \end{itemize}
+
+\textsc{Rules} is the set of all rules.
 
 \end{definition}
 
@@ -317,64 +319,59 @@ We define $r$'s matcher, noted $\Vert r \Vert$, to be a typed graph six-tuple $\
 
 \end{definition}
 
-\subsubsection*{DSLTrans Transformation Layer}
+\subsubsection*{DSLTrans Layer and Transformation}
 
-\begin{definition}{Layer, Model Transformation\\}
-\label{def:layer_transformation}
+\cref{def:layer} and \cref{def:transformation} formalise the abstract syntax of a model transformation, introduced in \cref{sec:dsltrans}. An example of a model transformation can be observed in \cref{fig:dsltransformation}, the Police Station transformation. As expected, a DSLTrans transformation is composed of a sequence of layers where each layer is composed of a set of rules.
 
-A layer is a finite set of transformation rules $l\subseteq \textsc{Rule}^{sr}_{tg}$. The set of all layers for a source metamodel $sr$ and a target metamodel $tg$  is called $\textsc{Layer}^{sr}_{tg}$. A model transformation is a finite list of layers denoted $[l_{1}::l_{2}::\ldots::l_{n}]$ where $l_{k}\in \textsc{Layer}^{sr}_{tg}$ and $1\leq k \leq n$, $n\in \mathbb{N}$. We also impose that for any pair of rules $rl_1,rl_2\in \bigcup_{1\leq k\leq n}l_k$, if $\Vert rl_1\Vert \cong rl$ and $rl\sqsubseteq \Vert rl_2\Vert $ then $rl_2$ appears in a layer later than $rl_1$ and the apply parts of $rl_1$ and $rl_2$ are not isomorphic. The set of all transformations for a source metamodel $s$ and a target metamodel $t$ is called $\textsc{Transf}^{sr}_{tr}$. 
+\begin{definition}{Layer\\}
+\label{def:layer}
+A layer is a finite set of transformation rules: $\{r_0, r_1, \dots, r_n | r_i \in \textsc{Rules}\}$.
 
-% The expansion of a layer $l\subseteq RULE^{sr}_{tg}$, noted $l^{\star}$, is such that that if
-% $rl\in l$ then $rl'\in l$ if $rl'\in rl^{\star}$. This means that if a
-% transformation rule is present is the layer, its expansion is also part of the
-% layer.
+The set of all layers is denoted $\textsc{Layers}$. 
+\end{definition}
+
+Note that the order of the rules within the layer does not matter, due to the semantics of DSLTrans rule execution.
+
+\begin{definition}{DSLTrans Transformation\\}
+\label{def:transformation}
+
+A DSLTrans transformation is a finite list of layers denoted $\{l_0, l_1, \dots, l_n | l \in \textsc{Layers}\}$. Note that the order of layers in a transformation is important.
+
+The set of all transformations is denoted $\textsc{Transforms}$.
 
 \end{definition}
 
-\reviewer{The second half of Def. 16 raises a lot of questions. First of all, neither $\sqsubseteq 	 $ nor
-$\cong$ are defined over rules; however, I can imagine what it would look like. Then,
-what role does rl play; do you just mean $||rl_1 || \sqsubseteq ||rl_2 ||$ given a suitable isomorphic copy? What if $||rl_1 || \cong ||rl_2 || $(as a special case); is your condition then not
-unsatisfiable as $rl_1$ must appear after $rl_2$ as well as vice versa?}
 
 
-\reviewer{More importantly though, why do you care? Your semantics makes sure that
-rules are never considered for application twice in succession, so dependencies
-are always resolved unambiguously.}
+\subsubsection*{Input-Output Model}
 
+To describe the semantics of a DSLTrans model transformation, we must define an \textit{input-output model} construct. This input-output model allows the representation of intermediate operational states during the execution of a model transformation.
 
-\cref{def:layer_transformation} formalises the abstract syntax of a model transformation, introduced in \cref{sec:dsltrans}. An example of a model transformation can be observed in \cref{fig:dsltransformation}, the Police Station transformation. As expected, a formal DSLTrans transformation is composed of a sequence of layers where each layer is composed of a set of rules. The last condition of \cref{def:layer_transformation} imposes that, for any two pair of rules in the transformation, the matcher of the second rule never partially or totally subsumes (or contains) the matcher of the first rule, unless the second rule is in a subsequent layer and produces something more than the first rule. This condition avoids situations where the execution of a rule in a DSLTrans model transformation necessarily implies the execution of another rule (except for when rules having backward links necessarily execute because all their dependencies were created during the execution of previous layers). \reviewer{I do not fully understand why this
-  could be problematic. Do you have an example?}
-
-\paragraph{\textbf{Notation:}}
-
-
-We naturally extend to transformation rules (\cref{def:transformation_rule}) and transformation executions (\cref{def:modeltransformation}) the typed graph operations introduced in \cref{sec:formal_background}.  Also, given a structure such as transformation rule $rl = \langle V,E,st,\tau,Match,\\Apply\rangle$, we will refer to the structure's components by using the component's name followed by the variable that holds the structure in between parenthesis. For example, we will write $V(rl)$ to designate the $V$ component of $rl$ or $Apply(rl)$ to designate $rl$'s $Apply$ component.
-
-
+The structure of a input-output model is intentionally very similar to a DSLTrans rule. There is one typed graph representing the input model and another typed graph representing the output model. As well, the construct contains a set of edges, named \emph{traceability links}, for keeping a history of which elements in the output model originated from which elements in the input model.
 
 \begin{definition}{Input-Output Model\\}
 \label{def:input_output_model}
-An input-output model is a 6-tuple $\big\langle V,E,(s,t),\tau,Input,\\Output\big\rangle$, where:
+
+An input-output model rule is a three-tuple $\big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle$, where:
+
 \begin{itemize}
-\item $Input=\langle V',E',st',\tau'\rangle\in \textsc{Instance}^{sr}$ is a model
-\item $Output=\langle V'',E'',st'',\tau''\rangle\in \textsc{Instance}^{tg}$ is a metamodel instance
-\item $Input$ and $Output$ are disjoint
+\item $\mathit{Input}, \mathit{Output} \in \textsc{TG}$
+\item $\mathit{Input}$ and $\mathit{Output} $ may be empty and are disjoint
+\item $\mathit{trace} = \{E_{trace}, (s_{trace}, t_{trace})\}$
+\begin{itemize}
+\item $E_{trace}$ contains the traceability links
+\item $E_{trace} $ is disjoint from $E_{Input}$ and $E_{Output}$
+\item $(s_{trace}, t_{trace})$ is a pair of functions $s_{trace}: E_{trace}\rightarrow V_{\textit{Output}}$ and $t_{trace}: E_{trace}\rightarrow V_{\textit{Input}}$ that respectively provide the source and target vertices for each traceability link
 \end{itemize}
 
+\end{itemize}  
+
+
+
+\bentley{Do we need to have V and E for all vertices and edges in the IOM?}
 Additionally we have that $V=V'\cup V''$, $E\subseteq E'\cup E''$ and $\tau\subseteq \tau'\cup \tau''$, where the co-domain of $\tau$ is the union of the co-domains of $\tau'$ and $\tau''$ and the set $\{trace\}$.
 
-An edge $e \in E\setminus E'\cup E''$ is called a \emph{traceability link} and is such that $s(e)\in V''$, $t(e)\in V'$ and $\tau(e)=trace$. 
-
- set of all match-apply patterns for a source metamodel $sr$ and a target metamodel $tg$ is called $\textsc{Iom}^{sr}_{tg}$.
 \end{definition}
-
-\reviewer{Why is Input a model and Output a metamodel instance? Note that
-$\backslash$ binds stronger than $\cup$ in $E \backslash E' \cup E$ ′′ . “match-apply patterns” → “input-output
-patterns”}
-%Change if needed
-% \levi{A match-apply model is the union of an input and output models, plus potential traceability links between those models. Traceability links are now typed using the typing function $\tau$. A traceability link it typed with type ``trace''. This makes the definitions shorter and more compact, which was mentioned by one of the reviewers of the paper. However, the fact that a match-apply model is now made up of models makes it that the input and the output of the transformation are always well-formed, meaning that the containment relation is always respected. It may be that a transformation does not always produce a model respecting the containment relation, which is a problem. This can be solved however if we only consider that well-formed transformations actually have semantics.}
-
-An input-output model is an object we will use when defining the semantics of a DSLTrans model transformation in \cref{sec:DSLTrans_formal}. It is composed of two metamodel instances, one called the \emph{input} and the other one the \emph{output}. An input-output model allows the representation of intermediate operational states during the execution of a model transformation. It may include a particular type of edges called \emph{traceability links}, for keeping a history of which elements in the output model originated from which elements in the input model.
 
 
 \subsection{Semantic Transformation Constructs}
@@ -392,6 +389,8 @@ this case, B.16 is the correct version.}
 Let  $tr\in \textsc{Transf}^{sr}_{tg}$ be a transformation and $input \in \textsc{Model}^{sr}$ be a model. Assume we also have that: $$\langle V,E,st,\tau,input,\epsilon\rangle,tr \xrightarrow{trstep} \langle V',E',st',\tau',input,output\rangle$$
 A model transformation execution is the input-output model $\langle V',E',st',\tau',input,output\rangle\in \textsc{Iom}^{sr}_{tg}$, where $output\in \textsc{Iom}^{sr}_{tg}$ is an input-output model. The set of all model transformation executions for transformation $tr$ is written $\textsc{Exec}(tr)$. A model transformation with an empty input model is noted $\epsilon_{ex}$. Note that relation $trstep$ is formally defined in \cref{sec:DSLTrans_formal_appendix}.
 \end{definition}
+
+Note that ${VT}_{Input}$ and ${ET}_{Input}$ will 
 
 
 Finally, as stated in \cref{def:modeltransformation}, we consider a model transformation execution to be the input-output model (IOM) resulting from executing a set of rules on a starting IOM. This starting IOM includes the transformation's input in its input part and has an empty output part. The starting IOM represents the first step of the transformation when no rule has been executed yet. A transformation execution results from executing all the rules in a DSLTrans model transformation.
@@ -601,6 +600,31 @@ While the execution of the rules belonging to a layer happens in parallel, the e
 % executions having source metamodel $s$ and target metamodel $t$ is called
 % $Exec^{s}_{t}$.
 % \end{definition}
+
+
+\subsubsection*{Subsumption}
+
+ where $l_{k}\in \textsc{Layer}^{sr}_{tg}$ and $1\leq k \leq n$, $n\in \mathbb{N}$. We also impose that for any pair of rules $rl_1,rl_2\in \bigcup_{1\leq k\leq n}l_k$, if $\Vert rl_1\Vert \cong rl$ and $rl\sqsubseteq \Vert rl_2\Vert $ then $rl_2$ appears in a layer later than $rl_1$ and the apply parts of $rl_1$ and $rl_2$ are not isomorphic. 
+% The expansion of a layer $l\subseteq RULE^{sr}_{tg}$, noted $l^{\star}$, is such that that if
+% $rl\in l$ then $rl'\in l$ if $rl'\in rl^{\star}$. This means that if a
+% transformation rule is present is the layer, its expansion is also part of the
+% layer.
+
+The last condition of \cref{def:layer_transformation} imposes that, for any two pair of rules in the transformation, the matcher of the second rule never partially or totally subsumes (or contains) the matcher of the first rule, unless the second rule is in a subsequent layer and produces something more than the first rule. This condition avoids situations where the execution of a rule in a DSLTrans model transformation necessarily implies the execution of another rule (except for when rules having backward links necessarily execute because all their dependencies were created during the execution of previous layers). \reviewer{I do not fully understand why this
+  could be problematic. Do you have an example?}
+  
+
+\reviewer{The second half of Def. 16 raises a lot of questions. First of all, neither $\sqsubseteq 	 $ nor
+$\cong$ are defined over rules; however, I can imagine what it would look like. Then,
+what role does rl play; do you just mean $||rl_1 || \sqsubseteq ||rl_2 ||$ given a suitable isomorphic copy? What if $||rl_1 || \cong ||rl_2 || $(as a special case); is your condition then not
+unsatisfiable as $rl_1$ must appear after $rl_2$ as well as vice versa?}
+
+
+\reviewer{More importantly though, why do you care? Your semantics makes sure that
+rules are never considered for application twice in succession, so dependencies
+are always resolved unambiguously.}
+
+\subsection{Confluence and Termination Properties}
 
 We now prove two important properties about executions of transformations expressed in the subset of DSLTrans presented in this paper: \emph{confluence} and \emph{termination}. The proofs are provided at a high level, given the fact that DSLTrans essentially enforces both these properties by construction of the semantics of DSLTrans.
 
