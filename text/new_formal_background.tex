@@ -44,7 +44,7 @@ edges, even that difference would disappear.}
 
 Armed with the fundamental notion of typed graph, we can then introduce other formal concepts in Sections~\ref{sec:DSLTrans_formal}, \ref{sec:DSLTrans_syntax} and \ref{sec:DSLTrans_semantics} which describe the artifacts from the modeling and transformation world that we require for our verification technique. Naturally, we start by introducing the central notion of \emph{metamodel}, allowing the description of the inputs and outputs of a model transformation. Other fundamental notions we will define in this section are \emph{model}, \emph{transformation rule}, \emph{transformation} and the semantic concept of \emph{model transformation execution}. Several auxiliary and intermediate notions for defining the syntax and semantics of our techniques will also be introduced here. 
 
-Note that this section presents a collection of formal tools that are used in the subsequent sections of this paper where the contributions of this paper are presented. It is meant as a formal reference for the upcoming formal development. This section can be safely skipped or skimmed by the reader, who can return to these definitions punctually to understand the detailed formal underpinning of our approach. 
+Note that this section presents a collection of formal tools that are used in the subsequent sections of this paper where the contributions of this paper are presented. It is meant as a formal reference for the upcoming formal development. %This section can be safely skipped or skimmed by the reader, who can return to these definitions punctually to understand the detailed formal underpinning of our approach. 
 
 \reviewer{There is a lot of redundancy in the paper, on several levels:
   - input-output-models, path conditions and properties are
@@ -77,7 +77,8 @@ A typed graph is a 6-tuple $\langle V,E,(s,t),\tau, \VT, \ET\rangle$ where:
 \item $(s,t)$ is a pair of functions $s: E\rightarrow V$ and $t: E\rightarrow V$ that respectively provide the source and target vertices for each edge in the graph
 \item Function $\tau:V\cup E\rightarrow \VT \cup \ET$ is a typing function for the elements of $V$ and $E$, where $\VT$ and $\ET$ are disjoint finite sets of vertex and edge type identifiers and $\tau(v)\in \VT$ if $v\in V$ and $\tau(e)\in \ET$ if $e\in E$
 \item Edges $e\in E$ are noted $v\xrightarrow{e} v'$ if $s(e)=v$ and $t(e)=v'$, or simply e if the context is unambiguous
-\item The set of all typed graphs is called $\textsc{Tg}$. 
+\item The set of all typed graphs is called $\textsc{Tg}$
+\item We define the empty graph to be a graph with $V = \emptyset$, $E = \emptyset$, and the other elements to be empty functions
 \end{itemize}
 \end{definition}
 
@@ -111,7 +112,7 @@ We assume the existence of a number of functions in our formalization to aid the
 \end{itemize}
 \end{itemize}
 
-For simplification purposes, we will not model the edge cardinalities given by a metamodel in our notion of typed graph. Note that in fact require these cardinalities to be relaxed to perform our graph rewriting.
+For simplification purposes, we will not model the edge cardinalities given by a metamodel in our notion of typed graph. Note that in fact we require these cardinalities to be relaxed to perform our graph rewriting.
 
 \subsubsection*{Typed Subgraph}
 We now define the useful notion of typed subgraph. As expected, a typed subgraph is simply a restriction of a typed graph to some of its vertices and edges. 
@@ -133,17 +134,17 @@ We now define how two typed graphs are united. A union of two typed graphs is tr
 \begin{definition}{Typed Graph Union\\}
 \label{def:typed_graph_union}
 
-\defineggprime
-
-%where $VT$ and $ET'$ are disjoint sets, as well as $VT'$ and $ET$.
 The typed graph union is the function $\sqcup :\textsc{Tg}\times \textsc{Tg}\rightarrow \textsc{Tg}$ defined as:
 \begin{multline*}
-\big\langle V,E,(s,t),\tau,\VT,\ET\big\rangle\;\sqcup\;\big\langle V',E',(s',t'),\tau',\VT',\ET'\big\rangle=\\\big\langle V\cup V', E\cup
-E',(s\cup s', t\cup t'), \tau\cup \tau', \VT\cup \VT', \ET\cup ET'\big\rangle
+\big\langle V,E,(s,t),\tau,\VT,\ET\big\rangle\;\sqcup\;\big\langle V',E',(s',t'),\tau',\VT',\ET'\big\rangle=\\
+\big\langle V\cup V', E\cup E',(s\cup s', t\cup t'), \tau\cup \tau', \VT\cup \VT', \ET\cup ET'\big\rangle
 \end{multline*}
 \end{definition}
 
 Note: as a reviewer helpfully pointed out, we require that $s \cup s'$, $t \cup t'$, and $\tau \cup \tau'$ coincide on common elements. However, this can be assumed w. l. o. g..
+
+
+\bentley{Do we need typed graph intersection? Or to mention what it means for two graphs to be disjoint?}
 
 \subsubsection*{Typed Graph Homomorphism}
 For the formal development of our technique, we are interested in relations between typed graphs that are structure-preserving, i.e. homomorphisms. Homomorphisms between typed graphs preserve not only structure, but also the types of vertices and edges that are mapped. Note that, trivially, a typed graph homomorphism is a graph homomorphism.
@@ -253,27 +254,30 @@ A transformation rule is the elemental block of a DSLTrans transformation. Sever
 
 A transformation rule includes a non-empty match pattern and a non-empty apply pattern. This is also known in the model transformation literature as a rule's \emph{left hand side} and \emph{right hand side}. A match pattern can include indirect links that are used to transitively match containment relations in a model. The apply pattern of a rule always contains at least one apply element that is not connected to a backward link or an edge, meaning in practice that a rule will always produce something and not only match. An apply pattern does not include indirect links as it is used only for the construction of parts of instances of a metamodel.
 
+A rule may also contain a negative application condition (NAC) which if matched over the source graph prevents application of the rule.
+
 A transformation rule also includes backward links, as informally introduced in \cref{subsec:DSLTrans_constructs}. As described in that section, backward links define dependencies between rules. \bentley{Expand}
 
 
 \begin{definition}{DSLTrans Transformation Rule\\}
 \label{def:transformation_rule}
 
-A DSLTrans transformation rule is a three-tuple $\big\langle \mathit{Match}$, $\mathit{Apply}$, $\mathit{backward}\big\rangle$, where:
+A DSLTrans transformation rule is a four-tuple $\big\langle \mathit{NAC}$, $\mathit{Match}$, $\mathit{Apply}$, $\mathit{backward}\big\rangle$, where:
 
 \begin{itemize}
 \item $\mathit{Match}, \mathit{Apply} \in \textsc{Tg}$
-\item $\mathit{Match}, \mathit{Apply} $ are non-empty and disjoint
+\item $\mathit{Match}$ and $\mathit{Apply} $ are non-empty and are disjoint
+\item $\mathit{NAC}$ may be an empty graph, and is disjoint from both $\mathit{Match}$ and $\mathit{Apply} $
 \item $\mathit{backward} = \{E_{back}, (s_{back}, t_{back})\}$
-\begin{itemize}
-\item $E_{back} \cap E_{Match} = \emptyset, E_{back} \cap E_{Apply} = \emptyset$
-\end{itemize}
 \end{itemize}  
 
-Note that when we require an element of the $\mathit{Match}$ or $\mathit{Apply}$ graphs, such as the vertices, we will index the required element. For example, the vertices for the \textit{Match} graph will be $V_{\textit{Match}}$.
+Note that when we require an element of the $\mathit{Match}$, $\mathit{Apply}$, or $\mathit{NAC}$ graphs, such as the vertices, we will index the required element. For example, the vertices for the \textit{Match} graph will be $V_{\textit{Match}}$.
 
 \begin{itemize}
 \item $E_{back}$ contains the backward links
+\begin{itemize}
+\item $E_{back} $ is disjoint from $E_{Match}$,  $E_{Apply}$, and $E_{NAC}$
+\end{itemize}
 \item $(s_{back}, t_{back})$ is a pair of functions $s_{back}: E_{back}\rightarrow V_{\textit{Apply}}$ and $t_{back}: E_{back}\rightarrow V_{\textit{Match}}$ that respectively provide the source and target vertices for each backward link
 \begin{itemize}
 \item Note the source of backward links is a vertex in $V_{\textit{Match}}$ while the target is a vertex in $V_{\textit{Apply}}$
@@ -294,11 +298,12 @@ We additionally impose that for the well-formedness of a DSLTrans rule, there al
 
 To create the actual matcher construct that will be matched during a rule's execution, the rule's \textit{Match} graph is combined with backward links, as well as any \textit{Apply} vertices connected to the backward links.
 
+Note that the rule's NAC will also be considered in the matching of a rule.
 
 \begin{definition}{Matcher of a Transformation Rule\\}
 \label{def:back_match_transformation_rule}
 
-Let the transformation rule $r = \big\langle \mathit{Match}$, $\mathit{Apply}$, $\mathit{backward}\big\rangle$.
+Let the transformation rule $r = \big\langle \mathit{NAC}$, $\mathit{Match}$, $\mathit{Apply}$, $\mathit{backward}\big\rangle$.
 
 We define $r$'s matcher, noted $\Vert r \Vert$, to be a typed graph six-tuple $\langle V,E,(s,t),\tau, \VT, \ET\rangle$, where:
 \begin{itemize}
