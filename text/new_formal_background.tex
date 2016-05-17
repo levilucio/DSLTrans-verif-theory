@@ -112,7 +112,7 @@ We assume the existence of a number of functions in our formalization to aid the
 \end{itemize}
 \end{itemize}
 
-For simplification purposes, we will not model the edge cardinalities given by a metamodel in our notion of typed graph. Note that in fact we require these cardinalities to be relaxed to perform our graph rewriting.
+For simplification purposes, we will not represent edge cardinalities or containment relationships given by a metamodel in our notion of typed graph. Note that in fact we require these conditions to be relaxed to perform our graph rewriting.
 
 \subsubsection*{Typed Subgraph}
 We now define the useful notion of typed subgraph. As expected, a typed subgraph is simply a restriction of a typed graph to some of its vertices and edges. 
@@ -234,6 +234,8 @@ $E' = E \cup $ the transitive closure of $\big\{v\xrightarrow{e}v' | \mathit{isI
 
 
 Given a graph, its transitive closure includes, besides the original graph, all the edges belonging to the transitive closure of indirect links in that graph. Note that these transitive edges are given by the function $\mathit{isIndirect}$.
+
+\bentley{I believe that the indirect edges don't need to be removed. There's a bit of handwaving, so maybe there are edge duplicates?}
 
 In the definitions that follow we will use the $*$ notation, as in \cref{def:instance_closure}, to denote the transitive closure of our structures.
 
@@ -366,38 +368,45 @@ An input-output model rule is a three-tuple $\big\langle \mathit{Input}$, $\math
 
 \end{itemize}  
 
+Let $\mathit{IOM}$ be the set of all input-output models.
 
+Note that the $\VT$ and $\ET$ for input and output will come from the input and output metamodels. \bentley{Expand} 
 
-\bentley{Do we need to have V and E for all vertices and edges in the IOM?}
+\bentley{Do we need to have V and E for all vertices and edges in the IOM? I don't think we talk about all vertices or edges in an IOM.}
 Additionally we have that $V=V'\cup V''$, $E\subseteq E'\cup E''$ and $\tau\subseteq \tau'\cup \tau''$, where the co-domain of $\tau$ is the union of the co-domains of $\tau'$ and $\tau''$ and the set $\{trace\}$.
 
 \end{definition}
 
 
-\subsection{Semantic Transformation Constructs}
+\subsection{Transformation Semantics}
 \label{sec:DSLTrans_semantics}
 
-In the definition that follows we introduce the notion of execution of a DSLTrans model transformation. For our purposes it is sufficient to introduce it as an input-output model (see \cref{def:input_output_model}), containing the input model for the transformation, the produced output, and the traceability links built during execution. Due to space limitations, we cannot introduce the semantics of DSLTrans in the main text of this paper. We thus refer the reader to \cref{sec:DSLTrans_formal} for a formal description on how DSLTrans transformation executions are built. 
+This section will discuss the semantics of a DSLTrans transformation. Given an input model and a transformation, an output layer will be produced through the repeated execution of rules and layers.
 
-\reviewer{Definition 17: There is a copy/paste error w.r.t. Def. B.16 (which only serves to
-strengthen my point, made above, about avoiding this kind of duplication). In
-this case, B.16 is the correct version.}
+\subsubsection*{Execution of a Model Transformation}
 
-\begin{definition} {Model Transformation Execution\\}
+We will begin our discussion of the semantics of model transformation by discussing the conditions for executing a model transformation on an input model.
+
+
+\begin{definition} {Execution of a Model Transformation\\}
 \label{def:modeltransformation} 
 
-Let  $tr\in \textsc{Transf}^{sr}_{tg}$ be a transformation and $input \in \textsc{Model}^{sr}$ be a model. Assume we also have that: $$\langle V,E,st,\tau,input,\epsilon\rangle,tr \xrightarrow{trstep} \langle V',E',st',\tau',input,output\rangle$$
-A model transformation execution is the input-output model $\langle V',E',st',\tau',input,output\rangle\in \textsc{Iom}^{sr}_{tg}$, where $output\in \textsc{Iom}^{sr}_{tg}$ is an input-output model. The set of all model transformation executions for transformation $tr$ is written $\textsc{Exec}(tr)$. A model transformation with an empty input model is noted $\epsilon_{ex}$. Note that relation $trstep$ is formally defined in \cref{sec:DSLTrans_formal_appendix}.
+The execution of a model transformation is a function $transform: IOM \times Transforms \rightarrow IOM$.
+
 \end{definition}
 
-Note that ${VT}_{Input}$ and ${ET}_{Input}$ will 
+For a well-formed transformation execution, we require the IOM in the domain to contain only an input graph. Recall that a IOM is the three-tuple $\big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle$. We therefore require that both the $\mathit{Output}$ and $\mathit{trace}$ components in the domain IOM to be empty. This IOM thus represents the first step of the transformation, where no rule has been executed yet.
+
+The IOM in the co-domain will contain this input graph, as well as the output graph and traceability links produced by the execution of the transformation. Let $\textsc{Execs}_t$ be the set of all well-formed IOMs produced for transformation $t$.
 
 
-Finally, as stated in \cref{def:modeltransformation}, we consider a model transformation execution to be the input-output model (IOM) resulting from executing a set of rules on a starting IOM. This starting IOM includes the transformation's input in its input part and has an empty output part. The starting IOM represents the first step of the transformation when no rule has been executed yet. A transformation execution results from executing all the rules in a DSLTrans model transformation.
+\subsubsection*{Execution of a Rule}
 
-\subsubsection{Transformation Language Semantics}
+We will now address the execution of a rule to in the DSLTrans language. 
 
-We will now address the semantics of the DSLTrans language. We will start by defining a match function that, given an input-output model and a transformation rule, returns all subgraphs of that input-output model where the rule's match pattern (including backward links) is found.  
+
+
+We will start by defining a match function that, given an input-output model and a transformation rule, returns all subgraphs of that input-output model where the rule's match pattern (including backward links) is found.  
 
 % \levi{Need to be careful throughout all this section to understand whether we model the match and apply functions as functions or relations. Because of the non-deterministic generation of new vertices in the definition of apply function~\ref{def:apply_function}, relations are used in the definitions that follow to evaluate a transformation. This is an issue of the formalism used to model, should we make it explicit?}
 
@@ -514,6 +523,9 @@ Definitions~\ref{def:match_function} and~\ref{def:apply_function} are complement
 %$$\frac{tr\in layer,\; transform_{tr}(m) = m''\; m'',layer\backslash\left\{tr\right\} \xrightarrow{layerstep}	 m'}{m,layer \xrightarrow{layerstep} m'}$$
 %\end{definition}
 
+
+\subsubsection*{Layer Step Semantics}
+
 \begin{definition} {Layer Step Semantics}
 \label{def:layer_step_semantics}
 
@@ -573,13 +585,6 @@ $$\text{where } l^{\star}=\bigcup_{rl\in l}rl^{\star}$$
 \reviewer{I believe tr, T and R in this definition stand for the same thing.}
 While the execution of the rules belonging to a layer happens in parallel, the execution of the layers of a transformation happens sequentially. As per \cref{def:transformation_step_semantics}, the input-output model $m_{inter}$ is the output of executing a given layer that is passed onto the next layer as input. Note that an empty input-output model ($\epsilon$) is passed as the second argument to the $layerstep$ relation in \cref{def:transformation_step_semantics}. This is because in \cref{def:layer_step_semantics} of layer step semantics, the second argument of the relation is used as an accumulator for the model fragments that are added to be added to the output of the previous layer once all the rules in the current layer have been executed. The transformation rules in a layer are expanded before execution ($l^{\star}$) such that polymorphism in the match elements can be handled (see \cref{def:transformation_rule_expansion_appendix}). 
 
-\begin{definition} {Model Transformation Execution}
-\label{def:modeltransformation_appendix} 
-
-\CatchFileBetweenTags{\modeltransformation}{text/definitions}{modeltransformationappendix}{\modeltransformation}
-\end{definition}
-
-\CatchFileBetweenTags{\modeltransformationtextappendix}{text/definitions}{modeltransformationtextappendix}{\modeltransformationtextappendix}
 
 % A transformation execution is formed from taking the input model, and executing
 % the transformation on it to produce the output model. During this
