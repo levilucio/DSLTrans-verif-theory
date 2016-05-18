@@ -298,28 +298,6 @@ We additionally impose that for the well-formedness of a DSLTrans rule, there al
 \end{itemize}
 
 
-\subsubsection*{Matcher of a Transformation Rule}
-
-To create the actual matcher construct that will be matched during a rule's execution, the rule's \textit{Match} graph is combined with backward links, as well as any \textit{Apply} vertices connected to the backward links.
-
-Note that the rule's NAC will also be considered in the matching of a rule.
-
-\begin{definition}{Matcher of a Transformation Rule\\}
-\label{def:back_match_transformation_rule}
-
-Let the transformation rule $r = \big\langle \mathit{NAC}$, $\mathit{Match}$, $\mathit{Apply}$, $\mathit{backward}\big\rangle$.
-
-We define $r$'s matcher, noted $\Vert r \Vert$, to be a typed graph six-tuple $\langle V,E,(s,t),\tau, \VT, \ET\rangle$, where:
-\begin{itemize}
-\item $V = V_{Match} \cup \big\{v \in V_{Apply} | \{\exists e \in E_{back} | s_{back}(e) = v\}\big\}$
-\item $E = E_{Match} \cup E_{back}$
-\item $s = s_{Match} \cup s_{back}$, $t = t_{Match} \cup t_{back}$
-\item $\tau = \tau_{Match} \cup \tau_{Apply}$
-\item $\VT = \VT_{Match} \cup \VT_{Apply}$
-\item $\ET = \ET_{Match} \cup \ET_{Apply}$
-\end{itemize}
-
-\end{definition}
 
 \subsubsection*{DSLTrans Layer and Transformation}
 
@@ -402,127 +380,99 @@ The IOM in the co-domain will contain this input graph, as well as the output gr
 
 \subsubsection*{Execution of a Rule}
 
-We will now address the execution of a rule to in the DSLTrans language. 
+We will now address the execution of a rule in the DSLTrans language. 
+
+We will base our explanation on double pushouts, diagrammed in Figure~\ref{fig:dpo}.
+\bentley{Single or double pushouts?}
+
+\begin{figure}[h!] \centering
+\includegraphics[width=0.44\textwidth]{figures/formal/dpo}
+	\caption{Double pushout approach}
+	\label{fig:dpo}
+\end{figure}
+
+We explain the components:
+\begin{itemize}
+\item L: The matcher of the rule
+\item R: The rewriter of the rule
+\item G: The graph to be matched/rewritten
+\item H: The rewritten graph
+\end{itemize}
+
+Note that as it is not possible in DSLTrans rules to remove elements, $L = K$, and $G = D$.
 
 
+\subsubsection*{Matcher of a Transformation Rule}
 
-We will start by defining a match function that, given an input-output model and a transformation rule, returns all subgraphs of that input-output model where the rule's match pattern (including backward links) is found.  
+To create the actual matcher construct that will be matched during a rule's execution, the rule's \textit{Match} graph is combined with backward links, as well as any \textit{Apply} vertices connected to the backward links.
 
-% \levi{Need to be careful throughout all this section to understand whether we model the match and apply functions as functions or relations. Because of the non-deterministic generation of new vertices in the definition of apply function~\ref{def:apply_function}, relations are used in the definitions that follow to evaluate a transformation. This is an issue of the formalism used to model, should we make it explicit?}
+Note that the rule's NAC will also be considered in the matching of a rule.
 
-\begin{definition}{Match Function}
-\label{def:match_function}
+\begin{definition}{Matcher of a Transformation Rule\\}
+\label{def:matcher_transformation_rule}
 
-Let $m_{in}\in \textsc{Iom}^{sr}_{tr}$ be a input-output model and $rl\in \textsc{Rule}^{sr}_{tg}$ be a transformation
-rule. The $match : \textsc{Iom}^{sr}_{tg}\times \textsc{Rule}^{sr}_{tg}\rightarrow
-\mathcal{P}(\textsc{Iom}^{sr}_{tg})$ function is defined as follows: $$match_{rl}(m_{in})= \big\{ glue_{noind}\;|\;
-glue\sqsubseteq m_{in}^{*} \land glue \cong \Vert rl\Vert\big\}$$
+Let the transformation rule $r = \big\langle \mathit{NAC}$, $\mathit{Match}$, $\mathit{Apply}$, $\mathit{backward}\big\rangle$.
 
-where $glue\in \textsc{Iom}^{sr}_{tr}$ is an input-output model and $glue_{noind}$ is a version of $glue$ where the indirect links have been removed.
-% \levi{all backward links are replaced by trace links such that the matching using subgraph isomorphim can work.}
-% 
-% \levi{Where $rl^{-}$ is rule $rl$ without nodes in the apply part that are not connected to \emph{trace links}, as well as links adjacent to those nodes. $mg^{-ind}$ is the match graph without indirect links that come from the rule, given those cannot be part of the intermediate $MAM$ match result since that result is going to be united with the original $MAM$ (this was incorrect in the original SLE paper).}
-% \levi{The matcher function returns all graphs of the input MAM that are matched by a rule, including its backward links. Note that to find a subgraph ($\sqsubseteq$) of the input MAM that is isomorphic ($\cong$) to the rule being matched because the graph rewriting is achieved by joint union of the match graph extended by the new rewrite node, and the original MAM.}
-% \levi{TODO: review the $mg^{-ind}$ and the $rl^{-}$ notations.}
+Let $\mathit{Match}\star$ be the transitive closure of $\mathit{Match}$ to handle any indirect edges.
 
-% Due to the fact that the $\cong$ relation is based on the notion of graph
-% isomorphism, permutations of the same match result may exist in the
-% $\big\{g\;|\; g\lhd m \land g \cong strip(tr)\big\}$ set. The --- undefined ---
-% $remove:\mathcal{P}(TR^{s}_{t})\rightarrow \mathcal{P}(TR^{s}_{t})$ function is such that
-% it removes such undesired permutations.
+\bentley{Typed graph? Or copy the rule's structure? If it is a rule, note that it will not be well-formed. However, this is preferable to defining another structure to use}
 
-%The $strip:TR^{s}_{t}\rightarrow TR^{s}_{t}$ function is such that
-%$$strip(\big\langle V,E,T,\langle V_m,E_m,T_m,s\rangle,\langle V_a,E_a,T_a,t\rangle,Bl,Il\big\rangle) = \big\langle V',E',T,\langle V_m,E_m,T_m\rangle,\langle V'_a,E'_a,T_a\rangle,Bl,Il\big\rangle$$
-%\begin{center}
-%where $(v'\in V'_a\Rightarrow v\rightarrow v'\in Bl)\;\land\;(v\rightarrow v'\in E'_a\Rightarrow (v\rightarrow v'\in E_m \land \{v,v'\}\subseteq V'_a))$
-%\end{center}
+We define $r$'s matcher, noted $\lceil r \rceil$, to be a typed graph six-tuple $\langle V,E,(s,t),\tau, \VT, \ET\rangle$, where:
+\begin{itemize}
+\item $V = V_{Match\star} \cup \big\{v \in V_{Apply} | \{\exists e \in E_{back} | s_{back}(e) = v\}\big\}$
+\item $E = E_{Match\star} \cup E_{back}$
+\item $s = s_{Match\star} \cup s_{back}$, $t = t_{Match\star} \cup t_{back}$
+\item $\tau = \tau_{Match\star} \cup \tau_{Apply}$
+\item $\VT = \VT_{Match\star} \cup \VT_{Apply}$
+\item $\ET = \ET_{Match\star} \cup \ET_{Apply}$
+\end{itemize}
+
 \end{definition}
 
-\reviewer{Def. B.12. First of all, I wonder why you define match as a function rather than
-just defining what a match is; namely, an element of the set you are constructing
-here. Secondly (and more importantly), why do you not use the notion of homo-
-morphism instead of explicitly talking about ismorphic subgraphs? Your way,
-you lose the connection between glue and $||rl||$: you know they are isomorphic,
-but what if $||rl||$ has symmetries - then there is more than one match, which in
-your definition cannot be distinguished.}
+\subsubsection*{Rewriter of a Transformation Rule}
 
-\reviewer{You pay the price for this loss of information in Def. B.13, which now is broken: $a\Delta$ depends on $m_{glue} $(which was called glue in Def. 12, why the change in
-notation?) in a way depending on the mapping from $m_{glue}$ to $rl$ which you have
-discarded.}
+To continue with the double pushout approach, we must construct the rewriting (or replacement) graph.
 
-\reviewer{Def. B.13 is broken in another way as well: it does not properly define E' but
-merely imposes some requirements that are also fulfilled by choosing E' = E.
-Instead I know from the discussion about traceability links in Section 4 (which
-logically comes after this appendix!) that you really want to add such links for
-all newly created nodes of the output graph to all pre-existing nodes of the input
-graph; but that is not made clear anywhere at this point.}
+The construction of this rewriter is essentially the same as the underlying rule. However, to support traceability, we require that backward links in the rule be converted into traceability links, and that new traceability links be created between all match and apply vertices. 
 
+\begin{definition}{Rewriter of a Transformation Rule\\}
+\label{def:rewriter_transformation_rule}
 
-The match function in \cref{def:match_function} looks for subgraphs ($glue\sqsubseteq m_{in}^{*}$) of an input-output model that are isomorphic to the backward matcher of the given transformation rule ($glue \cong \Vert rl\Vert$). Note that the containment transitive closure of the input-output model ($m_{in}^{*}$) is considered such that indirect links in the rule can looked for in the input model. Additionally, indirect links need to be removed from the input-output models resulting from the match function ($glue_{noind}$). This is so because indirect links are not part of the original input model, but rather an auxiliary structure.
+Let the transformation rule $r = \big\langle \mathit{NAC}$, $\mathit{Match}$, $\mathit{Apply}$, $\mathit{backward}\big\rangle$.
 
-Let us now turn our attention to the apply function in \cref{def:apply_function}. Its role is to extend all model fragments found by matching a rule on a given input-output model, such that each of those fragments becomes isomorphic to the complete rule (minus its backward links). This process effectively creates the new objects and relations specified in the apply part of the rule, for each of the fragments found when matching the rule.
+Let $\mathit{Match}\star$ be the transitive closure of $\mathit{Match}$ to handle any indirect edges.
 
-\begin{definition}{Apply Function}
-\label{def:apply_function}
+We define $r$'s rewriter, noted $\lfloor r \rfloor$, to be a input-output model $\big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle$, where:
 
-\reviewer{In your definitions you rely on the $\sqcup$ operator (sqare union),
-  the definition of which is not entirely clear.  For instance, I do not know where the operator used in Def. B13
-  is defined.}
-  
-Let $m_{glue}\in \textsc{Iom}^{sr}_{tg}$ be a input-output model and $rl\in \textsc{Rule}^{sr}_{tg}$ a
-transformation rule. The $apply : \textsc{Iom}^{sr}_{tg}\times \textsc{Rule}^{sr}_{tg}\rightarrow \textsc{Iom}^{sr}_{tg}$ function
-is defined as follows: 
+\begin{itemize}
+\item $ \mathit{Input} = \mathit{Match\star}$
+\item $ \mathit{Output} = \mathit{Apply}$
+\end{itemize}
 
-$$apply_{rl}(m_{in})=\bigsqcup_{m_{glue}\in match_{rl}(m_{in})}trace_{a_{\Delta}}(m_{glue}\sqcup a_{\Delta})$$
+We then modify $\mathit{trace}$ to contain the appropriate traceability links
 
-\begin{center}
-where $a_{\Delta}\in \textsc{Iom}^{sr}_{tg}$ is such that $m_{glue} \sqcup a_{\Delta}\cong rl_{noind}$.\\
-\end{center}
+\begin{itemize}
+\item $E_{trace} = E_{backward} \cup \big\{e | \{$for each pair $m_i, a_j$ where $m_i \in V_{Match}, a_j \in V_{Apply}\}\big\}$
+\item $s_{trace} = s_{backward} \cup \big\{a_j | \{$for each pair $m_i, a_j$ where $m_i \in V_{Match}, a_j \in V_{Apply}\}\big\}$
+\item $t_{trace} = t_{backward} \cup \big\{m_i | \{$for each pair $m_i, a_j$ where $m_i \in V_{Match}, a_j \in V_{Apply}\}\big\}$
+\end{itemize}
 
-We impose that any instance of $a_\Delta$ is always disjoint from the $m_{in}$ input-output model and also that any two instances of $a_\Delta$ used in the large union are always disjoint.
-
-Partial function $trace:\textsc{Iom}\times \textsc{Iom} \nrightarrow \textsc{Iom}$ is such that $trace_{\langle V_{\Delta},E_{\Delta},st_{\Delta},\tau_{\Delta}\rangle}(\langle V,E,st,\tau\rangle) = \langle V,E',st',\tau'\rangle$ where we have that $E\subseteq E'$, $st\subseteq st'$ (using a light notational abuse for the $s\subseteq s'$ and $t\subseteq t'$), $\tau \subseteq \tau'$ and if $v_1\xrightarrow{e} v_2\in E'\setminus E$ then $v_1\in Output(V_{\Delta})$, $v_2\in Input(V)$ and $\tau'(e)=trace$. Finally, $rl_{noind}$ is a version of $rl$ where indirect links have been removed.
-% More concretely, if we have $mam = $\big\langle V,E,st,\tau, Input,Output\big\rangle\in MAM^{sr}_{tg}$ where $Input=\langle V',E',st',\tau'\rangle\in MODEL^{sr}$ and $Output=\langle
-% V'',E'',st'',\tau''\rangle\in MODEL^{tg}$, then $trace(mam) = \big\langle V,E,st,\tau''',Input,Output\big\rangle$ where $E'\subseteq E$ and $v\rightarrow E'\setminus E$ 
+\bentley{Very messy}
 \end{definition}
-% 
-% it builds traceability edges between vertices of the output model that were newly built by the $apply$ function (the vertices in ${mg}_{\Delta}$) and all the vertices from the input part of the input-output model. It is necessary to remove the indirect links from the rule because otherwise they would be created during the rewriting by the apply function. 
 
-In \cref{def:apply_function} $a_\Delta$ is an input-output model that contains an instance of the target metamodel. These instances are created by rule $rl$ and are used to extend the sub-models found by the match function. The $trace$ function builds traceability edges between newly created vertices of the output model in $a_{\Delta}$ and all the vertices from the input part of a model fragment found by the match function.
+\subsubsection*{Application of a Transformation Rule (continued)}
 
-Note that, because we do not pose any constraints on $a_\Delta$ other than the fact that its union with the sub-model $m$ is isomorphic to $rl_{noind}$, the $a_\Delta$ variable can always be satisfied by an unlimited amount of input-output models. In order to avoid an infinite amounts of results when a transformation rule is executed, in what follows we will consider transformation results differ only up to typed graph isomorphism.   
+\bentley{Fix up morphism notation. Is $\rightarrow$ good enough?} 
+Recall that the interface graph K is equivalent to L due to the lack of deletion in DSLTrans rules. Thus, the l homomorphism is identity. As well, we consider r to be a trivial homomorphism between the $\mathit{Match} \rightarrow \mathit{Input}$, $\mathit{Apply} \rightarrow \mathit{Output}$, and $\mathit{backward} \rightarrow \mathit{trace}$.
 
-%  Note that because the vertices are not disjoint, when the graph produced by the apply function is united with the original match apply model the new vertices are created. It was necessary to remove the indirect links from the rule during rewriting, because otherwise those indirect links would also be rewritten.
+We also note here that a rule cannot be applied if there is a homomorphism between the rule's NAC and G.
 
-Definitions~\ref{def:match_function} and~\ref{def:apply_function} are complementary: the former gathers all the fragments of an input-output model that are matched by a transformation rule; the latter glues on the output part of each of those fragments new objects and relations created by a transformation rule. 
-
-%  The $strip$ function is used to
-%  enable matching over backward links but not elements to be created by the
-%  transformation rule. The $back$ function connects all newly created vertices
-%  to the elements of the source model that originated them.
-
-%\begin{definition}{Transformation}
-
-%Let $g\in TG$ be a typed graph. The graph transform function $transform : TR\times TG\rightarrow TG$ is recursively defined as:
-%\begin{gather*}
-%  transform_{(m,a)}(g) =
-%  \begin{cases}
-%    g  & \text{if } match_{m}(g)=\emptyset \\
-%    instance(a)\cup transform_{(m,a)}(g') &\text{if } match_{m}(g)\neq \emptyset
-%  \end{cases}
-%\end{gather*}
-%$$\text{where } g'=mark_{(m)}(g)$$
-%\end{definition}
-
-%\subsection{Transformation Semantics}
-%\begin{definition} {Layer Semantics}
-
-%Let $l\in Layer$ be a layer and $\{m,m'\} \in MAM^{s}_{t}$ be a match
-%$$\frac{}
-%{m,\emptyset \stackrel{layerstep}{\rightarrow}m}$$
-%$$\frac{tr\in layer,\; transform_{tr}(m) = m''\; m'',layer\backslash\left\{tr\right\} \xrightarrow{layerstep}	 m'}{m,layer \xrightarrow{layerstep} m'}$$
-%\end{definition}
-
+\begin{itemize}
+\item m is the typed graph homomorphism \bentley{Really is rule over input-output model}
+\item D = G
+\item n is homomorphism too
+\item g is too?
+\end{itemize}
 
 \subsubsection*{Layer Step Semantics}
 
