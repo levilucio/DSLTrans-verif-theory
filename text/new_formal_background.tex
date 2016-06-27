@@ -537,13 +537,23 @@ We now prove two important properties about executions of transformations expres
 \begin{proposition}{Confluence}
 
 Every model transformation execution is confluent up to typed graph isomorphism.
+
+\bentley{As we are relying on the double-pushout approach, I think we get this confluence for free.}
+
+
 \end{proposition}
+
 \begin{pf}
-We want to prove that for every model transformation execution of a transformation $tr\in \textsc{Transf}^{sr}_{tg}$ having as input a model $input \in MODEL^{s}$, its output is always the same up to typed graph isomorphism.\\
+We want to prove that for every model transformation execution of a transformation $\mathit{transform} \in \textsc{Transforms}$ having as input an input-output model $\mathit{input} \in \mathit{IOMs}$, its output is always the same up to typed graph isomorphism.\\
+
+
 If we assume an execution of the transformation is not confluent then this should happen because of non-determinism when the execution of a transformation is being built. Non-determinism happens during the construction of a transformation execution at two points: 
 \begin{enumerate}
-\item in definition~\ref{def:apply_function}, $a_{\Delta}$ is non-deterministic up to typed graph isomorphism, which does not contradict the proposition we are trying to prove.
-\item in definition~\ref{def:layer_step_semantics} transformation rule $rl$ is chosen non-deterministically from layer $l$. Thus, the order in which the transformation rules are treated is non-deterministic. However, by \cref{def:layer_step_semantics} rules in a layer execute independently, which means no-side effects from rule ordering influence the execution of rules in the same layer. Also, the increments to the transformation by each rule of a layer in \cref{def:layer_step_semantics} are united using $\sqcup$ (see \cref{def:typed_graph_union_appendix}), which is an operation that is commutative by construction and thus renders the transformation result from each layer deterministic. 
+\item The section `Execution of a DSLTrans Rule' discusses the matching and rewriting components to rule application. Note that our technique relies on the double-pushout approach, which itself is non-deterministic up to typed graph isomorphism, which does not contradict the proposition we are trying to prove. \bentley{Revise this.}
+
+
+\item In Definition~\ref{def:dsltrans_layer_execution}, the rules composing a transformation layer are composed into a production on the input graph. Note that the order in which the transformation rules are composed may be non-deterministic. However, as these rules can be shown to be parallel independent \bentley{And they have to in that definition}, the production is by definition confluent up to typed graph isomorphism.
+
 \end{enumerate}
 Given there are no other sources of non-determinism when building the execution of a transformation, every model transformation execution is confluent up to typed graph isomorphism.
 \end{pf}
@@ -555,9 +565,17 @@ Every model transformation execution terminates.
 \begin{pf}
 Let us assume that there is a transformation execution which does not terminate. In order for this to happen there must exist a part in the construction of the execution of a transformation which induces an algorithm with an infinite amount of steps. We identify three moments when this can happen:
 \begin{enumerate}
-\item if definition~\ref{def:layer_step_semantics} of execution of a layer induces an infinite amount of steps. The only possibility for this to happen is if a layer has an infinite amount of transformation rules, which is a contradiction with definition~\ref{def:layer_transformation_appendix}.
-\item if definition~\ref{def:transformation_step_semantics} of execution of a transformation induces an infinite amount of steps. Given layers are executed sequentially and no looping is allowed, the only possibility for this to happen is if the transformation has an infinite amount of layers, which contradicts definition~\ref{def:layer_transformation_appendix}.
-\item if the result of the $match_{rl}(m_{in})$ function in definition~\ref{def:match_function} is an infinite set of match-apply graphs. The input-output model $m_{in}$ is by definition finite and the matching of each rule is independent from the execution of other rules in the same layer. As such, the number of subgraphs of $m_{in}$ isomorphic to $rl$'s matcher found during the execution of $rl$ is finite.
+
+\item If the matching and rewriting process of a rule is infinite. However, as the double-pushout approach uses a single production, then this must be a finite process. \bentley{Verify this, especially in the case of multiple applications of the rule.}
+
+% if the result of the $match_{rl}(m_{in})$ function in definition~\ref{def:match_function} is an infinite set of match-apply graphs. The input-output model $m_{in}$ is by definition finite and the matching of each rule is independent from the execution of other rules in the same layer. As such, the number of subgraphs of $m_{in}$ isomorphic to $rl$'s matcher found during the execution of $rl$ is finite.
+
+
+\item if Definition~\ref{def:dsltrans_layer_execution} of execution of a layer induces an infinite amount of steps. The only possibility for this to happen is if a layer has an infinite amount of transformation rules, which is a contradiction with Definition~\ref{def:layer}.
+
+\item if Definition~\ref{def:DSLTrans_transformation_execution} of execution of a transformation induces an infinite amount of steps. Given layers are executed sequentially and no looping is allowed, the only possibility for this to happen is if the transformation has an infinite amount of layers, which contradicts Definition~\ref{def:transformation}.
+
+
 \end{enumerate}
 Given there are no other constructs in the semantics of a transformation that can induce an infinite amount of steps, every model transformation execution terminates.
 \end{pf}
