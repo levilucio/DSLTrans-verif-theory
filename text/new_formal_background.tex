@@ -267,7 +267,7 @@ A transformation rule also includes backward links, as informally introduced in 
 A DSLTrans transformation rule is a four-tuple $\big\langle \mathit{NAC}$, $\mathit{Match}$, $\mathit{Apply}$, $\mathit{backward}\big\rangle$, where:
 
 \begin{itemize}
-\item $\mathit{Match}, \mathit{Apply} \in \textsc{TG}$
+\item $\mathit{NAC}$, $\mathit{Match}, \mathit{Apply} \in \textsc{TG}$
 \item $\mathit{Match}$ and $\mathit{Apply} $ are non-empty and are disjoint
 \item $\mathit{NAC}$ may be an empty graph, and is disjoint from both $\mathit{Match}$ and $\mathit{Apply} $
 \item $\mathit{backward} = \{E_{back}, (s_{back}, t_{back})\}$
@@ -361,24 +361,10 @@ Additionally we have that $V=V'\cup V''$, $E\subseteq E'\cup E''$ and $\tau\subs
 
 This section will discuss the semantics of a DSLTrans transformation. Given an input model and a transformation, an output layer will be produced through the repeated execution of rules and layers.
 
-\subsubsection*{Execution of a Model Transformation}
-
-We will begin our discussion of the semantics of model transformation by discussing the conditions for executing a model transformation on an input model.
 
 
-\begin{definition} {Execution of a Model Transformation\\}
-\label{def:modeltransformation} 
 
-The execution of a model transformation is a function $transform: IOM \times Transforms \rightarrow IOM$.
-
-\end{definition}
-
-For a well-formed transformation execution, we require the IOM in the domain to contain only an input graph. Recall that a IOM is the three-tuple $\big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle$. We therefore require that both the $\mathit{Output}$ and $\mathit{trace}$ components in the domain IOM to be empty. This IOM thus represents the first step of the transformation, where no rule has been executed yet.
-
-The IOM in the co-domain will contain this input graph, as well as the output graph and traceability links produced by the execution of the transformation. Let $\textsc{Execs}_t$ be the set of all well-formed IOMs produced for transformation $t$.
-
-
-\subsubsection*{Execution of a Rule}
+\subsubsection*{Execution of a DSLTrans Rule}
 
 We will now address the execution of a rule in the DSLTrans language. 
 
@@ -463,121 +449,86 @@ We then modify $\mathit{trace}$ to contain the appropriate traceability links
 \subsubsection*{Application of a Transformation Rule (continued)}
 
 \bentley{Fix up morphism notation. Is $\rightarrow$ good enough?} 
-Recall that the interface graph K is equivalent to L due to the lack of deletion in DSLTrans rules. Thus, the l homomorphism is identity. As well, we consider r to be a trivial homomorphism between the $\mathit{Match} \rightarrow \mathit{Input}$, $\mathit{Apply} \rightarrow \mathit{Output}$, and $\mathit{backward} \rightarrow \mathit{trace}$.
+Recall that the interface graph K is equivalent to L due to the lack of deletion in DSLTrans rules. Thus, the l homomorphism is identity. The D correspondence graph will therefore be equivalent to G.
 
-We also note here that a rule cannot be applied if there is a homomorphism between the rule's NAC and G.
 
-\begin{itemize}
-\item m is the typed graph homomorphism \bentley{Really is rule over input-output model}
-\item D = G
-\item n is homomorphism too
-\item g is too?
-\end{itemize}
+As well, we consider r to be a trivial homomorphism between the $\mathit{Match} \rightarrow \mathit{Input}$, $\mathit{Apply} \rightarrow \mathit{Output}$, and $\mathit{backward} \rightarrow \mathit{trace}$.
 
-\subsubsection*{Layer Step Semantics}
+We also note here that a rule cannot be applied if there is a homomorphism between the rule's NAC and G. 
 
-\begin{definition} {Layer Step Semantics}
-\label{def:layer_step_semantics}
+m is the typed graph homomorphism between the matcher of a rule $r$, denoted ($\lceil r \rceil$) and the $\mathit{Input}$ component of the input-output model
 
-Let $l\in \textsc{Layer}^{sr}_{tg}$ be a Layer. The \emph{layer step relation}
-$\stackrel{layerstep}{\rightarrow}\subseteq \textsc{Iom}^{sr}_{tg}\times \textsc{Iom}^{sr}_{tg} \times \textsc{Layer}^{sr}_{tg}\times
-\textsc{Iom}^{sr}_{tg}$ is defined as follows:
+$n$ and $g$ will be homomorphism between their respective graphs. \bentley{This needs to be explained further. Maybe with a diagram?}
 
-$$\frac{}
-{\langle m_{in},m_{glue},\emptyset\rangle \xrightarrow{layerstep}m_{in} \sqcup m_{glue}}$$
+\subsubsection*{DSLTrans Layer Execution}
 
-\begin{multline*}
-\frac{\begin{array}{ll} rl\in l,\; apply_{rl}&(m_{in}) = m_{rout},\\
-&\langle m_{in},m_{glue}\sqcup m_{rout},l\backslash \{rl\}\rangle \xrightarrow{layerstep} m_{out}
-\end{array}}
-{\langle m_{in},m_{glue},l\rangle \xrightarrow{layerstep} m_{out}}$$
-\end{multline*}
+Now that the application of a particular DSLTrans rule has been explained, the next definition defines how a DSLTrans transformation layer executes. Recall that a layer is composed of rules, and acts on the current input-output model.
 
-\begin{center}
-where $m_{rout} \in\textsc{Iom}^{sr}_{tg}$ and $rl\in \textsc{Rule}^{sr}_{tg}$.
-\end{center}
- 
-We impose that all input-output models that are part of $rout$ and have been generated by rule $rl$ are disjoint from input-output models accumulated in $m_{glue}$ that have been generated by other rules.
+
+\begin{definition} {DSLTrans Layer Execution}
+\label{def:dsltrans_layer_execution}
+
+
+The execution of a DSLTrans layer can be defined as a function as follows:
+
+\textit{applyLayer} : IOM $\times$ Layer $\rightarrow$ IOM
+
+Let $l = \{r_0, r_1, \dots, r_n | r_i \in \textsc{Rules}\}$, $l \in \textsc{Layers}$.
+
+Let $\mathit{IOM}_{Input}$, $\mathit{IOM}_{Output} \in \mathit{IOMs}$.
+
+$\mathit{IOM}_{Output}$ will be the result of applying the production \textit{p} as defined below to $\mathit{IOM}_{Input}.$
+
+We refer to the double-pushout literature for the creation of \textit{p}. Specifically, we refer to the definition of parallel direct derivations. This p will be created out of the productions created for each of the rules $r_i$ in the layer.
+
+$p = \big\langle (p_1, {in}^1), \dots, (p_k, {in}^k) \big\rangle : (L \xleftarrow{l} L \xrightarrow{r} R)$
+
+This collection of the rules is possible because DSLTrans rules do not delete anything. Essentially, a union is taken of the L, K, R components of each production.
+\end{definition}
+
+\begin{figure}[h!] \centering
+\includegraphics[width=0.44\textwidth]{figures/formal/parallel_productions}
+	\caption{Parallel production \textit{p}}
+	\label{fig:parallel_productions}
+\end{figure}
+
+
+\cref{def:dsltrans_layer_execution} is the core of DSLTrans' semantics, in which we build the result of executing a layer of a DSLTrans transformation. Many model transformation languages are based on graph rewriting, where the result of each rule rewrite is immediately usable by all other rules. In DSLTrans the result of executing one layer in DSLTrans is totally produced before the input to the layer is changed. This is enforced in \cref{def:dsltrans_layer_execution} by the fact that the layer production is composed of a union of the rule's productions. Rules belonging to the same layer are thus forced to execute independently, as described in the section on DSLTrans semantics.
+
+\bentley{How does this handle different multiplicity of rule application?}
+
+
+\subsubsection*{DSLTrans Transformation Execution}
+
+Our final definition is for the execution of a DSLTrans transformation. Essentially, it is the chaining of layer executions applied on an input-output model.
+
+We will begin by discussing the conditions for executing a model transformation on an input model.
+
+
+\paragraph{Input Conditions}
+
+For a well-formed transformation execution, we require the \textit{input-output model} in the domain to contain only an input graph. Recall that an \textit{input-output model} is the three-tuple $\big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle$. We therefore require that both the $\mathit{Output}$ and $\mathit{trace}$ components in the domain IOM to be empty. This input-output model thus represents the first step of the transformation, where no rule has been executed yet.
+
+The input-output model in the co-domain will contain this input graph, as well as the output graph and traceability links produced by the execution of the transformation. Let $\textsc{Execs}_t$ be the set of all well-formed input-output models produced for transformation $t$.
+
+\begin{definition} {Execution of a DSLTrans Transformation\\}
+\label{def:DSLTrans_transformation_execution} 
+
+The execution of a model transformation is a function $\mathit{applyTransformation}: \mathit{IOM} \times \mathit{Transforms} \rightarrow \mathit{IOM}$.
+
+This function is a chaining of executions of those layers within the transformation.
+
+Recall the application of a layer is \textit{applyLayer} : IOM $\times$ Layer $\rightarrow$ IOM. Therefore, the application of a transformation is:
+
+$\mathit{IOM}$ as input to chaining of layer executions \bentley{Is this function chaining? I don't know how to write the equation for this.}
+
 
 \end{definition}
 
-\reviewer{Def. B.14: It seems to me rather roundabout to sequentially apply all rules, ac-
-cumulate the results and then take their union. Why do you not take the union
-simultaneously with the parallel application of all rules (of a given layer), as
-you are essentially doing for all applications of a single rule in Def. B.13? This
-would get rid of the artificial sequential ordering, and the whole issue of con-
-fluence would not even have to be raised as there is no non-determinism any
-more.}
 
-\reviewer{In the constructions defined in Appendix B, you ignore the required absence of
-containment cycles. Might such cycles not appear in the union of the graphs,
-even if the individual graphs are cycle-free?}
-
-In \cref{def:layer_step_semantics} we build the result of executing a layer of a DSLTrans transformation. The operational semantics-like rules in the definition execute each rule $rl$ in layer $l$, in a non-deterministic order, by using the $apply$ function. The result of executing each rule is accumulated in the temporary $m_{glue}$ input-output model. Finally, when the set of transformation rules in the layer has been exhausted, the result of executing all the rules in the layer (now contained in $m_{glue}$) is united with the input-output model $m_{in}$, the input to layer $l$. Note that this final union produces the result we expect because of the fact that the $m_{glue}$ input-output model is not disjoint from $m_{in}$. The common ``glue'' parts of $m_{glue}$ that have been built by the match function and extended by the apply function are now used to built the result of executing layer $l$.
-
-\cref{def:layer_step_semantics} is the core of DSLTrans' semantics. Many model transformation languages are based on graph rewriting, where the result of each rule rewrite is immediately usable by all other rules. In DSLTrans the result of executing one layer in DSLTrans is totally produced before the input to the layer is changed. This is enforced in \cref{def:layer_step_semantics} by the fact that the apply function always executes over the same $m_{in}$ input-output model and all the results of rule execution in the same layer are added to the $m_{glue}$ structure that is write-only. Rules belonging to the same layer are thus forced to execute independently.
+While the execution of the rules belonging to a layer happens in parallel, the execution of the layers of a transformation happens sequentially. As per \cref{def:DSLTrans_transformation_execution}, the input-output model that is the output of executing a given layer is passed onto the next layer as input. The final input-output model created will be the result of the model transformation.
 
 
-\begin{definition} {Transformation Step Semantics}
-\label{def:transformation_step_semantics}
-
-Let $[l::tr]\in \textsc{Transf}^{sr}_{tg}$ be a transformation, where $l\in
-\textsc{Layer}^{sr}_{tg}$ is a Layer and $tr$ also a transformation. The \emph{transformation step relation}
-$\stackrel{trstep}{\rightarrow}\subseteq \textsc{Iom}^{sr}_{tg}\times \textsc{Transf}^{sr}_{tg}\times
-\textsc{Iom}^{sr}_{tg}$ is defined as follows: 
-$$\frac{}{\langle m,[]\rangle \xrightarrow{trstep} m}$$
-
-$$\frac{\big\langle m_{in},\epsilon,l^{\star}\big\rangle \xrightarrow{layerstep} m_{inter},\; \langle m_{inter},R\rangle \xrightarrow{trstep} m_{out}}{\langle m_{in},[l::T]\rangle \xrightarrow{trstep} m_{out}} \hspace{.3cm}$$
-
-$$\text{where } l^{\star}=\bigcup_{rl\in l}rl^{\star}$$
-\end{definition}
-
-\reviewer{I believe tr, T and R in this definition stand for the same thing.}
-While the execution of the rules belonging to a layer happens in parallel, the execution of the layers of a transformation happens sequentially. As per \cref{def:transformation_step_semantics}, the input-output model $m_{inter}$ is the output of executing a given layer that is passed onto the next layer as input. Note that an empty input-output model ($\epsilon$) is passed as the second argument to the $layerstep$ relation in \cref{def:transformation_step_semantics}. This is because in \cref{def:layer_step_semantics} of layer step semantics, the second argument of the relation is used as an accumulator for the model fragments that are added to be added to the output of the previous layer once all the rules in the current layer have been executed. The transformation rules in a layer are expanded before execution ($l^{\star}$) such that polymorphism in the match elements can be handled (see \cref{def:transformation_rule_expansion_appendix}). 
-
-
-% A transformation execution is formed from taking the input model, and executing
-% the transformation on it to produce the output model. During this
-% transformation, traceability links will be placed between match elements and the
-% apply elements they create. Definition~\ref{def:transf_ex} expresses this
-% formally. Note that we assume that transformation executions are built following
-% the algorithm described in~\cite{DBLP:conf/sle/BarrocaLAFS10}.
-
-% \begin{definition}{Transformation Execution}
-% \label{def:transf_ex}
-% 
-% Let $t$ be a DSLTrans transformation having source metamodel $s$ and target
-% metamodel $t$. A Transformation Execution is a 6-tuple $\langle V,E\cup
-% Tl,\tau,Match,Apply,Tl\rangle$, where $\langle V,E,\tau,Match,Apply\rangle \in
-% MAP^{s}_{t}$ is a match-apply pattern. $Match=\langle V',E', \tau',s\rangle$,
-% $Apply=\langle V'',E'', \tau'',t\rangle$ and the edges $Tl\subseteq V'\times
-% V''$ are called \emph{traceability links}. The set of all transformation
-% executions having source metamodel $s$ and target metamodel $t$ is called
-% $Exec^{s}_{t}$.
-% \end{definition}
-
-
-\subsubsection*{Subsumption}
-
- where $l_{k}\in \textsc{Layer}^{sr}_{tg}$ and $1\leq k \leq n$, $n\in \mathbb{N}$. We also impose that for any pair of rules $rl_1,rl_2\in \bigcup_{1\leq k\leq n}l_k$, if $\Vert rl_1\Vert \cong rl$ and $rl\sqsubseteq \Vert rl_2\Vert $ then $rl_2$ appears in a layer later than $rl_1$ and the apply parts of $rl_1$ and $rl_2$ are not isomorphic. 
-% The expansion of a layer $l\subseteq RULE^{sr}_{tg}$, noted $l^{\star}$, is such that that if
-% $rl\in l$ then $rl'\in l$ if $rl'\in rl^{\star}$. This means that if a
-% transformation rule is present is the layer, its expansion is also part of the
-% layer.
-
-The last condition of \cref{def:layer_transformation} imposes that, for any two pair of rules in the transformation, the matcher of the second rule never partially or totally subsumes (or contains) the matcher of the first rule, unless the second rule is in a subsequent layer and produces something more than the first rule. This condition avoids situations where the execution of a rule in a DSLTrans model transformation necessarily implies the execution of another rule (except for when rules having backward links necessarily execute because all their dependencies were created during the execution of previous layers). \reviewer{I do not fully understand why this
-  could be problematic. Do you have an example?}
-  
-
-\reviewer{The second half of Def. 16 raises a lot of questions. First of all, neither $\sqsubseteq 	 $ nor
-$\cong$ are defined over rules; however, I can imagine what it would look like. Then,
-what role does rl play; do you just mean $||rl_1 || \sqsubseteq ||rl_2 ||$ given a suitable isomorphic copy? What if $||rl_1 || \cong ||rl_2 || $(as a special case); is your condition then not
-unsatisfiable as $rl_1$ must appear after $rl_2$ as well as vice versa?}
-
-
-\reviewer{More importantly though, why do you care? Your semantics makes sure that
-rules are never considered for application twice in succession, so dependencies
-are always resolved unambiguously.}
 
 \subsection{Confluence and Termination Properties}
 
