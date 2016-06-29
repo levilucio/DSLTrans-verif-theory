@@ -286,9 +286,9 @@ additional sanity check enforces that no spurious traceability links that could
 not have been created by the rules present in the path condition exist in the
 transformation execution.
 
-%Finally, the last clause of the abstraction relation states that rule copies
-%that are repeated a number of times in the path condition need to be found at
-%least a similar amount of times in the abstracted transformation execution.
+Finally, the last clause of the abstraction relation states that rule copies
+that are repeated a number of times in the path condition need to be found at
+least a similar amount of times in the abstracted transformation execution.
 
 It is important to mention that another abstraction relation, weaker or
 stronger, could have been chosen. The abstraction relation presented in
@@ -534,136 +534,4 @@ Note that the indirect link between elements $a:A$ and $b:B$ in the transformati
 Note that the matching on the match and apply graphs in \cref{fig:combination_match_apply} is similar to other examples. The combined rules can be considered as a single graph for the abstraction relation.
 
 \cref{fig:combination_trace_links} shows the matching when multiple traceability links are present in the transformation execution. Note that each individual traceability link and the connected elements are matched onto the path condition.
-
-\subsection{Validity and Completeness}
-\label{subsec:abstraction_relation_validity_completeness}
-
-In this section, we discuss the validity and completeness of the abstraction relation. Only proof sketches are presented here for \cref{prop:pc_validity} and \cref{lem:uniqueness}, while more complete proofs are found in \cref{sec:val_complete_path_cond_gen}, in the proofs of \cref{prop:pc_validity_appendix} and \cref{lem:uniqueness_appendix} respectively.
-
-
-%\newpage
-\begin{proposition}{(Validity)}
-\label{prop:pc_validity}
-Every path condition abstracts at least one transformation execution.
-\end{proposition}
-\begin{ps}
-
-Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTans transformation. We wish to demonstrate that, for all path conditions $pc\in \textsc{Pathcond}(tr)$, there exists a transformation execution $ex\in \textsc{Exec}(tr)$ of the set of
-rules used to build $pc$ such that $pc$ abstracts $ex$, as formally expressed in \cref{def:abstraction_pc_ex}. We can prove this property by induction on the set of transformations $\textsc{Transf}^{sr}_{tg}$ (see \cref{def:layer_transformation}), as follows:
-
-\begin{itemize}
-  \item \emph{Base case:} the base case is when $tr$ is the empty
-  transformation. In this case, according to \cref{def:path_cond_gen} only the
-  empty path condition $\epsilon_{pc}$ exists in the path condition set. We thus
-  need to demonstrate that the empty path condition abstracts the empty
-  transformation execution $\epsilon_{ex}$, as well as any execution for which
-  the input model is never matched by any rule (consequently having an empty
-  output model). For any of these transformation executions, Proposition~\ref{eq:abstr_input_output} of the abstraction relation definition is satisfied, as no rule copy exists in the path condition and the output of the transformation execution is empty -- empty typed graph homomorphisms thus satisfy all the conditions of the proposition. Proposition~\ref{eq:abstr_trace} of the abstraction relation definition also trivially holds because no traceability links exist either in the path condition or in any of the considered executions.
-  
-%   This is so because:
-%   1) the empty typed graph homomorphism is an injective typed graph homomorphism
-%   between the match part of the empty path condition and any input model; and 2) as
-%   well as a surjective typed graph homomorphism between an empty output model
-%   and the apply part of the empty path condition.
- 
-\item \emph{Inductive case:} assuming every path condition generated for a transformation $tr$ abstracts at least one transformation execution, we need to show that every path condition generated for a transformation $tr'$, resulting from adding a layer $l\in \textsc{Layer}^{sr}_{tg}$ to $tr$, will also abstract at least one transformation execution. 
-\end{itemize}
-
-In order to demonstrate the inductive case we need to show the property holds for all path conditions resulting from combining the rules of layer $l$ with any path condition generated for $tr$. These path conditions for transformation $tr'$ are built as expressed in \cref{def:path_cond_layer_comb}. According to this definition, path conditions for $tr'$ are built by incrementally combining the path conditions generated for $tr$ with a rule of layer $l$, until all the rules in $l$ have been treated. We can thus again use induction for this proof, this time on the set of possible layers $\textsc{Layer}^{sr}_{tg}$. 
-
-\begin{itemize}
-  \item \emph{Base case:} this is the case where layer $l$ contains no rules. In this case, by the base case of \cref{def:path_cond_layer_comb}, no new path condition is added to the set of path conditions generated for the transformation $tr$. As such the $tr=tr'$ and by induction hypothesis the property trivially holds for all path conditions generated for $tr'$.
-  
-  \item \emph{Inductive case:} for the inductive case (transitive case of \cref{def:path_cond_layer_comb}) we need to show that, assuming the property holds for all path conditions generated for a transformation $tr$, then the property will also hold for a transformation $tr'$ -- where $tr'$ results from adding a new rule $rl$ to the last layer of $tr$. We will thus need to consider the four \reviewer{three?} cases of rule combination:\vspace{.2cm} 
- 
-\begin{enumerate}
-\item\label{lab:rule_case1} Rule $rl$ has no dependencies (\cref{def:rule_comb_no_dependencies}).
-\item\label{lab:rule_case2} Rule $rl$ has dependencies and cannot execute (\cref{def:rule_comb_unsatisfied}).
-\item\label{lab:rule_case3} Rule $rl$ has dependencies and may and/or will execute (\cref{def:rul_comb_partial_total}).
-\end{enumerate}
-
-The property trivially holds for case~\ref{lab:rule_case2}, given that no new path conditions are added to the path condition set generated for $tr$ and that the property holds for $tr$ by induction hypothesis. When a rule $rl$ is added to the last layer of $tr$ such that cases~\ref{lab:rule_case1} or~\ref{lab:rule_case3} occur, then the property can be shown to hold for $tr'$ as follows: 1) choose for a general path condition $pc$ generated for $tr$ an execution $ex$ such that $pc$ abstracts $ex$; 2) build an input model $m$ as the result of uniting the input model of $ex$ with a model that can be matched by $rl$; 3) execute $tr'$ having as input model $m$ to produce transformation execution $ex'$; and finally 4) demonstrate $ex'$ is abstracted by the path condition $pc'$ resulting from combining $pc$ with $rl$ whether rule $rl$ does not depend on $pc$ or rule $rl$ depends on $pc$ and may and/or will execute.
-\end{itemize}
-\end{ps} 
-
-
-\begin{proposition}{(Completeness)}
-\label{prop:pc_completeness}
-Every transformation execution is abstracted by one path condition.
-\end{proposition}
-\begin{pf}
-Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTans transformation. We wish to demonstrate that, for all transformation executions $ex\in \textsc{Exec}(tr)$, a path condition $pc\in \textsc{Pathcond}(tr)$ exists such that $ex$ is abstracted by $pc$, as formally expressed in \cref{def:abstraction_pc_ex}.\\ 
-
-Completeness can be shown as a corollary of \cref{prop:pc_validity} about the \emph{validity} of path condition generation. The complete set of executions $\textsc{Exec}(tr)$ (see \cref{def:modeltransformation}) can be split into two kinds of executions:
-\begin{enumerate}
-  \item\label{lab:input_not_matched} The \emph{empty execution} $\epsilon_{ex}$ or the \emph{execution where the input model was not matched by any rule}. As mentioned in \cref{prop:pc_validity}, these executions are abstracted by the empty path condition $\epsilon_{pc}$.\vspace{.3cm}
-  \item The \emph{execution $ex$ where a number of rules of $tr$ have been applied to the input model}, where each transformation rule $rl$ of $tr$ may have been applied more than once. In this case we have that, because all possible and valid rule combinations are considered when building path conditions, a path combination $pc$ exists that contains one or more copies of each of the rules used when operationally building $ex$. \\
-  
-  Moreover, during the proof of \emph{validity} of path condition generation in \cref{prop:pc_validity} we demonstrate that, when we add a new rule $rl$ to the last layer of a transformation $tr$ (such that we have a new transformation $tr'$), the rule combination step explained in Definitions~\ref{def:rule_comb_no_dependencies},~\ref{def:rule_comb_unsatisfied} and~\ref{def:rul_comb_partial_total} produces a new set of path conditions where each path condition in that set still abstracts at least one transformation execution of $tr'$. This part of the proof (the second induction) is achieved by building for transformation $tr'$ an input model $m$ that can be matched by $rl$ (as well as by all the other rules of $tr$), and then building from $m$ a new transformation execution that is abstracted by a path condition built for $tr'$. Because in the proof of \cref{prop:pc_validity}, $m$ is such that it can be matched by $rl$ an arbitrary amount of times, we know that, independently of the number of times a rule is applied during the construction of a transformation execution, a path condition abstracting that transformation execution exists.\\
-
-Additionally, input elements that are not matched by any rule do not affect the abstraction relation, as explained in case~\ref{lab:input_not_matched} above. This means we also know that executions involving input models that are only partially matched by the rules of $tr$ are also abstracted by one path condition. 
-\end{enumerate} 
-\end{pf} 
-
-% Our path conditions construction algorithm takes all possible interactions of rules
-% into account:
-% \begin{enumerate}
-% \item When building the path conditions for one layer we have built all
-% the combinations of rules, as well as their possible interactions through
-% \emph{disambiguation};
-% \item When combining the path conditions from different layer different layers
-% we have considered the cases where no interactions exist, or where backward
-% links in rules requires certain certain elements to already exist in the
-% generated model thus far.
-% \end{enumerate}
-% Note that, given the considered subset of DSLTrans constructs as described
-% in \cref{sec:dsltrans}, no additional cases of rule interaction other than the
-% ones described above need to be considered.
-% From \cref{prop:pc_validity} we also know that at least one concrete
-% transformation execution exists per path condition. In the proof of
-% \cref{prop:pc_validity} we have built, for each path condition $A$,
-% the simplest transformation execution that is abstracted by $A$. These
-% transformation executions produce one instance of each element and association
-% present in the apply pattern of $A$. However, given
-% \cref{def:instance_pc_ex} in \cref{sec:proofs} (abstraction of
-% a transformation execution by a path condition), an infinite amount of
-% transformation executions are always abstracted by $A$. These executions
-% correspond to the generation of output models holding an arbitrarily large
-% amount of the elements and associations while still being abstracted by $A$.
-% Because we have considered all possibilities of execution in our path condition
-% construction algorithm, the union of all transformation executions built for
-% each path condition constitutes the complete, infinite set of transformation
-% executions. We thus know that every possible transformation execution is
-% abstracted by at least one path condition.
-
-
-% Note that we do not provide any guarantee that the same transformation execution
-% cannot be abstracted by two different path conditions. Although given our symbolic
-% execution assumptions we believe this to be the case, further mathematical
-% exploration of this issue is necessary. Given however the fact that our
-% verification algorithm exhaustively explores all path conditions, it is
-% sufficient for the property proof to provide a \emph{no} result in the analysis
-% of a path condition for the result of the verification of the property to be
-% \emph{no}. \levi{keep this?}
-
-\begin{lemma} (Uniqueness) 
-\label{lem:uniqueness}
-A transformation execution is abstracted by exactly one path condition.
-\end{lemma}
-\begin{ps}
-Let $tr\in \textsc{Transf}^{sr}_{tr}$ be a model transformation. We will demonstrate that two different path conditions\\$pc_1, pc_2\in \textsc{Pathcond}(tr)$ cannot exist such that we have a transformation execution $ex\in \textsc{Exec}(tr)$ where $ex\Vvdash pc_1$ and $ex\Vvdash pc_2$.
-
-We will do so by attempting to build an $ex\in \textsc{Exec}(tr)$ such that $ex\Vvdash pc_1$ and $ex\Vvdash pc_2$ and demonstrating that it is always the case that such is not possible. In order to structure our argumentation, we will consider two cases:
-% \levi{the contradiction happens because at each point of the execution, when a rule is added any two path conditions from the existing set of path conditions will represent different executions. At all points if we consider two path conditions in the PC set we have that two different executions can be created if we find a model that satisfies the first condition of the abstraction relation, and it is always the case that none of those two executions can be abstracted by the two path conditions simultaneously.}
-\begin{enumerate}
-  \item\label{item:uniqueness_rule_no_dep} the case where no rules in $tr$ have dependencies.
-  \item\label{item:uniqueness_rule_has_dep} the case where some rules in $tr$ have dependencies.
-\end{enumerate}
-
-We start by considering that $tr$ falls into case~\ref{item:uniqueness_rule_no_dep} above. By~\cref{def:path_cond_gen} of path condition generation, each rule appears at most once in a path condition. Also, by construction, each path condition always contains a different combination of rules. We additionally know from \cref{def:layer_transformation} that the rules that compose $tr$ necessarily have non-overlapping matchers. We can nonetheless build a model $m$ as the typed graph union of two input models $m_1$ and $m_2$, where injective typed graph morphisms can be found between the match parts of the rule copies that form $pc_1$, and $m_1$. Injective typed graph morphisms can be found as well between the match parts of the rules that form $pc_2$, and $m_2$. We thus know that injective typed graph morphisms can be found between the rule copies that compose $pc_1$ and $pc_2$, and $m$. This satisfies the first condition of \cref{eq:abstr_input_output} in ~\cref{def:abstraction_pc_ex} of abstraction relation. 
-
-Let us now consider that $ex_1$ and $ex_2$ are obtained by executing the transformations rules combined into $pc_1$ and $pc_2$, having $m$ as input model. As mentioned above, we know that the rules in $pc_1$ and $pc_2$ are not completely overlapping. This means that, due to the way in which $m$ is built (explained above), $m$ will always have at least one input that is matched by rules of $pc_1$ but not by rules of $pc_2$ (and vice-versa). Thus, when the transformation rules combined into $pc_1$ execute having $m$ as an input model, there will always exist a traceability link generated between an input and an output element of $m$ that is not generated when the transformation rules combined into $pc_2$ execute having $m$ as an input model (and vice-versa). As such, we have that $ex_1$ is always different from $ex_2$ by at least one traceability link. Given that this traceability link is symbolically represented in either $pc_1$ or $pc_2$ (but not in both), according to condition \cref{eq:abstr_trace} in \cref{def:abstraction_pc_ex} it cannot be that either $pc_1$ or $pc_2$ abstract $ex_1$ and $ex_2$ simultaneously.\\\\
-We will now analyse the scenario where $tr$ falls into case~\ref{item:uniqueness_rule_has_dep} above, where some rules in $tr$ have dependencies. For this case, assume we have a path condition $pc_1$ contained in the set of path conditions generated for $tr$, considering layers up to layer $l$ of $tr$ have executed. Assume also we have a rule $rl$ of layer $l+1$ of $tr$ that has dependencies and can be combined with $pc$. If rule $rl$ is totally combined with path condition $pc_1$, according to \cref{def:rul_comb_partial_total} and \cref{fig:multiple_total_satisfied_dependencies}, then nothing needs to be shown as $pc_1$ is not kept in the path condition set but rather replaced by its combination with $rl$. However, in case rule $rl$ is partially combined with $pc$, as defined in \cref{def:rul_comb_partial_total} and \cref{def:comb_path_cond_rule_single}, then multiple path conditions are generated and additionally $pc_1$ is kept in the path condition set.\\The proof will be complete once it is shown that for the path conditions that are generated when rules are partially combined, it is also the case that no two path conditions can abstract the same execution. This last part of the proof can be built in an analog fashion to the construction of the proof for point~\ref{item:uniqueness_rule_no_dep}. As previously mentioned, the complete proof can be found as \cref{lem:uniqueness_appendix} in \cref{sec:val_complete_path_cond_gen}.
-
-\end{ps}
 
