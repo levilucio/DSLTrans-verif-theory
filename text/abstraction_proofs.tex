@@ -1,8 +1,16 @@
 \section{Validity and Completeness}
 \label{subsec:abstraction_relation_validity_completeness}
 
-In this section, we discuss the validity and completeness of the abstraction relation. Only proof sketches are presented here for \cref{prop:pc_validity} and \cref{lem:uniqueness}, while more complete proofs are found in \cref{sec:val_complete_path_cond_gen}, in the proofs of \cref{prop:pc_validity_appendix} and \cref{lem:uniqueness_appendix} respectively.
+In this section, we discuss the validity and completeness of the abstraction relation.
 
+This section presents our arguments that our path condition building
+algorithm is both \emph{valid} and \emph{complete}. In this context
+\emph{validity} means that for each path condition there exists at least one
+transformation execution that it abstracts.
+In other words, no path conditions are produced that lack a concrete
+transformation execution counterpart. \emph{Completeness} of the symbolic
+execution means that every transformation execution is abstracted by at least
+one path condition.
 
 %\newpage
 \begin{proposition}{(Validity)}

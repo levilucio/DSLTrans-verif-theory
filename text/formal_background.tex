@@ -319,6 +319,8 @@ A DSLTrans transformation is a finite list of layers denoted $\{l_0, l_1, \dots,
 
 The set of all transformations is denoted $\textsc{Transforms}$.
 
+
+
 \end{definition}
 
 
@@ -347,6 +349,8 @@ An input-output model rule is a three-tuple $\big\langle \mathit{Input}$, $\math
 \end{itemize}  
 
 Let $\mathit{IOM}$ be the set of all input-output models.
+
+We define a utility function getTransformation: IOM $\rightarrow$ Transforms. This function returns the Transform that the input-output model was built for. The purpose of this function is to restrict input-output models to only be applicable for the transformation they represent.
 
 Note that the $\VT$ and $\ET$ for input and output will come from the input and output metamodels. \bentley{Expand} 
 

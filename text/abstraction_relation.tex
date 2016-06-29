@@ -5,16 +5,6 @@
 This section will present how path conditions are structured to represent symbolic rule execution. As well, we define the abstraction relation between the execution of a DSLTrans transformation and the path condition that represents it.
 This abstraction relation allows us to prove properties on a finite set of representative path conditions, as created by the path condition generation algorithm. As this set is finite, our technique is guaranteed to be decidable.
 
-This section also presents our arguments that our path condition building
-algorithm is both \emph{valid} and \emph{complete}. In this context
-\emph{validity} means that for each path condition there exists at least one
-transformation execution that it abstracts.
-In other words, no path conditions are produced that lack a concrete
-transformation execution counterpart. \emph{Completeness} of the symbolic
-execution means that every transformation execution is abstracted by at least
-one path condition.
-
-
 
 \subsection{Symbolic Execution}
 
@@ -75,7 +65,7 @@ not represented in a rule combination, or the rule has executed some finite
 number of times and it is represented. This abstraction is key to our approach,
 as it allows us to create a finite set of path conditions to abstract over an
 infinite set of transformation executions, as seen in
-\cref{sec:abstraction_relation}.
+\cref{subsec:abstraction_relation}.
 
 We also note that rule \textit{combinations} are created, and not rule
 \textit{permutations}. This follows from the semantics of \\DSLTrans as described
@@ -186,45 +176,65 @@ For example, the path condition in Figure~\ref{fig:pc_first} represents the exec
 
 %The path condition generation algorithm will symbolically combine transformation rules into a path condition. Each path condition will then abstract a set of concrete transformation executions, as defined by our abstraction relation in \cref{sec:abstraction_relation}.
 
-As seen in the rest of this section, the structure of path conditions is similar to that of DSLTrans rules. The match graph of a path condition represents a pattern that must be present in the input model of the transformation, while the apply graph is a pattern which will be instantiated in the output model of the transformation. Symbolic traceability links are also kept between elements in the match and apply graphs to retain traceability information.
 
-The formal definition of a path condition is presented in \cref{def:path_condition}.
 
 \begin{definition}{Path Condition\\}
 \label{def:path_condition}
 
-A path condition is a 7-tuple $\big\langle V,E,(s,t),\tau, Match,Apply,\\Rulecop\big\rangle$, where: $Match=\langle V',E',st',\tau'\rangle\in \textsc{Ipattern}^{sr}$ is an indirect pattern; $Apply=\langle V'',E'',st'',\tau''\rangle\in \textsc{Pattern}^{tg}$ is a pattern; $Match$ and $Apply$ are disjoint graphs. We also have that $V=V'\cup V''$, $E\subseteq E'\cup E''$ and $\tau\subseteq \tau'\cup \tau''$ where the co-domain of $\tau$ is the union of the co-domains of $\tau'$ and $\tau''$ and the set $\{trace\}$. An edge $e \in E\setminus E'\cup E''$, called a \emph{symbolic traceability link}, is such that $s(e)\in V''$ and $t(e)\in V'$ and $\tau(e)=trace$. Finally, the $Rulecop$ component in the 7-tuple contains the set of rule copies used in the construction of the path condition, where each rule copy is a subgraph of $\big\langle V,E,(s,t),\tau\big\rangle$. The set of all path conditions for a source metamodel $sr$ and a target metamodel $tg$ is called $\textsc{Pathcond}^{sr}_{tg}$ and the empty path condition is noted $\epsilon_{pc}$.
+A path condition is a three-tuple $\big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle$, where:
+
+\begin{itemize}
+\item $\mathit{Input}, \mathit{Output} \in \textsc{TG}$
+\item $\mathit{Input}$ and $\mathit{Output} $ may be empty and are disjoint
+\item $\mathit{trace} = \{E_{trace}, (s_{trace}, t_{trace})\}$
+\begin{itemize}
+\item $E_{trace}$ contains the traceability links
+\item $E_{trace} $ is disjoint from $E_{Input}$ and $E_{Output}$
+\item $(s_{trace}, t_{trace})$ is a pair of functions $s_{trace}: E_{trace}\rightarrow V_{\textit{Output}}$ and $t_{trace}: E_{trace}\rightarrow V_{\textit{Input}}$ that respectively provide the source and target vertices for each traceability link
+\end{itemize}
+
+\end{itemize}  
+
+The empty path condition is defined as $\{\emptyset, \emptyset, \emptyset \}$.
+
+
+The set of all path conditions is noted as $\textsc{PathConds}$.
+
+We also define a utility function getRules: PC $\rightarrow$ Set(Rules). This function accepts a path condition and returns the rules which were involved in its construction. This information will be used to report the status of contract proof. Note that operationally, this is done by storing the names of the rules within the path condition. 
+
+We define a utility function getTransformation: PC $\rightarrow$ Transforms. This function returns the Transform that the path condition was built for. The purpose of this function is to restrict path condition to only be applicable for the transformation they represent.
+
 
 
 \end{definition}
 
-\reviewer{Def. 18 suddenly introduces the notion of “rule copies” (Rulecop) which are re-
-ally not explained properly. My guess is that they are isomorphic representatives
-of rules. On page 13 under ”notation” this component is called Rule and referred
-to as a relation, and in Def. 28 it is denoted as Rules and required to be “the same
-as the set of transformation rules used to build [the transformation execution]”
-(and hence not isomorphic copies?). Needless to say, these inconsistencies do
-not help understandability.}
 
-Similarly to a transformation rule (see~\cref{def:transformation_rule}), a path condition is also a typed graph with a match and an apply part. As mentioned before, a path condition contains a combination of rules where \emph{symbolic traceability links} represent the concrete traceability links of a transformation execution (see \cref{def:modeltransformation}). The path condition structure also contains a $Rulcop$ set that allows identifying individually all the copies of rules that were used when building the path condition's typed graph. Note that we refer to \emph{copies} of rules as, despite the fact that a path condition normally only contains one copy of each rule, in certain situations a rule may be used multiple times in the construction of a path condition. This will be explained further ahead in this section.
- 
+The formal definition of a path condition is presented in \cref{def:path_condition}. Note that the structure of path conditions is intentionally very similar to that of DSLTrans rules and input-output models.
 
-\paragraph{\textbf{Notation:}}
-Given a path condition $pc = \big\langle V,E,st,\tau,\\Match,Apply,Rulecop\big\rangle\in \textsc{Pathcond}^{sr}_{tg}$ we refer to the set of transformation rules in $pc$ identified by the $Rulecop$ relation as $Rulecop(pc)$. Also, because a path condition is a particular kind of a typed graph, we naturally extend the basic notation of operators and homomorphisms on typed graphs defined in \cref{sec:formal_background} to path conditions.
+The \textit{input} graph of a path condition represents a pattern that must be present in the input model of the transformation, while the \textit{output} graph is a pattern which will be instantiated in the output model of the transformation. Symbolic traceability links are also kept between elements in the \textit{input} and \textit{output} graphs to retain traceability information.
+
 
 \subsection{Abstraction Relation}
 \label{subsec:abstraction_relation}
 
+Our abstraction relation is at the core of our technique. It allows us to represent an infinite set of transformation executions with a finite set of path conditions. As mentioned before, contract proof can then take place on this set of path conditions and hold on the set of transformation executions, as further explored in Section~\ref{sec:prop_satisfaction}.
+
 Let us start by formally defining the notion of abstraction of a transformation
 execution by a path condition.
 
-\setcounter{equation}{0} 
 
 \begin{definition}{Abstraction of a Transformation Execution by a Path Condition\\}
 \label{def:abstraction_pc_ex}
 
-Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTrans transformation. Let also $pc = \langle V,E,st,\tau,Match,Apply,Rules\rangle \in
-\textsc{Pathcond}(tr)$ of a path condition of $tr$ and $ex = \langle V',E',st',\tau',Input,Output\rangle \in Exec(tr)$ be an execution of $tr$. We have that $ex$ is abstracted by $pc$, noted $ex\Vvdash pc$, if and only if the set of transformation rules of $tr$ combined in $pc$ and the set of transformation rules of $tr$ used to build $ex$ is the same, and:
+Let $iom = \big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle \in \textsc{IOM}$ be an input-output model, also known as a transformation execution. \bentley{Make sure this terminology is consistent.}
+
+Let also $pc = \big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle \in \textsc{IOM}  \in
+\textsc{PathConds}$ be a path condition.
+
+We also require that getTransformation(iom) and getTransformation(pc) return the same transformation.
+
+We have that $iom$ is abstracted by $pc$, noted $ex\Vvdash pc$, if and only if:
+
 \begin{multline}
 \label{eq:abstr_input_output}
 \big(\forall rl\in Rules\;.\;Match(rl) \vartriangleleft Input^*\big) \;\land\; Output \blacktriangleleft Apply
@@ -244,6 +254,10 @@ Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTrans transformation. Let also $pc
   conditions should somehow be compatible to each other. However,
   your triangle notation indicates only the existence of a morphisms.
   How do you express that these morphisms somehow "agree"?}
+  
+
+  
+  
 \end{definition} 
 
 
@@ -290,14 +304,8 @@ Finally, the last clause of the abstraction relation states that rule copies
 that are repeated a number of times in the path condition need to be found at
 least a similar amount of times in the abstracted transformation execution.
 
-It is important to mention that another abstraction relation, weaker or
-stronger, could have been chosen. The abstraction relation presented in
-\cref{def:abstraction_pc_ex} suits our needs in the sense that it allows us to
-demonstrate the validity and completeness of our proof technique, as we will
-show in the text follows. Additionally, it is particularly interesting because
-it makes sure that, given a DSLTrans transformation, each of its transformation
-executions is abstracted by one and only one of its path conditions. This result
-adds to the consistency of our theory and is also exposed later in this section.
+
+
 
 
 
