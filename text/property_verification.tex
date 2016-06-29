@@ -39,7 +39,17 @@ We will now elaborate on the structures and the relations required for the prope
 
 \begin{definition}{Property of a Transformation\\}
 \label{def:trans_prop}
-\CatchFileBetweenTags{\propertydef}{text/definitions}{propertydef}{\propertydef}
+
+\reviewer{You can not handle properties with multiple instances of rule 
+    element (example in Fig. 25). On p.14 in the answer section,
+    you claim that such conditions are excluded in Def. 29. However,
+    the last lines of this definition are not easy to understand.
+    Please explain why there are there (by giving the explanation
+    from the answers section.) Without these explanations it is very hard to see why 
+    Prop. 3 should hold.}
+    
+Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a DSLTrans transformation. A property of $tr$ is a 6-tuple $\langle V,E,(s,t),\tau,Pre,Post\rangle$, where $Pre = \langle V',E',st',\tau'\rangle \in \textsc{Ipattern}^{sr}$ and $Post = \langle V'',E'',st''\tau''\rangle \in\\ \textsc{Ipattern}^{tg}$ are indirect metamodel patterns. We also have that $V=V'\cup V''$, $E\subseteq E'\cup E''$ and $\tau\subseteq \tau'\cup \tau''$, where the co-domain of $\tau$ is the union of the co-domains of $\tau'$ and $\tau''$ and the set $\{trace\}$. An edge $e \in E\setminus E'\cup E''$ is called a \emph{traceability link} and is such that $s(e)\in V''$, $t(e)\in V'$ and $\tau(e)=trace$. Finally we have that there is at least one path condition $\big\langle V_{pc},E_{pc},st_{pc},\tau_{pc}, Match,Apply,Rule\big\rangle\in \textsc{Pathcond}(tr)$ for which a surjective typed graph homomorphism $m\stackrel{f}{\blacktriangleleft} Pre$ exists, where $m\sqsubseteq Match$ and $f(v)\neq f(v')$ if $v$ and $v'$ are elements of the path condition belonging to the same rule of set $Rule$. The set of all properties of transformation $tr$ is called $\textsc{Property}(tr)$.
+
 \end{definition}
 
 %Property proving then becomes relatively simple. The path condition match graph
@@ -146,7 +156,17 @@ Let us now detail how a transformation execution is said to satisfy a property. 
 
 \begin{definition}{Satisfaction of a Property by an Execution of a Transformation\\}
 \label{def:sat_prop_ex}
-\CatchFileBetweenTags{\satpropexe}{text/definitions}{satpropexe}{\satpropexe}
+
+Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a transformation. Let also $p = \langle V,E,st,\tau,\\Pre,Post\rangle \in \textsc{Property}(tr)$ be a property of $tr$ and $ex = \langle V',E',\\st',\tau',Input,Output\rangle \in Exec(tr)$ be an execution of $tr$. Execution $ex$ satisfies property $p$,  written $ex \models p$, if and only if:
+\begin{multline*}
+\forall f\; \exists g\,.\,\big(Pre \stackrel{f}{\vartriangleleft} Input^{*} \implies p \stackrel{g}{\vartriangleleft} ex^*\big)\\\text{where } V(Input)\cap CoDom(g) = CoDom(f)
+\end{multline*}
+% \begin{enumerate}
+% \item $\langle V_p,E_p\setminus Il_p,\tau_p\rangle$ is a typed subgraph of $\langle V_x, E_x,\tau_x\rangle$
+% \item if $v_p\rightarrow v_{p}'\in Il_p$ then there exists $v_x\rightarrow
+% v_{x}'\in E_{x}^{*}$ where $\tau(v_p)=\tau(v_x)$, $\tau(v_p')=\tau(v_x')$ and
+% $E_{x}^{*}$ is obtained by the transitive closure of $E_{x}$.
+% \end{enumerate}
 \end{definition}
 
 \Cref{def:sat_prop_ex} states that, every time a graph that is isomorphic to the property's pre-condition is found in (the containment transitive closure of) the input model of the transformation's execution, a graph that is isomorphic to the complete property needs to be found in (the containment transitive closure of) the transformation execution. Note that the last part of the proposition in \cref{def:sat_prop_ex} ensures that the graph that is isomorphic to the property's pre-condition and the graph that is isomorphic to the complete property overlap on their pre-condition parts.
@@ -188,7 +208,18 @@ Due to the fact an infinite amount of transformation executions exists, proving 
 
 \begin{definition}{Satisfaction of a Property by a Path Condition\\}
 \label{def:sat_prop_pc}
-\CatchFileBetweenTags{\satproppc}{text/definitions}{satproppc}{\satproppc}
+
+\reviewer{In Def. 31 I found it confusing that - different from previous
+    definitions - the two morphisms now go in the same direction.
+    There is an explanation after Definition 31, but I found it 
+    very hard to understand.}
+Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a transformation. Let also $p = \langle V,E,st,\tau,\\Pre,Post\rangle \in \textsc{Property}(tr)$ be a property of $tr$ and $pc=\big\langle V',E',\\st',\tau', Match,Apply,Rulecop\big\rangle\in \textsc{Pathcond}(tr)$ be a path condition of $tr$. Path condition $pc$ satisfies property $p$, written $pc \vdash p$, if and only if:
+\begin{multline*}
+\forall f\; \exists g\,.\,\big(in\stackrel{f}{\blacktriangleleft} Pre \implies out \stackrel{g}\blacktriangleleft p\big)\\
+\text{where } in \sqsubseteq Match^{*} \;\land\; out \sqsubseteq pc^{*}
+\end{multline*}
+Additionally $Dom(g)\cap Match(pc^{*}) = Dom(f)$ and $f(v)\neq f(v')$, $g(v)\neq g(v')$ whenever $v$ and $v'$ are elements of the path condition belonging to the same rule copy of set $Rulecop$.
+
 \end{definition}
 
 The principle behind the satisfaction relation in \cref{def:sat_prop_pc} is the same as the one behind the satisfaction relation between a property and an execution of a transformation in \cref{def:sat_prop_ex}: whenever the property's pre-condition is found in the path condition then so is the complete property. Also, those two graphs found in the path condition share the property's pre-condition part. This last condition enforces that the pre- and post-conditions of the property are correctly linked by symbolic traceability links in the path condition.

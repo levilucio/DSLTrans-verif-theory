@@ -53,7 +53,38 @@ We will now examine the combination step between one path condition and one rule
 \begin{definition}{Combination of a Path Condition with a Rule}
 \label{def:combine_pc_with_rule}
 
-\CatchFileBetweenTags{\pccfrc}{text/definitions}{pccfrc}{\pccfrc}
+\reviewer{A $\sqcup$ operator is defined in Def. 19, but there you seem to
+  rely on the fact that some elements of the path conditions and
+  some elements of the rule are identical, otherwise the union
+  would not work. Since a rule can be applied in several places,
+  this would require a renaming of the rule elements, which - as 
+  far as I could see - is not specified.}
+  
+Let $pc = \langle V',E',st',\tau',Match',Apply',Rulecop'\rangle\in\\
+\textsc{Pathcond}^{sr}_{tg}$ be a path condition and $rl = \langle
+V'',E'',st'',\tau'',\\Match'',Apply''\rangle\in \textsc{Rule}^{sr}_{tg}$ be a transformation rule, where their respective typed graphs can be joint. The union of $pc$ with $rl$ is built using the operator $\stackrel{trace}{\sqcup}:
+\textsc{Pathcond}^{sr}_{tg}\times \textsc{Rule}^{sr}_{tg}\rightarrow
+\textsc{Pathcond}^{sr}_{tg}$, as follows:
+
+$$pc\stackrel{trace}{\sqcup}rl = \langle V,E,st,\tau,Match,Apply,Rulecop\rangle$$
+
+where we have that $V=V'\cup V''$, $E'\cup E''\subseteq E$, $st'\cup
+st''\subseteq st$, $\tau'\cup \tau''\subseteq \tau$ and if $v_1\xrightarrow{e}
+v_2\in E\setminus E'\cup E''$ then we have that $v_1\in Apply(V'')$, $v_1\notin Apply(V')$, $v_2\in Match(V'')$ and also that $\tau'(e)=trace$. Additionally, $Match = Match'\sqcup Match''$ and $Apply = Apply'\sqcup Apply''$. Finally, we have that: $Rulecop = Rulecop'\cup$ {rl}.
+
+
+% $$pc = \bigsqcup_{rl\in RC} trace(rl_{pathcond})$$
+% 
+% where $trace:\textsc{Pathcond}\rightarrow \textsc{Pathcond}$ is such that
+% $trace(\langle V,E,st,\tau\rangle) = \langle V,E',st',\tau'\rangle$ and we have
+% that: $E\subseteq E'$; $st\subseteq st'$; $\tau \subseteq \tau'$; if $\neg
+% (v_1\xrightarrow{e'} v_2\in E)\;\land\;\tau(e')=backward$ then we have that if
+% $v_1\in Apply(V)$ and $v_2\in Match(V)$ then $v_1\xrightarrow{e} v_2\in
+% E'\setminus E$ and $\tau'(e)=trace$. Also, $rl_{pathcond}$ is rule $rl$ typed as
+% a path condition by adding to the $rl$ tuple a $Rule$ function that identifies
+% each vertex in $V$ as belonging to $rl$. Finally, we have used the
+% $\sqcup$ notation to denote the extension of the typed graph union to the
+% component-wise of tuples that represent path conditions.
 \end{definition}
 
 \reviewer{Def. 19 can only be understood once it is clear that your plan is to make iso-
@@ -73,7 +104,9 @@ identities is infinite (as it must be).)}
 identical, as pc and rl are defined over the same source and target metamodels?
 Last line: “rl” $\rightarrow$ “$\{rl\}$”}
 
-\CatchFileBetweenTags{\pccfrctext}{text/definitions}{pccfrctext}{\pccfrctext}
+\cref{def:combine_pc_with_rule} shows the formal definition of combining a path condition with a rule. When a path condition is combined with a rule their typed graphs are united. Additionally, symbolic traceability links will be built at this time between the newly added apply elements of the rule and all of the rule's match elements. As a reminder, the link creation algorithm and examples have been introduced in \cref{subsubsec:traceability}.\\
+
+Note that the fact that the graphs are potentially joint allows us to overlap a rule with the path condition by anchoring the rule on traceability links shared by the path condition and the rule graph. In the mathematical development that follows we will often refer to the joint parts of two or more typed graphs using the term ``glue''.
 
 We will now discuss the combination step possibilities. Let PC be the path condition selected from layer n-1, and R the rule selected from layer n. When PC and R are combined, there are four possibilities based on the dependencies between PC and R:
 
@@ -109,7 +142,17 @@ seen in \cref{fig:no_dependencies} and formally defined in \cref{def:rule_comb_n
 
 \begin{definition}{Path Condition and Rule Combination -- No Dependencies\\}
 \label{def:rule_comb_no_dependencies}
-\CatchFileBetweenTags{\nodeps}{text/definitions}{nodeps}{\nodeps}
+
+The combination of a path condition $pc$ and a rule $rl$, when $rl$ has no dependencies, is described by the relation $\stackrel{combine}{\rightarrow}\subseteq \textsc{Pathcond}^{sr}_{tg} \times \mathcal{P}(\textsc{Pathcond}^{sr}_{tg}) \times \textsc{Rule}^{sr}_{tg} \times \mathcal{P}(\textsc{Pathcond}^{sr}_{tg})$, defined as follows:	
+
+% $$\frac{\begin{array}{ll}&
+% pc\in PC\;,\;\langle pc,rl\rangle \xrightarrow{combine} pc'\;,\;PC\setminus\{pc\},rl,\rangle \xrightarrow{combstep} PC'
+% \end{array}}
+% {\langle PC,rules\rangle \xrightarrow{rulestep} PC'}$$
+
+$$\frac{\begin{array}{ll}rl=\langle V,E,st,\tau, Match,Apply\big\rangle\;,\;\nexists e\in E\,.\,\tau'(e)=trace
+\end{array}}
+{\langle pc,AC,rl\rangle \xrightarrow{combine} AC\;\;\cup\;\; \bigcup_{pc'\in AC} pc'\stackrel{trace}{\sqcup} rl}$$
 
 \end{definition}
 
@@ -119,7 +162,9 @@ $\cup_{pc'\in AC} pc'$?}
 
 \reviewer{Do you mean $\sqcup_{pc'\in AC}$instead? But then the result is not a set, so how can you take its union with AC? The same problem reoccurs in other definitions.}
 
-\CatchFileBetweenTags{\nodepstext}{text/definitions}{nodepstext}{\nodepstext}
+Relation $\stackrel{combine}{\rightarrow}$ in \cref{def:rule_comb_no_dependencies} models the operational combination step shown in \cref{fig:layers_pc2} (the vertical black arrows between boxes). The relation has three input arguments: the first argument is the original path condition from the previous layer (shown as the topmost box in \cref{fig:layers_pc2} with label $PC$); the second argument is the set of path conditions accumulated thus far by combining other rules in the current layer with the original path condition; and the third argument is the rule from the current layer now being combined. The fourth argument of the relation, the relation's output, is the new set of path conditions resulting from this combination.
+
+Briefly, the equation in \cref{def:rule_comb_no_dependencies} states that whenever a rule has no backward links typed as \emph{trace} (i.e. no dependencies), all path conditions in the accumulator set are kept, along with the result of combining all the path conditions in the accumulator set with the current rule. 
 
 \subsubsection{Resolving Dependencies}
 \label{subsubsec:resolve_dependencies}
@@ -137,7 +182,23 @@ If the backward links in R cannot be matched to symbolic traceability links in P
 
 \begin{definition}{Path Condition and Rule Combination -- Unsatisfied Dependencies\\} 
 \label{def:rule_comb_unsatisfied}
-\CatchFileBetweenTags{\unsatdeps}{text/definitions}{unsatdeps}{\unsatdeps}
+% \begin{definition}{Unsatisfied Dependencies Between Two Path Conditions}
+% 
+% Let $A=\langle V_1,E_1,st_1,\tau_1\rangle, B=\langle V_2,E_2,st_2,\tau_2\rangle\in \textsc{Pathcond}^{sr}_{tg}$ be two path conditions. We say that $A$ does not satisfy $B$'s dependencies if and only if $\neg (B'\vartriangleleft A')$, where $A'=A_{|backward}$ and $B'=B_{|backward}$.
+% \end{definition}
+
+
+
+The combination of a path condition $pc$ and a rule $rl$, when $rl$ has dependencies that are not satisfied by $pc$, is described by the relation $\stackrel{combine}{\rightarrow}\subseteq \textsc{Pathcond}^{sr}_{tg}\times \mathcal{P}(\textsc{Pathcond}^{sr}_{tg})\\ \times \textsc{Rule}^{sr}_{tg} \times \mathcal{P}(\textsc{Pathcond}^{sr}_{tg})$, defined as follows:	
+
+% $$\frac{\begin{array}{ll}&
+% pc\in PC\;,\;\langle pc,rl\rangle \xrightarrow{combine} pc'\;,\;PC\setminus\{pc\},rl,\rangle \xrightarrow{combstep} PC'
+% \end{array}}
+% {\langle PC,rules\rangle \xrightarrow{rulestep} PC'}$$
+
+$$\frac{\begin{array}{ll}\neg\big(rl|_{trace}\blacktriangleleft pc|_{trace}\big) \end{array}}
+{\langle pc,AC,rl\rangle \xrightarrow{combine} AC}$$
+
 \end{definition}
 
 According to the pre-conditions of the equation presented in \cref{def:rule_comb_unsatisfied}, a path condition does not satisfy the dependencies present in a rule if there is no surjective typed graph homomorphism between the backward links of the rule and the symbolic traceability links of the path condition. Besides expressing the fact that all backward links must exist as symbolic traceability links the path condition, the surjective homomorphism allows modeling the case where dependencies expressed by two (or more) backward links between similarly typed elements can be satisfied by one single symbolic traceability link in the path condition \reviewer{Could be rephrased}. This is the case, for example, of rule \emph{FemaleToFemale} in the \emph{Police Station} in \cref{fig:dsltransformation}. The two similarly typed backward links in this rule are satisfied by a path condition containing only the rule \emph{females} generated from the first layer of the transformation, holding one single symbolic traceability link.
@@ -195,17 +256,40 @@ As we have done for the previous cases, let us now formally define the combinati
 
 \begin{definition}{Single Partial and Total Combination of a Set of Path Conditions with a Rule\\}
 \label{def:comb_path_cond_rule_single}
-\CatchFileBetweenTags{\satdeps}{text/definitions}{satdeps}{\satdeps}
+% \begin{definition}{Satisfied Dependencies Between Two Path Conditions}
+% 
+% Let $A=\langle V_A,E_A,st_A,\tau_A,Match_A,Apply_A\rangle, B=\langle V_B,E_B,st_B,\tau_B,Match_B,Apply_B\rangle\in \textsc{Pathcond}^{sr}_{tg}$ be two path conditions. We say that $A$ satisfies $B$'s dependencies if and only if  $B'\vartriangleleft A'$, where $A'=A_{|backward}$ and $B'=B_{|backward}$.
+% \end{definition}
+% 
+% A path condition A partially satisfies the dependencies of a path condition B if
+% there exists an injective typed graph homomorphism between the backward links of
+% B and those of A. In other words, 
+%
+% Note that this works for both cases where more instances of
+% the same backward link exist in A, or in B.
+
+
+
+
+
+The single rule partial and total combination relations $\stackrel{p\_comb}{\rightarrow}$ and $\stackrel{t\_comb}{\rightarrow}$, both having having signature $\mathcal{P}(\textsc{Pathcond}^{sr}_{tg}) \times \textsc{Rule}^{sr}_{tg} \times \textsc{Rule}^{sr}_{tg} \times \mathcal{P}(\textsc{Pathcond}^{sr}_{tg})$ are defined as follows:
+
 
 \begin{align}
 \label{eq:pcomb}
-\CatchFileBetweenTags{\satdepseqone}{text/definitions}{satdepseqone}{\satdepseqone}
+\frac{\begin{array}{ll}
+rl\cong rl_{glue}\sqcup ma_{\Delta}
+\end{array}}
+{\langle AC,rl,rl_{glue}\rangle \xrightarrow{p\_comb} AC\;\;\cup\;\; \bigcup_{pc\in AC} pc\stackrel{trace}{\sqcup} (rl_{glue} \sqcup ma_{\Delta})}
 \end{align}
 
 
 \begin{align}
 \label{eq:tcomb}
-\CatchFileBetweenTags{\satdepseqtwo}{text/definitions}{satdepseqtwo}{\satdepseqtwo}
+\frac{\begin{array}{ll}&
+rl\cong rl_{glue}\sqcup ma_{\Delta}
+\end{array}}
+{\langle AC,rl,rl_{glue}\rangle \xrightarrow{t\_comb} \bigcup_{pc\in AC} pc\stackrel{trace}{\sqcup} (rl_{glue} \sqcup ma_{\Delta})}
 \end{align}
 
 \end{definition}
@@ -220,7 +304,41 @@ Let us now define how a rule is combined with a path condition, whenever its bac
 \begin{definition}{Multiple Partial and Total Combination of a Set of Path Conditions with a Rule\\}
 \label{def:comb_path_cond_rule_mul}
 
-\CatchFileBetweenTags{\satdepstwo}{text/definitions}{satdepstwo}{\satdepstwo}
+
+
+The multiple rule partial and total combination relations $\stackrel{p\_step}{\rightarrow}$ and $\stackrel{t_step}{\rightarrow}$, both having having signature $\mathcal{P}(\textsc{Pathcond}^{sr}_{tg}) \times \mathcal{P}(\textsc{Rule}^{sr}_{tg}) \times \textsc{Rule}^{sr}_{tg} \times \mathcal{P}(\textsc{Pathcond}^{sr}_{tg})$ are defined as follows:
+
+\begin{align}
+\label{eq:pstepbase}
+\frac{\begin{array}{ll}
+\end{array}}
+{\langle AC,rl,\emptyset\rangle \xrightarrow{p\_step} AC}
+\end{align}
+
+\begin{align}
+\label{eq:pstep}
+\frac{\begin{array}{ll}
+rl_{glue}\in &partialSet,\;\langle AC,rl,rl_{glue}\rangle \xrightarrow{p\_comb} AC''\;,\;\\
+&\langle AC'',rl,partialSet\setminus\{rl_{glue}\}\rangle \xrightarrow{p\_step} AC'
+\end{array}}
+{\langle AC,rl,partialSet\rangle \xrightarrow{p\_step} AC'}
+\end{align}
+
+\begin{align}
+\label{eq:tstepbase}
+\frac{\begin{array}{ll}
+\end{array}}
+{\langle AC,rl,\emptyset\rangle \xrightarrow{t\_step} AC}
+\end{align}
+
+\begin{align}
+\label{eq:tstep}
+\frac{\begin{array}{ll}
+rl_{glue}\in &totalSet\;,\;\langle AC,rl,rl_{glue}\rangle \xrightarrow{t\_comb} AC''\;,\;\\
+&\langle AC'',rl,totalSet\setminus\{rl_{glue}\}\rangle \xrightarrow{t\_step} AC'
+\end{array}}
+{\langle AC,rl,totalSet\rangle \xrightarrow{t\_step} AC''} 
+\end{align}
 \end{definition}
 
 Having \cref{def:comb_path_cond_rule_single} and \cref{def:comb_path_cond_rule_mul} in mind, we can now proceed to define the complete combination relation of a rule with a path condition in the case of partially and totally satisfied dependencies. 
@@ -228,7 +346,40 @@ Having \cref{def:comb_path_cond_rule_single} and \cref{def:comb_path_cond_rule_m
 \begin{definition}{Path Condition and Rule Combination -- Partially and Totally Satisfied Dependencies\\}
 \label{def:rul_comb_partial_total}
 
-\CatchFileBetweenTags{\satdepsthree}{text/definitions}{satdepsthree}{\satdepsthree}
+
+
+% When a rule is combined with a path condition, partial and total matches of the rule may exist in the path condition. A total match of the rule is found in the path condition if a surjective typed graph homomorphism exists between the backward matcher of the rule and a subgraph of the path condition ($rl_{glue}\sqsubseteq pc \,\land\, rl\blacktriangleleft rl_{glue}$). As a reminder, the backward matcher of a rule consists of the rule's match part, together with its backward links (see \cref{def:back_match_transformation_rule}). In this case, existing path conditions in the output set will combined with\ldots
+% 
+% These two cases are modeled by the two inference rules in \cref{def:comb_path_cond_rule}. 
+% 
+% For each case a delta is added to the glue graph found such that the necessary apply or match part of the rules are added to the original path condition. In case the match is partial, then the previous set of path conditions is kept where the delta has been added, as well a second possibility with the total rule. Note that the fact that we use a surjective homomorphism allows us to deal with both rules that are isomorphic or homomorphic to parts of PC. This allows us to have more backward links in the path condition than in a rule, but also the other way around.
+
+
+
+The combination of a path condition $pc$ and a rule $rl$, when $rl$ has dependencies that are satisfied by $pc$, is described by the relation $\stackrel{combine}{\rightarrow}\subseteq \textsc{Pathcond}^{sr}_{tg} \times \mathcal{P}(\textsc{Pathcond}^{sr}_{tg}) \times \textsc{Rule}^{sr}_{tg} \times \mathcal{P}(\textsc{Pathcond}^{sr}_{tg})$, defined as follows:%\levi{surjection is used too loosely here}	
+
+% $$\frac{\begin{array}{ll}&
+% pc\in PC\;,\;\langle pc,rl\rangle \xrightarrow{combine} pc'\;,\;PC\setminus\{pc\},rl,\rangle \xrightarrow{combstep} PC'
+% \end{array}}
+% {\langle PC,rules\rangle \xrightarrow{rulestep} PC'}$$
+
+$$\frac{\begin{array}{ll}rl|_{trace}\blacktriangleleft &pc|_{trace}\;,\\&\langle AC,rl,partialsat(rl,pc)\rangle\xrightarrow{p\_step} AC''\;,\;\\&\langle AC'',rl,totalsat(rl,pc)\rangle \xrightarrow{t\_step} AC'
+\end{array}} 
+{\langle pc,AC,rl\rangle \xrightarrow{combine} AC'}$$
+\begin{center}
+\vspace{.3cm}
+where
+\begin{align*}
+rl_{glue}\in&~partialsat(rl,pc) \;\Longleftrightarrow\; \\
+&rl_{glue}\sqsubseteq pc^{*} \,\land\, rl|_{trace}\blacktriangleleft rl_{glue}\quad\land\, \\&\hspace{1cm}\nexists rl' \,.\, (rl_{glue}\sqsubseteq rl'\sqsubseteq pc^{*} \land \Vert rl\Vert \blacktriangleleft rl')
+\end{align*}
+and 
+\begin{align*}
+rl_{glue}\in totalsat(rl,pc) \;\Longleftrightarrow \;rl_{glue}\sqsubseteq pc^{*} \,\land\, \Vert rl\Vert\blacktriangleleft rl_{glue}
+\end{align*}
+\end{center}
+
+
 \end{definition}
 
 \reviewer{Def. 24: it seems to me you are making a very serious mistake here. $\blacktriangleright$ tests
@@ -248,24 +399,58 @@ The combination of one path condition with all the rules in the layer will produ
 
 \begin{definition} {Combining a Path Condition with a Layer\\}
 \label{def:path_cond_layer_comb}
-\CatchFileBetweenTags{\combpclayer}{text/definitions}{combpclayer}{\combpclayer}
+
+The \emph{layer combination relation}
+$\stackrel{combpclayer}{\rightarrow}\subseteq \textsc{Pathcond}^{sr}_{tg} \times\\ \mathcal{P}(\textsc{Pathcond}^{sr}_{tg}) \times \textsc{Layer}^{sr}_{tg}\times
+\mathcal{P}(\textsc{Pathcond}^{sr}_{tg})$ relation is defined as follows:
+$$\frac{}
+{\langle pc,AC,\emptyset\rangle \xrightarrow{combpclayer} AC}$$
+
+$$\frac{\begin{array}{ll}rl\in layer,\;\langle pc,AC&,rl\rangle\xrightarrow{combine}AC'',\\ &\langle pc,AC'',layer\setminus\{rl\}\rangle\xrightarrow{combpclayer}AC'
+\end{array}}
+{\langle pc,AC,layer\rangle \xrightarrow{combpclayer} AC''}$$
+
 \end{definition}
 
-\CatchFileBetweenTags{\combpclayertext}{text/definitions}{combpclayertext}{\combpclayertext}
+After the step in~\cref{def:path_cond_layer_comb} is repeated for all the path conditions in the previous layer, these new sets of path conditions are collected together to produce the working set of path conditions for the layer. This process is modeled by relation $\stackrel{combpcsetlayer}{\rightarrow}$ in \cref{def:path_cond_set_layer_comb}.
 
 \begin{definition} {Combining a Set of Path Conditions with a Layer\\}
 \label{def:path_cond_set_layer_comb}
-\CatchFileBetweenTags{\combpcsetlayer}{text/definitions}{combpcsetlayer}{\combpcsetlayer}
+The \emph{path condition layer step relation}
+$\stackrel{combpcsetlayer}{\rightarrow}\subseteq \\\mathcal{P}(\textsc{Pathcond}^{sr}_{tg}) \times \textsc{Layer}^{sr}_{tg}\times
+\mathcal{P}(\textsc{Pathcond}^{sr}_{tg})$ relation is defined as follows:
+$$\frac{}
+{\langle \emptyset,layer\rangle \xrightarrow{combpcsetlayer} \emptyset}$$
+
+$$\frac{\begin{array}{ll}pc\in AC,\;\langle pc,\{pc\}&,layer\rangle\xrightarrow{combpclayer}AC',\\ &\langle AC\setminus\{pc\},layer\rangle\xrightarrow{combpcsetlayer}AC''
+\end{array}}
+{\langle AC,layer\rangle \xrightarrow{combpcsetlayer} AC'\cup AC''}$$
 \end{definition}
 
-\CatchFileBetweenTags{\combpcsetlayertext}{text/definitions}{combpcsetlayertext}{\combpcsetlayertext} 
+This working set of path conditions obtained for each layer is then itself combined with the rules in the next layer as in the algorithm just described, to obtain yet another working set of path conditions. This process will then continue in this layer-by-layer fashion through the transformation and is formally described in \cref{def:path_cond_gen}.\\
+After all layers have been processed, the working set of the last layer contains all the  possible path conditions of the transformation. Through our abstraction relation defined in \cref{sec:abstraction_relation}, the final set of created path conditions will represent every feasible transformation execution. \cref{sec:verif_dsltrans_props} will discuss how our algorithm proves properties on these path conditions, and thus on all executions of the transformation.
 
 \begin{definition} {Path Condition Generation\\}
 \label{def:path_cond_gen}
-\CatchFileBetweenTags{\pathcondgen}{text/definitions}{pathcondgen}{\pathcondgen}
+Let $[layer::tr]\in \textsc{Transf}^{sr}_{tg}$ be a transformation, where $layer\in
+\textsc{Layer}^{sr}_{tg}$ is a Layer and $tr$ also a transformation. The $\stackrel{pathcondgen}{\rightarrow}\subseteq \mathcal{P}(\textsc{Pathcond}^{sr}_{tg}) \times \textsc{Transf}^{sr}_{tg}\times
+\mathcal{P}(\textsc{Pathcond}^{sr}_{tg})$ is defined as follows:
+$$\frac{}
+{\langle AC,[\;]\rangle \xrightarrow{pathcondgen} AC}$$
+
+$$\frac{\begin{array}{ll}\langle \epsilon_{pc},layer^{\star}\rangle\xrightarrow{combpcsetlayer}AC''\;,\;\langle AC'',tr\rangle\xrightarrow{pathcondgen}AC'
+\end{array}}
+{\langle \epsilon_{pc},[layer::tr]\rangle \xrightarrow{pathcondgen} AC}$$
+$$\text{where } layer^{\star}=\bigcup_{rl\in l}rl^{\star}$$
+
 \end{definition}
 
-\CatchFileBetweenTags{\pathcondgentext}{text/definitions}{pathcondgentext}{\pathcondgentext} 
+Note that in \cref{def:path_cond_gen}, the recursive rule considers the expansion ($layer^{\star}$) of all the rules in a layer (see \cref{def:transformation_rule_expansion}). This allows us to deal with polymorphism during path condition generation. In particular, given one rule $rl$ of $layer$, we consider for path condition generation all rules containing possible of replacements of each match element in $rl$ of certain type by an element belonging to one of the type's subtypes, as defined in the source metamodel $sr$.\\
+After all layers have been processed, the working set of the last layer contains all the possible path conditions of the transformation. Through our abstraction relation in \cref{def:abstraction_pc_ex_appendix}, the final set of created path conditions will represent every feasible transformation execution.
+
+\paragraph{\textbf{Notation:}}
+
+We will use the abbreviation $\textsc{Pathcond}(tr)$ to represent the set of path conditions $AC$ produced for a transformation $tr$, where $\langle \epsilon_{pc},tr\rangle \xrightarrow{pathcondgen} AC$.
 
 
 
