@@ -21,7 +21,7 @@ improved by the fact that those are labelled trace.)}
 
 \reviewer{I think the situation would be much more clear if you were to use the common
 notion of left hand side and right hand side of a rule. The left hand side of a
-rule rl is precisely your ||rl||, the right hand side is the entire rl augmented by
+rule rl is precisely your rule matcher, the right hand side is the entire rl augmented by
 your traceability links, as in 4.2.2. Suddenly we are back in a well-known graph
 transformation formalism, and your rules are in fact so simple (no deletion, no
 negative application conditions, injective matching) that I believe it makes no
@@ -60,8 +60,8 @@ Note that this section presents a collection of formal tools that are used in th
 
 \bentley{Make sure that terminology is consistent between elements and vertices}
 
-\subsection{Graph Structures and Functions}
-\label{sec:typed_graphs}
+\subsection{Typed Graphs}
+\label{subsec:typed_graphs}
 
 
 \subsubsection*{Typed Graph}
@@ -87,22 +87,22 @@ A typed graph is a 6-tuple $\langle V,E,(s,t),\tau, \VT, \ET\rangle$ where:
 
 Note that the our verification technique is geared toward model-driven engineering. Therefore, the types of vertices and edges in our typed graphs will be drawn from a particular \textit{metamodel}.
 
-Sample metamodels for our running example can be seen in figures above \bentley{Fix.}. The particular metamodel for a typed graph will be indicated in the formalization when required, as (potentially) different metamodels will be present for the input and output graphs in DSLTrans rules.
+Sample metamodels for our running example can be seen in figures above \bentley{Fix.}. Note that DSLTrans rules (to be formally defined) will combine typed graphs with potentially different metamodels.
 
 We assume the existence of a number of functions in our formalization to aid the treatment of typing:
 
 \begin{itemize}
-\item $\mathit{isAbstract}: \mathit{VT} \rightarrow \{\mathit{true}, \mathit{false}\}$
+\item $\mathit{isAbstract}: \mathit{VT} \rightarrow \{\mathit{true}$, $\mathit{false}\}$
 \begin{itemize}
 \item Where $\mathit{isAbstract}(\VT)$ returns $\mathit{true}$ iff $\VT$ is denoted as abstract (not able to be instantiated) by the metamodel, else $\mathit{false}$
 \end{itemize}
 
-\item $\mathit{isIndirect}: \mathit{ET} \rightarrow \{\mathit{true}, \mathit{false}\}$
+\item $\mathit{isIndirect}: \mathit{ET} \rightarrow \{\mathit{true}$, $\mathit{false}\}$
 \begin{itemize}
 \item Where $\mathit{isIndirect}(\ET)$ returns $\mathit{true}$ iff $\ET$ is denoted as an \textit{indirect edge}, else $\mathit{false}$. The \textit{indirect} classification allows matching over indirect paths between vertices. This will be further clarified when required for our constructs.
 \end{itemize}
 
-\item $\mathit{matchesOver}: \{\VT \cup \ET\} \times \{\VT \cup \ET\} \rightarrow \{\mathit{true}, \mathit{false}\}$
+\item $\mathit{matchesOver}: \{\VT \cup \ET\} \times \{\VT \cup \ET\} \rightarrow \{\mathit{true}$, $\mathit{false}\}$
 
 \begin{itemize}
 \item The purpose of this function is to assist in handling polymorphism in the metamodel
@@ -115,7 +115,7 @@ We assume the existence of a number of functions in our formalization to aid the
 For simplification purposes, we will not represent edge cardinalities or containment relationships given by a metamodel in our notion of typed graph. Note that in fact we require these conditions to be relaxed to perform our graph rewriting.
 
 \subsubsection*{Typed Subgraph}
-We now define the useful notion of typed subgraph. As expected, a typed subgraph is simply a restriction of a typed graph to some of its vertices and edges. 
+We now define the useful notion of typed subgraph. As expected, a typed subgraph is simply a restriction of a typed graph to some of its vertices and edges. \bentley{Is this needed?}
 
 \begin{definition}{Typed Subgraph\\}
 \label{def:typedsubgraph}
@@ -125,7 +125,7 @@ $g'$ is a typed subgraph of $g$, written $g'\sqsubseteq g$, iff $V'\subseteq V$,
 
 \end{definition}
 
-Given a typed graph $g\in \textsc{TG}$, will use the notation $Components(g)$ to describe the set of strongly connected typed graphs in $g$. Also, we will use the notation $g|_{t}$ to refer to the restriction of graph $g$ to its subgraph containing only edges of type $t$.
+%Given a typed graph $g\in \textsc{TG}$, will use the notation $Components(g)$ to describe the set of strongly connected typed graphs in $g$. Also, we will use the notation $g|_{t}$ to refer to the restriction of graph $g$ to its subgraph containing only edges of type $t$.
 
 
 \subsubsection*{Typed Graph Union}
@@ -146,14 +146,53 @@ Note: as a reviewer helpfully pointed out, we require that $s \cup s'$, $t \cup 
 
 \bentley{Do we need typed graph intersection? Or to mention what it means for two graphs to be disjoint?}
 
+
+\subsection{Homomorphisms}
+\label{subsec:typed_graphs}
+
+
+For the formal development of our technique, we are interested in relations between typed graphs that preserve some graph structure and vertex/edge type, i.e. homomorphisms.
+
+However, our technique of symbolic execution of transformation rules means that we cannot rely on a trivial homomorphism. Instead we must... \bentley{TODO: Finish this sentence.}
+
+Matching:
+
+\begin{itemize}
+
+\item Rules onto rules?
+\begin{itemize}
+\item If so, is isomorphic
+\end{itemize}
+
+\item Contracts onto path conditions
+\begin{itemize}
+\item Edges: Each edge of contract must exist injectively in PC
+\item Vertices: Each vertex match must be surjective from target to source. Note that this will be a partial function. This should also be a minimal function.
+\end{itemize}
+
+
+\item Rules onto path conditions
+
+
+
+
+\item Path conditions onto transformation executions
+
+\item Do we want to add slicing?
+\end{itemize}
+
+
+
 \subsubsection*{Typed Graph Homomorphism}
-For the formal development of our technique, we are interested in relations between typed graphs that are structure-preserving, i.e. homomorphisms. Homomorphisms between typed graphs preserve not only structure, but also the types of vertices and edges that are mapped. Note that, trivially, a typed graph homomorphism is a graph homomorphism.
+
+The first typed graph homomorphism we define is the trivial one. This is presented in order to 
+
 
 \begin{definition}{Typed Graph Homomorphism\\}
 \label{def:typed_graph_homomorphism}
 \defineggprime
 
-A typed graph homomorphism between $g$ and $g'$ is a function $f: f_v \cup f_e$ such that:
+A typed graph homomorphism from $g$ onto $g'$ is a function $f: f_v \cup f_e$ such that:
 \begin{itemize}
 \item $f_v: V\rightarrow V'$
 \item $f_e: E\rightarrow E'$
@@ -170,8 +209,7 @@ A typed graph homomorphism between $g$ and $g'$ is a function $f: f_v \cup f_e$ 
 \end{itemize}  
 \end{definition}
 
-\bentley{Maybe put `inj' and `sub' in the homomorphism to reduce number of symbols}
- When an \emph{injective} typed graph homomorphism $f$ exists between $g$ and $g'$ we write $g \stackrel{f}{\vartriangleleft} g'$, or simply $g \vartriangleleft g'$ when the context is unambiguous. When a \emph{surjective} typed graph homomorphism $f$ exists between typed graphs $g$ and $g'$ we write $g \stackrel{f}{\blacktriangleleft} g'$, or also simply $g \blacktriangleleft g'$ in an unambiguous context. 
+ When an \emph{injective} typed graph homomorphism $f$ exists from $g$ onto $g'$, we write $g \stackrel{inj}{\blacktriangleleft} g'$. When a \emph{surjective} typed graph homomorphism $f$ exists from $g$ onto $g'$ we write $g \stackrel{surj}{\blacktriangleleft} g'$.
 
 \subsubsection*{Typed Graph Edge Homomorphism}
 
@@ -203,6 +241,9 @@ Again, we wish to highlight the fact that this homomorphism is different than De
 \bentley{Create diagram to illustrate}
 
 This unusual homomorphism allows our technique to `split' our source graph over multiple locations in the target graph. This is critical, as our target graphs are constructed in a way that allows for vertex duplication. That is, two vertices of a particular type in the target graph may only represent one underlying element, as discussed in Section~\ref{sec:abstraction_relation}. Constructing this morphism allows our prover implementation to avoid explicitly creating `disambiguated' graphs where these duplications are resolved.
+
+ When an \emph{injective} typed graph edge homomorphism $f$ exists from $g$ onto $g'$, we write $g \stackrel{inj}{\vartriangleleft} g'$. When a \emph{surjective} typed graph edge homomorphism $f$ exists from $g$ onto $g'$ we write $g \stackrel{surj}{\vartriangleleft} g'$.
+
 
 
 \subsection*{Typed Graph Isomorphism}

@@ -181,22 +181,22 @@ For example, the path condition in Figure~\ref{fig:pc_first} represents the exec
 \begin{definition}{Path Condition\\}
 \label{def:path_condition}
 
-A path condition is a three-tuple $\big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle$, where:
+A path condition is a four-tuple $\big\langle \mathit{NAC}$, $\mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle$, where:
 
 \begin{itemize}
-\item $\mathit{Input}, \mathit{Output} \in \textsc{TG}$
+\item $\mathit{NAC}, \mathit{Input}, \mathit{Output} \in \textsc{TG}$
 \item $\mathit{Input}$ and $\mathit{Output} $ may be empty and are disjoint
+\item $\mathit{NAC}$ may be an empty graph, and is disjoint from both $\mathit{Input}$ and $\mathit{Output} $
 \item $\mathit{trace} = \{E_{trace}, (s_{trace}, t_{trace})\}$
 \begin{itemize}
 \item $E_{trace}$ contains the traceability links
-\item $E_{trace} $ is disjoint from $E_{Input}$ and $E_{Output}$
+\item $E_{trace} $ is disjoint from $E_{Input}$, $E_{Output}$, and $E_{NAC}$
 \item $(s_{trace}, t_{trace})$ is a pair of functions $s_{trace}: E_{trace}\rightarrow V_{\textit{Output}}$ and $t_{trace}: E_{trace}\rightarrow V_{\textit{Input}}$ that respectively provide the source and target vertices for each traceability link
 \end{itemize}
 
 \end{itemize}  
 
-The empty path condition is defined as $\{\emptyset, \emptyset, \emptyset \}$.
-
+The empty path condition is defined as $\{\emptyset, \emptyset, \emptyset, \emptyset \}$.
 
 The set of all path conditions is noted as $\textsc{PathConds}$.
 
@@ -226,7 +226,7 @@ execution by a path condition.
 \begin{definition}{Abstraction of a Transformation Execution by a Path Condition\\}
 \label{def:abstraction_pc_ex}
 
-Let $iom = \big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle \in \textsc{IOM}$ be an input-output model, also known as a transformation execution. \bentley{Make sure this terminology is consistent.}
+Let $iom = \big\langle \mathit{NAC}, \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle \in \textsc{IOM}$ be an input-output model, also known as a transformation execution. \bentley{Make sure this terminology is consistent.}
 
 Let also $pc = \big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle \in \textsc{IOM}  \in
 \textsc{PathConds}$ be a path condition.
@@ -234,6 +234,13 @@ Let also $pc = \big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\b
 We also require that getTransformation(iom) and getTransformation(pc) return the same transformation.
 
 We have that $iom$ is abstracted by $pc$, noted $ex\Vvdash pc$, if and only if:
+
+NAC doesn't edge match iom's Input
+Input edge matches iom's Input
+
+
+
+
 
 \begin{multline}
 \label{eq:abstr_input_output}
