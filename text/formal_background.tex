@@ -168,17 +168,33 @@ Matching:
 \begin{itemize}
 \item Edges: Each edge of contract must exist injectively in PC
 \item Vertices: Each vertex match must be surjective from target to source. Note that this will be a partial function. This should also be a minimal function.
+\item Backward links injectively match from contract into PC onto traceability links. Source and target of backward links on contract must match the source and target of the traceability link of the PC.
 \end{itemize}
 
 
 \item Rules onto path conditions
-
+\begin{itemize}
+\item Same as above
+\end{itemize}
 
 
 
 \item Path conditions onto transformation executions
+\begin{itemize}
+\item Each component in graph:
+\begin{itemize}
+\item As in paper. Match component is injectively found. Apply component is surjectively found.
+\item For traceability links, PC links are found injectively. Transformation executions links are found surjectively. Not a bijection because multiple rule executions could be present in transformation execution.
+
+\item Question: How to handle unification of matching. Seems to be straightforward before/after must match.
+\end{itemize}
+\end{itemize}
+
+
 
 \item Do we want to add slicing?
+
+\item Explain backward links and trace links matching over trace links
 \end{itemize}
 
 
