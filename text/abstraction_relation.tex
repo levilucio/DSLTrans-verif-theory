@@ -204,15 +204,27 @@ We also define a utility function getRules: PC $\rightarrow$ Set(Rules). This fu
 
 We define a utility function getTransformation: PC $\rightarrow$ Transforms. This function returns the Transform that the path condition was built for. The purpose of this function is to restrict path condition to only be applicable for the transformation they represent.
 
-
+Finally, we define a function getComponents: PC $\rightarrow$ Set(Typed Graph).
 
 \end{definition}
+
+
+
+%\item Path conditions onto transformation executions
+%\begin{itemize}
+%\item Each rule in graph:
+%\begin{itemize}
+%\item As in paper. Match component is injectively found. Apply component is surjectively found.
+%\item For traceability links, PC links are found injectively. Transformation executions links are found surjectively. Not a bijection because multiple rule executions could be present in transformation execution.
+%
+%\item Question: How to handle unification of matching. Seems to be straightforward before/after must match.
+%\end{itemize}
+%\end{itemize} 
 
 
 The formal definition of a path condition is presented in \cref{def:path_condition}. Note that the structure of path conditions is intentionally very similar to that of DSLTrans rules and input-output models.
 
 The \textit{input} graph of a path condition represents a pattern that must be present in the input model of the transformation, while the \textit{output} graph is a pattern which will be instantiated in the output model of the transformation. Symbolic traceability links are also kept between elements in the \textit{input} and \textit{output} graphs to retain traceability information.
-
 
 \subsection{Abstraction Relation}
 \label{subsec:abstraction_relation}
@@ -228,8 +240,7 @@ execution by a path condition.
 
 Let $iom = \big\langle \mathit{NAC}, \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle \in \textsc{IOM}$ be an input-output model, also known as a transformation execution. \bentley{Make sure this terminology is consistent.}
 
-Let also $pc = \big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle \in \textsc{IOM}  \in
-\textsc{PathConds}$ be a path condition.
+Let also $pc = \big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle  \in \textsc{PathConds}$ be a path condition.
 
 We also require that getTransformation(iom) and getTransformation(pc) return the same transformation.
 

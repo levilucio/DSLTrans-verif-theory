@@ -128,6 +128,8 @@ $g'$ is a typed subgraph of $g$, written $g'\sqsubseteq g$, iff $V'\subseteq V$,
 %Given a typed graph $g\in \textsc{TG}$, will use the notation $Components(g)$ to describe the set of strongly connected typed graphs in $g$. Also, we will use the notation $g|_{t}$ to refer to the restriction of graph $g$ to its subgraph containing only edges of type $t$.
 
 
+
+
 \subsubsection*{Typed Graph Union}
 We now define how two typed graphs are united. A union of two typed graphs is trivially the set union of all the components of those two typed graphs. Note that we do not require the components of the two graphs to be disjoint, as in the following joint unions will be used to merge typed graphs.
 
@@ -148,60 +150,16 @@ Note: as a reviewer helpfully pointed out, we require that $s \cup s'$, $t \cup 
 
 
 \subsection{Homomorphisms}
-\label{subsec:typed_graphs}
+\label{subsec:homomorphisms}
 
 
 For the formal development of our technique, we are interested in relations between typed graphs that preserve some graph structure and vertex/edge type, i.e. homomorphisms.
 
-However, our technique of symbolic execution of transformation rules means that we cannot rely on a trivial homomorphism. Instead we must... \bentley{TODO: Finish this sentence.}
-
-Matching:
-
-\begin{itemize}
-
-\item Rules onto rules?
-\begin{itemize}
-\item If so, is isomorphic
-\end{itemize}
-
-\item Contracts onto path conditions
-\begin{itemize}
-\item Edges: Each edge of contract must exist injectively in PC
-\item Vertices: Each vertex match must be surjective from target to source. Note that this will be a partial function. This should also be a minimal function.
-\item Backward links injectively match from contract into PC onto traceability links. Source and target of backward links on contract must match the source and target of the traceability link of the PC.
-\end{itemize}
-
-
-\item Rules onto path conditions
-\begin{itemize}
-\item Same as above
-\end{itemize}
-
-
-
-\item Path conditions onto transformation executions
-\begin{itemize}
-\item Each component in graph:
-\begin{itemize}
-\item As in paper. Match component is injectively found. Apply component is surjectively found.
-\item For traceability links, PC links are found injectively. Transformation executions links are found surjectively. Not a bijection because multiple rule executions could be present in transformation execution.
-
-\item Question: How to handle unification of matching. Seems to be straightforward before/after must match.
-\end{itemize}
-\end{itemize}
-
-
-
-\item Do we want to add slicing?
-
-\item Explain backward links and trace links matching over trace links
-\end{itemize}
-
-
+However, our technique of symbolic execution of transformation rules means that we cannot rely on a trivial homomorphism. Instead our matching must be flexible about how vertices in the source graph may match over multiple vertices in the target graph.
 
 \subsubsection*{Typed Graph Homomorphism}
 
-The first typed graph homomorphism we define is the trivial one. This is presented in order to 
+The first typed graph homomorphism we define is standard, where the structure of the source graph must be found in the target graph. This is presented for the reader to appreciate the complications required for the next homomorphisms.
 
 
 \begin{definition}{Typed Graph Homomorphism\\}
@@ -229,7 +187,7 @@ A typed graph homomorphism from $g$ onto $g'$ is a function $f: f_v \cup f_e$ su
 
 \subsubsection*{Typed Graph Edge Homomorphism}
 
-Our technique also requires a form of graph homomorphism that primarily focuses on matching the edges of the graphs. This homomorphism will be an injective match regarding the edges, but note that a particular vertex in the source graph may match onto multiple vertices in the target graph. \bentley{What's the term for this?}
+Our technique also requires a form of graph homomorphism that primarily focuses on matching the edges of the graphs. This homomorphism will be an injective\footnote{For a terminology refresh, \textit{injective matching} means there is a one-to-one correspondence between the source and target vertices. \textit{Surjective matching} means that all target vertices must be matched by at least one source vertex. }match regarding the edges, but note that a particular vertex in the source graph may match onto multiple vertices in the target graph. \bentley{What's the term for this?}
 
 \begin{definition}{Typed Graph Edge Homomorphism\\}
 \label{def:typed_graph_edge_homomorphism}
@@ -237,11 +195,15 @@ Our technique also requires a form of graph homomorphism that primarily focuses 
 
 A typed graph edge homomorphism between $g$ and $g'$ is a function $h: h_v \cup h_e$ such that:
 \begin{itemize}
-\item $h_v: V'\rightarrow V$
+\item $h_v: V'\rightarrow V$ Note that this function has unusual properties:
 \begin{itemize}
-\item Note that $h_v$ is an function from a vertex in the target graph onto a vertex in the source graph
+
+\item A function from a vertex in the target graph onto a vertex in the source graph
+\item A partial function, as not all vertices in the target graph will be reflected in the source graph
+\item Surjective, so that all source vertices are matched to target vertices
+\item A minimal function, such that the minimum number of target  vertices are matched to each source vertex \bentley{Not sure if this is needed.}
 \end{itemize}
-\item $h_e: E\rightarrow E'$
+\item $h_e: E\rightarrow E'$, and is injective
 \item $\forall v_1 \xrightarrow{e} v_2\in E$:
 \begin{itemize}
 \item Let $e' = h_e(e), v_1' = s'(e'), v_2' = t'(e')$
@@ -249,7 +211,7 @@ A typed graph edge homomorphism between $g$ and $g'$ is a function $h: h_v \cup 
 \item $v_1 = h_v(v_1'), v_2 = h_v(v_2')$
 \item $\mathit{matchesOver}(\tau(v_1), \tau(v_1') \land \\\mathit{matchesOver}(\tau(v_2), \tau(v_2') \land\\ \mathit{matchesOver}(\tau(e), \tau(e')$
 \end{itemize}
-
+ 
 \end{itemize}  
 \end{definition}
 
