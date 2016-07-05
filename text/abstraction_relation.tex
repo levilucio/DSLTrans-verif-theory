@@ -209,19 +209,6 @@ We define a utility function getTransformation: PC $\rightarrow$ Transforms. Thi
 \end{definition}
 
 
-
-%\item Path conditions onto transformation executions
-%\begin{itemize}
-%\item Each rule in graph:
-%\begin{itemize}
-%\item As in paper. Match component is injectively found. Apply component is surjectively found.
-%\item For traceability links, PC links are found injectively. Transformation executions links are found surjectively. Not a bijection because multiple rule executions could be present in transformation execution.
-%
-%\item Question: How to handle unification of matching. Seems to be straightforward before/after must match.
-%\end{itemize}
-%\end{itemize} 
-
-
 The formal definition of a path condition is presented in \cref{def:path_condition}. Note that the structure of path conditions is intentionally very similar to that of DSLTrans rules and input-output models.
 
 The \textit{input} graph of a path condition represents a pattern that must be present in the input model of the transformation, while the \textit{output} graph is a pattern which will be instantiated in the output model of the transformation. Symbolic traceability links are also kept between elements in the \textit{input} and \textit{output} graphs to retain traceability information.
@@ -266,6 +253,8 @@ The PC's NAC does not match onto the iom's Input
 
 The PC's Input matches onto the iom's Input. However, elements from the same rule in the PC cannot match over the same iom element. Note that this match function \textit{f} is not injective.
 
+The purpose of this relation is to enforce that the path condition accurately represents the elements present in the input model of the transformation execution. Note that extra elements may be present but not matched.
+
 \begin{equation}
 \label{eq:abstr_input_output}
 \exists \big(\mathit{PC}_{Input} \vartriangleleft \mathit{iom}_{Input}^*
@@ -276,7 +265,9 @@ f(v_1) = f(v_2) \veebar getRule(v_1) = getRule(v_2)
 
 \paragraph{Condition 3:}
 
-Elements in the iom's Output graph must surjectively match on the Output graph of the PC
+Elements in the iom's Output graph must surjectively match on the Output graph of the PC.
+
+This surjection relation enforces that all elements which have been created in the output of the transformation execution must be represented by the output of the path condition. Note that this matching is from the execution to the path condition. As there may be multiple copies of an element in the execution but the path condition only represents execution of rules once, these elements should match over the same element in the path condition.
 
 \begin{equation}
 \label{eq:abstr_apply_surjective_match}
@@ -285,7 +276,9 @@ Elements in the iom's Output graph must surjectively match on the Output graph o
 
 \paragraph{Condition 4:}
 
-Traceability links in the PC must injectively match onto links in the transformation execution. This is to ensure that element creation represented in the path condition reflects actual rule execution present in the transformation execution.
+Traceability links in the PC must injectively match onto links in the transformation execution using the match function \textit{f}. The purpose of this condition is to ensure that element creation represented in the path condition reflects actual rule execution present in the transformation execution.
+
+Note that again we cannot have two traceability links from the same rule in the path condition matching over a traceability link in the transformation execution. Instead, both traceability links must be uniquely found.
 
 TODO: Define the InjMatch we need here
 
@@ -315,56 +308,6 @@ TODO: Define how the morphisms agree.
 \label{eq:abstr_morphisms_agree}
 \mathit{PC}_{trace}
 \end{equation} 
-
-
-% \cref{def:abstraction_pc_ex} enforces the fact that the matcher part of
-% components of the path condition are found through an injective typed graph
-% homomorphism in the execution's input model. Additionally, the graph including
-% the output of the execution (including traceability information), can be
-% mapped by a surjective typed graph homomorphism onto the apply model (plus the
-% symbolic traceability links) of the path condition.
-
-\subsubsection{Explanation}
-
-To understand the abstraction relation in \cref{subsubsec:abstraction_relation_formal}, recall
-that during the construction of a transformation execution rules are matched
-injectively in the input model. This information is present in the first
-condition of the abstraction relation (Proposition~\ref{eq:abstr_input_output})
-via the injective typed graph homomorphism between the match part of the copies
-of rules ``glued'' onto the path condition and the containment transitive
-closure of the input part of the transformation execution. This relation
-enforces the fact that certain parts of the execution were found, or matched, by
-certain parts of the path condition.
-On the other hand, the surjection from the output of the execution towards the
-apply part of the path condition models the fact that the output of the
-execution has been completely built by instantiating the apply parts of the
-rules contained in the path condition.
-
-The second condition of the abstraction relation
-(Proposition~\ref{eq:abstr_trace}) checks for the fact that symbolic
-traceability links in the path condition and traceability links in the execution
-correctly correspond to each other. This is modeled by the fact that all
-strongly connected components in the path condition, composed only of symbolic
-traceability links, are injectively found on the execution. This injection
-models the fact that traceability graphs between individual or combined rules in
-the path condition are necessarily found in the execution. Note that components
-of the path condition are considered because of the fact that disconnected rules
-in the path condition may have matched over common elements of a particular
-execution. As such, a full injection between the complete traceability graph in
-the path condition and the execution would be incorrect. Additionally, in the
-second part of Proposition~\ref{eq:abstr_trace} we check the fact that every
-traceability link in the execution can be found in the path condition. This
-additional sanity check enforces that no spurious traceability links that could
-not have been created by the rules present in the path condition exist in the
-transformation execution.
-
-Finally, the last clause of the abstraction relation states that rule copies
-that are repeated a number of times in the path condition need to be found at
-least a similar amount of times in the abstracted transformation execution.
-
-
-
-
 
 
 \subsection{Examples}
