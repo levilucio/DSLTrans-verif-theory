@@ -204,7 +204,7 @@ We also define a utility function getRules: PC $\rightarrow$ Set(Rules). This fu
 
 We define a utility function getTransformation: PC $\rightarrow$ Transforms. This function returns the Transform that the path condition was built for. The purpose of this function is to restrict path condition to only be applicable for the transformation they represent.
 
-Finally, we define a function getComponents: PC $\rightarrow$ Set(Typed Graph).
+
 
 \end{definition}
 
@@ -226,6 +226,11 @@ The formal definition of a path condition is presented in \cref{def:path_conditi
 
 The \textit{input} graph of a path condition represents a pattern that must be present in the input model of the transformation, while the \textit{output} graph is a pattern which will be instantiated in the output model of the transformation. Symbolic traceability links are also kept between elements in the \textit{input} and \textit{output} graphs to retain traceability information.
 
+
+Finally, we define a function getComponents: PC $\rightarrow$ Set(Typed Graph). This function is used for the abstraction relation, as it returns a set of subsets from the match graph of the path condition. These components are collections of the match graph of rules that have been overlaid on top of each other. These components must be matched as a unit, as their elements must be injectively matched. However, elements from different components may match onto the same target vertex in the abstraction relation. More information on how the components are constructed will be provided in the section on path condition construction. \bentley{This is not elegant at all...}
+
+
+
 \subsection{Abstraction Relation}
 \label{subsec:abstraction_relation}
 
@@ -234,35 +239,67 @@ Our abstraction relation is at the core of our technique. It allows us to repres
 Let us start by formally defining the notion of abstraction of a transformation
 execution by a path condition.
 
+LOOK AT COMPONENTS IN PC MATCH GRAPH AS ELEMENTS AND TRACE LINKS
+
+THEN LOOK AT OUTPUT ELEMENTS AND TRACE LINKS IN IOM
+
+REDO STRUCTURES TO ONLY BE ONE VERTEX AND EDGE SET, AND HAVE SUBSETS FOR MATCH, APPLY
+
+
 
 \begin{definition}{Abstraction of a Transformation Execution by a Path Condition\\}
 \label{def:abstraction_pc_ex}
 
-Let $iom = \big\langle \mathit{NAC}, \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle \in \textsc{IOM}$ be an input-output model, also known as a transformation execution. \bentley{Make sure this terminology is consistent.}
+Let $iom = \big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle \in \textsc{IOM}$ be an input-output model, also known as a transformation execution. \bentley{Make sure this terminology is consistent.}
 
-Let also $pc = \big\langle \mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle  \in \textsc{PathConds}$ be a path condition.
+Let also $pc = \big\langle  \mathit{NAC}$, $\mathit{Input}$, $\mathit{Output}$, $\mathit{trace}\big\rangle  \in \textsc{PathConds}$ be a path condition.
 
 We also require that getTransformation(iom) and getTransformation(pc) return the same transformation.
 
-We have that $iom$ is abstracted by $pc$, noted $ex\Vvdash pc$, if and only if:
-
-NAC doesn't edge match iom's Input
-Input edge matches iom's Input
+We have that $iom$ is abstracted by $pc$, noted $ex\Vvdash pc$, if and only if the following conditions are all true:
 
 
+\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
+The PC's NAC does not match onto the iom's Input
 
+\begin{multline}
+\label{eq:abstr_no_nac}
+\nexists \big(\mathit{PC}_{NAC} \stackrel{inj}{\vartriangleleft} \mathit{iom}_{Input}^*\big)
+\end{multline}
 
+\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
+
+Each component in the PC:
+Elements matches on the iom's Input
+Traceability links can be found as well
 
 \begin{multline}
 \label{eq:abstr_input_output}
-\big(\forall rl\in Rules\;.\;Match(rl) \vartriangleleft Input^*\big) \;\land\; Output \blacktriangleleft Apply
+\big(\forall \mathit{comp} \in \mathit{getComponents(PC)} \vartriangleleft Input^* : \mathit{comp} \stackrel{inj}{\vartriangleleft} \mathit{iom}_{Input}^*\big)
 \end{multline}
-\center{and}
+
+\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
+
+Elements in the iom's Output graph must surjectively match on the Output graph of the PC
+Trace links in iom can be found in PC
+
 \begin{multline}
-\label{eq:abstr_trace}
-\big(\forall trc\in Components(pc|_{trace})\;.\;trc\vartriangleleft ex\big)\;\land\;\\
-\big(\forall e'\in E'\, \exists e\in E\;.\;\tau'(e')=trace \Longrightarrow \tau(e)=trace\big)
+\label{eq:abstr_apply_surjective_match}
+\mathit{iom}_{Output} \stackrel{surj}{\vartriangleleft} \mathit{PC}_{Output}
 \end{multline} 
+
+\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
+
+%\begin{multline}
+%\label{eq:abstr_trace}
+%
+%\forall \mathit{PCTrace} \in \mathit{PC}_{trace} :
+%
+%\exists \mathit{IOMTrace} | \mathit{IOMTrace}
+%
+%\big(\forall trc\in Components(pc|_{trace})\;.\;trc\vartriangleleft ex\big)\;\land\;\\
+%\big(\forall e'\in E'\, \exists e\in E\;.\;\tau'(e')=trace \Longrightarrow \tau(e)=trace\big)
+%\end{multline} 
 % where for all $rl,rl'\in Rules$, if $rl\cong rl'$ then there exist two injective typed graph homomorphisms $f$ and $g$ such that $Match(rl)\stackrel{f}{\vartriangleleft} Input^*$, $Match(rl)\stackrel{g}{\vartriangleleft} Input^*$ and $CoDom(f)\neq CoDom(g)$.
 % $/pc/ = Apply_{ex}\cup ex|_{trace}$ is the output part of $pc$, including symbolic traceability links.
 

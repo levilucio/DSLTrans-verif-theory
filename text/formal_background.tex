@@ -85,11 +85,13 @@ A typed graph is a 6-tuple $\langle V,E,(s,t),\tau, \VT, \ET\rangle$ where:
 
 \subsubsection{Vertex and Edge Types}
 
-Note that the our verification technique is geared toward model-driven engineering. Therefore, the types of vertices and edges in our typed graphs will be drawn from a particular \textit{metamodel}.
+Note that the our verification technique is geared toward model-driven engineering. Therefore, the types of vertices and edges in our typed graphs will be drawn from a particular \textit{metamodel}. Sample metamodels for our running example can be seen in figures above \bentley{Fix.}. Note that DSLTrans rules (to be formally defined) will combine typed graphs with potentially different metamodels.
 
-Sample metamodels for our running example can be seen in figures above \bentley{Fix.}. Note that DSLTrans rules (to be formally defined) will combine typed graphs with potentially different metamodels.
+We assume that this metamodel provides the necessary vertex and edge types, with any collisions resolved by adding the metamodel name. As well, we assume the presence of a partial ordering $\leq$ on the vertex and edge types for subtyping information.
 
-We assume the existence of a number of functions in our formalization to aid the treatment of typing:
+We require specially typed edges for some DSLTrans constructs. Thus, we include the edge types \{\textit{trace}, and \textit{backward}\} in ET, resolving collisions as needed. These edge types will be explained as needed. We also insert the ordering that \textit{trace} is a subtype of \textit{backward}.
+
+For convenience, we define some utility functions in our formalization to aid the treatment of typing:
 
 \begin{itemize}
 \item $\mathit{isAbstract}: \mathit{VT} \rightarrow \{\mathit{true}$, $\mathit{false}\}$
@@ -105,7 +107,7 @@ We assume the existence of a number of functions in our formalization to aid the
 \item $\mathit{matchesOver}: \{\VT \cup \ET\} \times \{\VT \cup \ET\} \rightarrow \{\mathit{true}$, $\mathit{false}\}$
 
 \begin{itemize}
-\item The purpose of this function is to assist in handling polymorphism in the metamodel
+\item The purpose of this function is to assist in handling polymorphism in the metamodel, and to handle matching for the special DSLTrans types
 \item $\mathit{matchesOver}(T, T) \rightarrow \mathit{true}$
 \item $\mathit{matchesOver}(T, T') \rightarrow \mathit{true}$ iff T' is a subclass of T in some defined partial ordering $\leq$ given by the metamodel
 \item Otherwise, $\mathit{false}$
@@ -114,8 +116,10 @@ We assume the existence of a number of functions in our formalization to aid the
 
 For simplification purposes, we will not represent edge cardinalities or containment relationships given by a metamodel in our notion of typed graph. Note that in fact we require these conditions to be relaxed to perform our graph rewriting.
 
+
+
 \subsubsection*{Typed Subgraph}
-We now define the useful notion of typed subgraph. As expected, a typed subgraph is simply a restriction of a typed graph to some of its vertices and edges. \bentley{Is this needed?}
+We now define the useful notion of typed subgraph. As expected, a typed subgraph is simply a restriction of a typed graph to some of its vertices and edges. This will be needed to partition DSLTrans constructs such as rules into logical components.
 
 \begin{definition}{Typed Subgraph\\}
 \label{def:typedsubgraph}
@@ -126,7 +130,6 @@ $g'$ is a typed subgraph of $g$, written $g'\sqsubseteq g$, iff $V'\subseteq V$,
 \end{definition}
 
 %Given a typed graph $g\in \textsc{TG}$, will use the notation $Components(g)$ to describe the set of strongly connected typed graphs in $g$. Also, we will use the notation $g|_{t}$ to refer to the restriction of graph $g$ to its subgraph containing only edges of type $t$.
-
 
 
 
@@ -152,7 +155,6 @@ Note: as a reviewer helpfully pointed out, we require that $s \cup s'$, $t \cup 
 \subsection{Homomorphisms}
 \label{subsec:homomorphisms}
 
-
 For the formal development of our technique, we are interested in relations between typed graphs that preserve some graph structure and vertex/edge type, i.e. homomorphisms.
 
 However, our technique of symbolic execution of transformation rules means that we cannot rely on a trivial homomorphism. Instead our matching must be flexible about how vertices in the source graph may match over multiple vertices in the target graph.
@@ -160,7 +162,6 @@ However, our technique of symbolic execution of transformation rules means that 
 \subsubsection*{Typed Graph Homomorphism}
 
 The first typed graph homomorphism we define is standard, where the structure of the source graph must be found in the target graph. This is presented for the reader to appreciate the complications required for the next homomorphisms.
-
 
 \begin{definition}{Typed Graph Homomorphism\\}
 \label{def:typed_graph_homomorphism}
@@ -187,7 +188,7 @@ A typed graph homomorphism from $g$ onto $g'$ is a function $f: f_v \cup f_e$ su
 
 \subsubsection*{Typed Graph Edge Homomorphism}
 
-Our technique also requires a form of graph homomorphism that primarily focuses on matching the edges of the graphs. This homomorphism will be an injective\footnote{For a terminology refresh, \textit{injective matching} means there is a one-to-one correspondence between the source and target vertices. \textit{Surjective matching} means that all target vertices must be matched by at least one source vertex. }match regarding the edges, but note that a particular vertex in the source graph may match onto multiple vertices in the target graph. \bentley{What's the term for this?}
+Our technique also requires a form of graph homomorphism that primarily focuses on matching the edges of the graphs. This homomorphism will be an injective\footnote{For a terminology refresh, \textit{injective matching} means there is a one-to-one correspondence between the source and target vertices. \textit{Surjective matching} means that all target vertices must be matched by at least one source vertex.} match regarding the edges, but note that a particular vertex in the source graph may match onto multiple vertices in the target graph. \bentley{What's the term for this?}
 
 \begin{definition}{Typed Graph Edge Homomorphism\\}
 \label{def:typed_graph_edge_homomorphism}
@@ -201,7 +202,7 @@ A typed graph edge homomorphism between $g$ and $g'$ is a function $h: h_v \cup 
 \item A function from a vertex in the target graph onto a vertex in the source graph
 \item A partial function, as not all vertices in the target graph will be reflected in the source graph
 \item Surjective, so that all source vertices are matched to target vertices
-\item A minimal function, such that the minimum number of target  vertices are matched to each source vertex \bentley{Not sure if this is needed.}
+\item A minimal function, such that the minimum number of target vertices are matched to each source vertex \bentley{Not sure if this is needed.}
 \end{itemize}
 \item $h_e: E\rightarrow E'$, and is injective
 \item $\forall v_1 \xrightarrow{e} v_2\in E$:
@@ -252,7 +253,7 @@ $E' = E \cup $ the transitive closure of $\big\{v\xrightarrow{e}v' | \mathit{isI
 \end{definition}
 
 
-Given a graph, its transitive closure includes, besides the original graph, all the edges belonging to the transitive closure of indirect links in that graph. Note that these transitive edges are given by the function $\mathit{isIndirect}$.
+Given a graph, its transitive closure includes, besides the original graph, all the edges belonging to the transitive closure of indirect links in that graph. Note that these transitive edges are identified by the function $\mathit{isIndirect}$.
 
 \bentley{I believe that the indirect edges don't need to be removed. There's a bit of handwaving, so maybe there are edge duplicates?}
 
@@ -261,8 +262,6 @@ In the definitions that follow we will use the $*$ notation, as in \cref{def:ins
 
 \subsection{DSLTrans Constructs}
 \label{sec:DSLTrans_formal}
-
-
 
 This section will detail the abstract syntax of the constructs involved in a DSLTrans transformation.
 
@@ -317,6 +316,27 @@ We additionally impose that for the well-formedness of a DSLTrans rule, there al
 \end{itemize}
 
 
+\subsubsection{Link Homomorphism}
+
+\begin{itemize}
+\item Backward links injectively match from contract into PC onto traceability links. Source and target of backward links on contract must match the source and target of the traceability link of the PC.
+\end{itemize}
+
+We must also define a function to match the traceability and backward link structures.
+
+\begin{definition}{Link Homomorphism\\}
+\label{def:link_homomorphism}
+Consider a set of links $L = \{E_{L}, (s_{L}, t_{L})\}$. Note that these could be backward links or traceability links.
+
+We define a function $f$ to match $L$ over $T$, such that:
+
+\begin{itemize}
+\item $\forall \mathit{sourceLink} \in L:$
+\begin{itemize}
+\item $\exists \mathit{targetLink} \in T | f(s(\mathit{sourceLink})) = s(targetLink), $
+\end{itemize}
+\end{itemize} 
+\end{definition}
 
 \subsubsection*{DSLTrans Layer and Transformation}
 
