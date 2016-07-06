@@ -1,14 +1,12 @@
 \section{Building Path Conditions}
 \label{sec:building_pcs}
 
-As well, we present our approach to building a set of path conditions to represent all executions of a DSLTrans transformation.
+In this section we present our approach to building a set of path conditions to represent all executions of a DSLTrans transformation.
 
 
 
 \subsection{Path Condition Generation Algorithm}
 \label{sec:gen_all_pcs}
-
- This section will describe how path conditions are constructed for a DSLTrans transformation using our approach.
 
 \cref{fig:next_layer} outlines the path condition generation algorithm. The algorithm will examine each transformation layer in turn. Path conditions from the previous layer will be combined with rules from the current layer to create a new set of path conditions. This new set of path conditions will then be combined with the rules from the next layer to produce yet another set of path conditions, and so on. At the end of the algorithm, a complete set of path conditions for the entire transformation will have been produced. 
 
@@ -35,8 +33,7 @@ As well, we present our approach to building a set of path conditions to represe
 
 We now define what is occurring in the `combination step' in \cref{fig:next_layer}. This step begins by selecting each path condition in the working set, one at a time. Note that at the beginning of the path condition creation process, this working set consists of an empty path condition.
 
-A new set of path conditions will then be created by sequentially combining each rule in the layer with the path condition selected. Recall that a path condition represents a set of rules that have symbolically executed, thereby abstracting a set of transformation executions through our abstraction relation. \reviewer{we cannot recall this as it has not yet been presented;
-the abstraction relation is defined only in Section 5}Combining a path condition with a rule will produce one or more path conditions depending on how the rule combines with the rules already represented by the path condition. The pre- and post- conditions defined by the path condition will be modified according to the elements found in that rule. 
+A new set of path conditions will then be created by sequentially combining each rule in the layer with the path condition selected. Recall from \cref{subsec:gen_path_conds} that a path condition represents a set of rules that have symbolically executed, thereby abstracting a set of transformation executions through our abstraction relation. Combining a path condition with a rule will produce one or more path conditions depending on how the rule combines with the rules already represented by the path condition. The pre- and post- conditions defined by the path condition will be modified according to the elements found in that rule. 
 
 Each of the new path conditions created from combining a rule with a path condition will then be combined with the next rule in the layer. A small example is shown in \cref{fig:layers_pc2}, where a path condition is combined with two rules. Note that a rule can combine with a path condition in multiple ways (differentiated by prime marks in the figure). \Cref{fig:all_pcs2} shows how path conditions from the previous layer are sequentially combined with all the rules from the current layer. All the path conditions for the layer are then collected to produce the final working set of path conditions for the layer.
 
