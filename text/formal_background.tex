@@ -349,7 +349,19 @@ We define an injective homomorphism function $f$ to match $L$ over $T$, such tha
 
 Note that the typing of these links will be given by the component in which they are found.
 
-We also note that we will resolve the binding of all morphisms at the appropriate time, and ensure that they are consistent. \bentley{FIXFIX}
+\subsubsection{Homomorphisms Between Structures}
+\label{subsubsec:structure_homomorphism}
+
+In the developments that follow, we will need to find morphisms between different structures.
+
+For example, we may need to find a homomorphism between two structures $S_1 = \langle A, B, L\rangle$ and  $S_2 = \langle A', B', L'\rangle$, where $A, A', B, B' \in TG$ and $L, L'$ are links of the form $\{E, (s, t)\}$.
+
+This overall homomorphism will compose the homomorphism $f(A) = A'$, $g(B) = B'$, $h(L) = L'$, where f and g are the homomorphisms to be found, and h is the link homomorphism.
+
+A reviewer pointed out that we also require that these sub-homomorphisms are consistent with each other. That is, the link homomorphism h must agree with 
+the bindings given by f and g.
+
+\bentley{Complete this}
 
 \subsubsection*{DSLTrans Layer and Transformation}
 
@@ -477,35 +489,92 @@ We then modify $\mathit{trace}$ to contain the appropriate traceability links
 
 \end{definition}
 
-\subsubsection*{Double-pushout Approach}
+\subsubsection*{Double-Pushout Approach}
 
 \begin{figure}[h!] \centering
-\includegraphics[width=0.44\textwidth]{figures/formal/dpo}
+\includegraphics[width=0.44\textwidth]{figures/formal/dpo_with_NAC}
 	\caption{Double pushout approach}
 	\label{fig:dpo}
 \end{figure}
 
-We explain the components:
+
+If the reader is unfamiliar with the theory of double-pushouts, we refer to work on Fundamentals of Algebraic Graph Transformation.
+
+The core idea of double-pushouts is to present graph rewriting in terms of morphisms, which compartmentalize the actions of finding a match and adding/deleting edges.
+
+The application of a rule is called a \textit{production}. Below, we will first explain the production of a single DSLTrans rule, expand this production to handle indirect links in the rule, then discuss multiple productions.
+
+Let this production be for a rule $r = \langle \mathit{NAC}, \mathit{[Match}, \mathit{Apply}, \mathit{back} \rangle$. To simplify the explanation, we constrain our rules to not include any indirect links. That is, $\nexists E \in E_{\textit{Match}} \cup E_{\mathit{NAC}} | \mathit{isIndirect}(E)$.
+
+Figure~\ref{fig:dpo} presents a basic diagram for the approach.
+The major components are:
 \begin{itemize}
-\item L: The matcher of the rule
-\item R: The rewriter of the rule
+\item L: The matcher of the rule $\lceil r \rceil$
+\item R: The rewriter of the rule $\lfloor r \rfloor$
 \item G: The graph to be matched/rewritten
 \item H: The rewritten graph
 \end{itemize}
 
-Note that as it is not possible in DSLTrans rules to remove elements, in this case $L = K$, and $G = D$.
+\paragraph{Rule Components}
+K is the interface graph between L and R. That is, elements in K appear in both L and R. Elements which are to be deleted by the production appear in L but not K, and elements to be created are present in R but not K.
 
-\bentley{Fix up morphism notation. Is $\rightarrow$ good enough?} 
-Recall that the interface graph K is equivalent to L due to the lack of deletion in DSLTrans rules. Thus, the l homomorphism is identity. The D correspondence graph will therefore be equivalent to G.
+In the absence of indirect links, we note that $K = L$ as elements cannot be deleted in DSLTrans rules. Therefore the morphism l is isomorphism.
+
+The morphism r from K to R is an injective typed graph homomorphism. Note that as described in Section~\ref{subsubsec:structure_homomorphism}, this homomorphism will be composed of sub-homomorphisms between the $\mathit{Match} \rightarrow \mathit{Input}$, $\mathit{Apply} \rightarrow \mathit{Output}$, and $\mathit{backward} \rightarrow \mathit{trace}$.
+
+N represents the typed graph NAC of the rule. We note that this production cannot occur if there is a typed graph edge homomorphism c between the rule's NAC and G. 
 
 
-As well, we consider r to be a trivial homomorphism between the $\mathit{Match} \rightarrow \mathit{Input}$, $\mathit{Apply} \rightarrow \mathit{Output}$, and $\mathit{backward} \rightarrow \mathit{trace}$.
+\paragraph{Graph Components}
 
-We also note here that a rule cannot be applied if there is a homomorphism between the rule's NAC and G. 
+G is the target graph which is to be matched on.
 
-m is the typed graph homomorphism between the matcher of a rule $r$, denoted ($\lceil r \rceil$) and the $\mathit{Input}$ component of the input-output model
+m is the typed graph homomorphism between the matcher of a rule $r$, denoted ($\lceil r \rceil$) and the $\mathit{Input}$ component of the input-output model.
 
-$n$ and $g$ will be homomorphism between their respective graphs. \bentley{This needs to be explained further. Maybe with a diagram?}
+D is the interface graph between the original graph G, and the rewritten graph H. Similar to K, D contains elements in both. Again, as DSLTrans rules do not delete elements, D will be isomorphic to G in this case, and f will be isomorphism. The morphism k will embed the K interface graph within the interface graph D.
+
+The morphism g from the interface graph D to the rewritten graph H gives the graph elements, while the morphism $r$ gives the embedding of the rewriter R with the elements to be produced. Thus, it is the pushout of R and D through K that gives H. g and n will be typed graph morphisms.
+
+
+\subsubsection{Double-Pushout Approach with Indirect Links}
+
+If the DSLTrans rule contains indirect links, we must modify the double-pushout approach described above to handle the transitive closure that the construct implies. The main change is to build the transitive edges, match on them, and then not build them in the final graph.
+
+Note that this second explanation is valid for rules containing indirect links, or not containing them. 
+
+\begin{figure}[h!] \centering
+\includegraphics[width=0.44\textwidth]{figures/formal/dpo_with_NAC_and_indirect}
+	\caption{Double pushout approach with indirect links}
+	\label{fig:dpo_indirect}
+\end{figure}
+
+We add the component G' to the diagram, which represents the transitive closure of the Input graph of G. The homomorphism i gives the embedding of G into G'.
+
+The homomorphism m will try to map the indirect links onto the newly created edges in G'.
+
+K will not contain the indirect links. Therefore l will not longer be surjective, as nothing will map to the indirect links. R and r remain the same.
+
+The interface D does not contain the edges newly created in G'. Thus the morphism f does not map onto these edges in G'.
+
+n, g, and H remain the same.
+
+\paragraph{Example}
+
+
+\begin{figure}[h!] \centering
+\includegraphics[width=0.44\textwidth]{figures/formal/dpo_indirect_example}
+	\caption{DPO example with indirect links}
+	\label{fig:dpo_indirect_example}
+\end{figure}
+
+Figure~\ref{fig:dpo_indirect_example} shows an example of the DPO approach when the rule may contain indirect links.
+
+Note how the orange homomorphism in the bottom left does not match to the newly created edges, nor does the green homomorphism from D.
+
+The purple homomorphism from L does match the indirect link onto the created edges. But the red homomorphism does not match onto the indirect links in L, as they do not exist in K.
+
+\bentley{Fix this up a lot.}
+
 
 \subsubsection*{DSLTrans Layer Execution}
 
