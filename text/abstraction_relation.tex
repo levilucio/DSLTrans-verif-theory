@@ -100,24 +100,24 @@ This is intuitive: traceability links are built between a newly generated
 element in the output model, and the elements of the input model that originated
 it.
 
-\begin{figure}[htb]
-        \centering
-        \begin{subfigure}[b]{0.24\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/traceability_links.pdf}
-                \caption{Before symbolic traceability links added}
-                \label{fig:traceability_links1}
-        \end{subfigure}%
-        ~~
-        \begin{subfigure}[b]{0.235\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/traceability_links2.pdf}
-                \caption{After symbolic traceability links added}
-                \label{fig:traceability_links2}
-        \end{subfigure}%
-        \caption{Symbolic traceability links created for an abstract DSLTrans rule}
-        \label{fig:trace_links}
-\end{figure}
+%\begin{figure}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.24\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/traceability_links.pdf}
+%                \caption{Before symbolic traceability links added}
+%                \label{fig:traceability_links1}
+%        \end{subfigure}%
+%        ~~
+%        \begin{subfigure}[b]{0.235\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/traceability_links2.pdf}
+%                \caption{After symbolic traceability links added}
+%                \label{fig:traceability_links2}
+%        \end{subfigure}%
+%        \caption{Symbolic traceability links created for an abstract DSLTrans rule}
+%        \label{fig:trace_links}
+%\end{figure}
 
 An example of the symbolic traceability link creation process is shown in
 \cref{fig:trace_links}. Note that symbolic traceability links are solid lines between
@@ -132,24 +132,24 @@ The dependencies in a DSLTrans rule are specified using the \textit{backward lin
 
 \cref{fig:backward_links} demonstrates how backward links are used \\within a rule. The rule shown contains a backward link, which defines the dependency that an element of type X was created from an element of type A, and an element of type Y was created from an element of type B. If this dependency is satisfied, then another element of type Z should be created. This element should be associated with the Y element.
 
-\begin{figure}[htb]
-        \centering
-        \begin{subfigure}[b]{0.235\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/backward_link.pdf}
-                \caption{Rule with backward links (dashed lines)}
-                \label{fig:backward_links}
-        \end{subfigure}%
-        ~~
-        \begin{subfigure}[b]{0.235\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/backward_link2.pdf}
-                \caption{Traceability links added\\~}
-                \label{fig:backward_links2}
-        \end{subfigure}%
-        \caption{Adding traceability links to an abstract DSLTrans rule with backward links}
-        \label{fig:back_links}
-\end{figure}
+%\begin{figure}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.235\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/backward_link.pdf}
+%                \caption{Rule with backward links (dashed lines)}
+%                \label{fig:backward_links}
+%        \end{subfigure}%
+%        ~~
+%        \begin{subfigure}[b]{0.235\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/backward_link2.pdf}
+%                \caption{Traceability links added\\~}
+%                \label{fig:backward_links2}
+%        \end{subfigure}%
+%        \caption{Adding traceability links to an abstract DSLTrans rule with backward links}
+%        \label{fig:back_links}
+%\end{figure}
 
 \cref{fig:backward_links2} shows the rule after symbolic traceability links have been added. Two symbolic traceability links are created from the Z element to the A and B elements in the match graph to store traceability information. Note that no symbolic traceability links are built between two elements connected by backward links, as these links have already been built in a previous layer.
 
@@ -332,24 +332,24 @@ right-hand side. Note that in \cref{fig:empty_pc_success}, the path condition
 abstracts the transformation execution, while in \cref{fig:empty_pc_fail}, the
 abstraction relation does not hold.
 
-\begin{figure}[htb]
-        \centering
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/empty_pc.pdf}
-               	\caption{Abstraction holds}
-               	\label{fig:empty_pc_success}
-        \end{subfigure}%
-        ~~\\
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/empty_pc2.pdf}
-                \caption{Abstraction does not hold}
-                \label{fig:empty_pc_fail}
-        \end{subfigure}%
-        \caption{Abstraction of transformation executions by the empty path condition}
-        \label{fig:empty_pc}
-\end{figure}
+%\begin{figure}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/empty_pc.pdf}
+%               	\caption{Abstraction holds}
+%               	\label{fig:empty_pc_success}
+%        \end{subfigure}%
+%        ~~\\
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/empty_pc2.pdf}
+%                \caption{Abstraction does not hold}
+%                \label{fig:empty_pc_fail}
+%        \end{subfigure}%
+%        \caption{Abstraction of transformation executions by the empty path condition}
+%        \label{fig:empty_pc}
+%\end{figure}
 
 
 The match part of the path condition represents the pre-conditions for the path condition to be true, depending on which rules have symbolically executed in the transformation. For example, if the match graph is empty, this represents all executions where no rules have executed. 
@@ -378,44 +378,44 @@ For these examples, we will represent the abstraction relation with two figures.
 
 Let us first examine how the injection operates between the match elements in the path condition and the transformation executions in \cref{fig:non_overlapping_match_apply} and \cref{fig:non_overlapping2_match_apply}. Note that this injection can be found in both cases.
 
-\begin{figure}[htb]
-        \centering
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/non_overlapping.pdf}
-               	\caption{Abstraction holds on match and apply graphs}
-               	\label{fig:non_overlapping_match_apply}
-        \end{subfigure}%
-        ~~\\
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/non_overlapping_trace_links.pdf}
-                \caption{Abstraction holds on traceability links}
-                \label{fig:non_overlapping_trace_links}
-        \end{subfigure}%
-        \caption{Abstraction of transformation execution by non-overlapping rule components}
-        \label{fig:non_overlapping}
-\end{figure}
-
-
-\begin{figure}[htb]
-        \centering
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/non_overlapping2.pdf}
-               	\caption{Abstraction holds on match and apply graphs}
-               	\label{fig:non_overlapping2_match_apply}
-        \end{subfigure}%
-        ~~\\
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/non_overlapping2_trace_links.pdf}
-                \caption{Abstraction holds on traceability links}
-                \label{fig:non_overlapping2_trace_links}
-        \end{subfigure}%
-        \caption{Example of abstraction over multiple rule execution}
-        \label{fig:non_overlapping2}
-\end{figure}
+%\begin{figure}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/non_overlapping.pdf}
+%               	\caption{Abstraction holds on match and apply graphs}
+%               	\label{fig:non_overlapping_match_apply}
+%        \end{subfigure}%
+%        ~~\\
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/non_overlapping_trace_links.pdf}
+%                \caption{Abstraction holds on traceability links}
+%                \label{fig:non_overlapping_trace_links}
+%        \end{subfigure}%
+%        \caption{Abstraction of transformation execution by non-overlapping rule components}
+%        \label{fig:non_overlapping}
+%\end{figure}
+%
+%
+%\begin{figure}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/non_overlapping2.pdf}
+%               	\caption{Abstraction holds on match and apply graphs}
+%               	\label{fig:non_overlapping2_match_apply}
+%        \end{subfigure}%
+%        ~~\\
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/non_overlapping2_trace_links.pdf}
+%                \caption{Abstraction holds on traceability links}
+%                \label{fig:non_overlapping2_trace_links}
+%        \end{subfigure}%
+%        \caption{Example of abstraction over multiple rule execution}
+%        \label{fig:non_overlapping2}
+%\end{figure}
 
 Similarly, there is a surjection between the elements of the output model for both transformation execution and the apply graph of the respective path condition. Note that this surjective match also holds in \cref{fig:non_overlapping2_match_apply}, where examination of the transformation execution shows that one rule has executed twice. As mentioned before, the abstraction relation abstracts over the number of times that a rule has executed.
 
@@ -435,47 +435,47 @@ For these examples, the path conditions contain overlapping rule components, i.e
 For example, the two rule components in \cref{fig:overlapping_match_apply} correctly match over the transformation execution shown. The abstraction relation holds due to the fact that, while match elements of the same component need to be found injectively in the execution, the injection constraint does not span multiple components. This allows the match elements from different rules to match to the same input model element.
 
 
-\begin{figure}[htb]
-        \centering
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/overlapping.pdf}
-               	\caption{Abstraction holds on match and apply graphs}
-               	\label{fig:overlapping_match_apply}
-        \end{subfigure}%
-        ~~\\
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/overlapping_trace_links.pdf}
-                \caption{Abstraction holds on traceability links}
-                \label{fig:overlapping_trace_links}
-        \end{subfigure}%
-        \caption{Abstraction of transformation execution by overlapping rule components}
-        \label{fig:overlapping}
-\end{figure}
+%\begin{figure}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/overlapping.pdf}
+%               	\caption{Abstraction holds on match and apply graphs}
+%               	\label{fig:overlapping_match_apply}
+%        \end{subfigure}%
+%        ~~\\
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/overlapping_trace_links.pdf}
+%                \caption{Abstraction holds on traceability links}
+%                \label{fig:overlapping_trace_links}
+%        \end{subfigure}%
+%        \caption{Abstraction of transformation execution by overlapping rule components}
+%        \label{fig:overlapping}
+%\end{figure}
 
 As well, \cref{fig:overlapping_trace_links} shows the mapping from the path condition to the transformation execution. However, note that the pattern composed of the A, B, and Y elements, along with the traceability links, is to be matched as a whole. This is to ensure that the traceability links are found in the proper configuration in the transformation execution.
 
 We also match the traceability links from the transformation execution back onto the path condition. Again, this is to ensure that no traceability links are found in the transformation execution that have not been represented in the path condition. Three matches are performed in this step, denoted by the three arrows in the bottom of \cref{fig:overlapping_trace_links}. Each match is composed of a traceability link as well as immediately connected elements.
 
-\begin{figure}[htb]
-        \centering
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/overlapping2.pdf}
-               	\caption{Elements cannot overlap within a component}
-               	\label{fig:overlapping2_match_apply}
-        \end{subfigure}%
-        ~~\\
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/overlapping2_trace_links.pdf}
-                \caption{Traceability links cannot be found}
-                \label{fig:overlapping2_trace_links}
-        \end{subfigure}%
-        \caption{Abstraction does not hold}
-        \label{fig:overlapping2}
-\end{figure}
+%\begin{figure}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/overlapping2.pdf}
+%               	\caption{Elements cannot overlap within a component}
+%               	\label{fig:overlapping2_match_apply}
+%        \end{subfigure}%
+%        ~~\\
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/overlapping2_trace_links.pdf}
+%                \caption{Traceability links cannot be found}
+%                \label{fig:overlapping2_trace_links}
+%        \end{subfigure}%
+%        \caption{Abstraction does not hold}
+%        \label{fig:overlapping2}
+%\end{figure}
 
 
 In contrast to \cref{fig:overlapping}, \cref{fig:overlapping2} shows an example where the abstraction relation does not hold. Consider \cref{fig:overlapping2_match_apply}. Note that a component in the match graph of the path condition contains two B elements. Both of these elements must be found in the transformation execution, and thus it is not correct for them to injectively match to the same element in the input model.
@@ -485,43 +485,43 @@ As well, it is informative to examine \cref{fig:overlapping2_trace_links}. Note 
 
 \subsubsection{Example 4 -- Indirect Links}
 
-\begin{figure}[htb]
-        \centering
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/indirect.pdf}
-               	\caption{Matching over match and apply graphs}
-               	\label{fig:indirect_match_apply}
-        \end{subfigure}%
-        ~~\\
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/indirect_trace_links.pdf}
-                \caption{Matching over traceability links}
-                \label{fig:indirect_trace_links}
-        \end{subfigure}%
-        \caption{Abstraction with indirect links}
-        \label{fig:indirect}
-\end{figure}
-
-\begin{figure*}[htb]
-        \centering
-        \begin{subfigure}[b]{0.70\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/combination.pdf}
-               	\caption{Abstraction holds on match and apply graphs}
-               	\label{fig:combination_match_apply}
-        \end{subfigure}%
-        ~~\\
-        \begin{subfigure}[b]{0.70\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/combination_trace_links.pdf}
-                \caption{Abstraction holds on traceability links}
-                \label{fig:combination_trace_links}
-        \end{subfigure}%
-        \caption{Abstraction where path condition has combined rules}
-        \label{fig:combination}
-\end{figure*}
+%\begin{figure}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/indirect.pdf}
+%               	\caption{Matching over match and apply graphs}
+%               	\label{fig:indirect_match_apply}
+%        \end{subfigure}%
+%        ~~\\
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/indirect_trace_links.pdf}
+%                \caption{Matching over traceability links}
+%                \label{fig:indirect_trace_links}
+%        \end{subfigure}%
+%        \caption{Abstraction with indirect links}
+%        \label{fig:indirect}
+%\end{figure}
+%
+%\begin{figure*}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.70\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/combination.pdf}
+%               	\caption{Abstraction holds on match and apply graphs}
+%               	\label{fig:combination_match_apply}
+%        \end{subfigure}%
+%        ~~\\
+%        \begin{subfigure}[b]{0.70\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/abstraction_relation/combination_trace_links.pdf}
+%                \caption{Abstraction holds on traceability links}
+%                \label{fig:combination_trace_links}
+%        \end{subfigure}%
+%        \caption{Abstraction where path condition has combined rules}
+%        \label{fig:combination}
+%\end{figure*}
 
 We now present a path condition  in \cref{fig:indirect_match_apply} that includes indirect links. In this case, for the injective match to hold, the elements at both ends of the link must be found, and there must be an indirect link between the matched elements and between the elements in the transformation execution.
 

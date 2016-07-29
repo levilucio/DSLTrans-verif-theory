@@ -4,17 +4,16 @@
 \usepackage{makeidx}
 \pagestyle{headings}
 
-\usepackage[final,pdftex]{graphicx}
-        \pdfcompresslevel=9
-        \DeclareGraphicsExtensions{.png}
+\usepackage{graphicx}
 
 \usepackage{chngcntr}
 
-\usepackage{epsfig}
-\usepackage{caption}  
-\usepackage{subcaption} 
+%\usepackage{epsfig}
+%\usepackage{caption}  
+%\usepackage{subcaption} 
+\usepackage{subfigure}
   
-\captionsetup{compatibility=false}
+%\captionsetup{compatibility=false}
  
 \usepackage{calc}
 \usepackage{amssymb}
@@ -40,7 +39,7 @@
 
 \usepackage[capitalise,noabbrev]{cleveref} 
 
-\usepackage{catchfilebetweentags}
+%\usepackage{catchfilebetweentags}
 \usepackage[section]{extraplaceins}
 
 \definecolor{Gray}{gray}{0.9}
@@ -52,18 +51,18 @@
 %\subfigcapskip=0pt
 %\subfigbottomskip=0pt
 
-\renewcommand\floatpagefraction{.9}
-\renewcommand\topfraction{.9} 
-\renewcommand\bottomfraction{.9}
-\renewcommand\textfraction{.1}   
+%\renewcommand\floatpagefraction{.9}
+%\renewcommand\topfraction{.9} 
+%\renewcommand\bottomfraction{.9}
+%\renewcommand\textfraction{.1}   
 %\renewcommand{\baselinestretch}{1.5}
 \setcounter{totalnumber}{50}
 \setcounter{topnumber}{50}
 \setcounter{bottomnumber}{50}
-\setlength{\intextsep}{8pt} % Vertical space above & below [h] floats
-\setlength{\textfloatsep}{8pt} % Vertical space below (above) [t] ([b]) floats
-\setlength{\abovecaptionskip}{5pt}
-\setlength{\belowcaptionskip}{5pt}
+%\setlength{\intextsep}{8pt} % Vertical space above & below [h] floats
+%\setlength{\textfloatsep}{8pt} % Vertical space below (above) [t] ([b]) floats
+%\setlength{\abovecaptionskip}{5pt}
+%\setlength{\belowcaptionskip}{5pt}
 
 \newcommand{\chunk}[2]{% 
 	\fcolorbox{black}{yellow}{\bfseries\sffamily\scriptsize#1}%
@@ -75,6 +74,8 @@
 \newcommand{\reviewer}[1]{\chunk{Reviewer}{\textbf{\textcolor{blue}{\textsl{#1}}}}}
 
 \raggedbottom  
+
+\newcommand{\FTP}{\emph{Fam\-ilies-\-to-\-Per\-sons} }
 
 \usepackage{url}
 \urldef{\maila}\path|{levi, hv}@cs.mcgill.ca, bentley.oakes@mail.mcgill.ca|
@@ -96,8 +97,10 @@ University of Antwerp, Belgium}
 
 \input{text/abstract}
 \input{text/introduction} 
-\input{text/dsltrans}
+
 \input{text/formal_background}
+
+\input{text/dsltrans}
 
 \input{text/abstraction_relation}
 

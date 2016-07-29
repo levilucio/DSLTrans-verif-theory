@@ -10,26 +10,26 @@ In this section we present our approach to building a set of path conditions to 
 
 \cref{fig:next_layer} outlines the path condition generation algorithm. The algorithm will examine each transformation layer in turn. Path conditions from the previous layer will be combined with rules from the current layer to create a new set of path conditions. This new set of path conditions will then be combined with the rules from the next layer to produce yet another set of path conditions, and so on. At the end of the algorithm, a complete set of path conditions for the entire transformation will have been produced. 
 
-\begin{figure*}[htb]
-        \centering
-        \begin{subfigure}[b]{0.34\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/next_layer.pdf}
-                \caption{Previous path conditions are combined\\ with rules}
-                \label{fig:next_layer}
-        \end{subfigure}%
-        ~~
-        \begin{subfigure}[b]{0.34\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/overview/layers_pc.pdf}
-                \caption{Combining a path condition with two rules\\~}
-                \label{fig:layers_pc2}
-        \end{subfigure}%
-        
-       
-         \caption{Two components in the path condition creation process}
-         \label{fig:combining_path_conditions}
-\end{figure*}
+%\begin{figure*}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.34\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/next_layer.pdf}
+%                \caption{Previous path conditions are combined\\ with rules}
+%                \label{fig:next_layer}
+%        \end{subfigure}%
+%        ~~
+%        \begin{subfigure}[b]{0.34\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/overview/layers_pc.pdf}
+%                \caption{Combining a path condition with two rules\\~}
+%                \label{fig:layers_pc2}
+%        \end{subfigure}%
+%        
+%       
+%         \caption{Two components in the path condition creation process}
+%         \label{fig:combining_path_conditions}
+%\end{figure*}
 
 We now define what is occurring in the `combination step' in \cref{fig:next_layer}. This step begins by selecting each path condition in the working set, one at a time. Note that at the beginning of the path condition creation process, this working set consists of an empty path condition.
 
@@ -209,24 +209,24 @@ To resolve this question, the match graph of R, along with R's backward links, i
 
 In the totally-satisfied case, R will be ``glued'' overtop PC, as seen in \cref{fig:total_satisfied_dependencies}. This gluing operation is anchored where the backwards links in R match over the traceability links in PC. The purpose of this operation is to include any elements in R's apply graph that may not exist in PC. Thus, all elements and associations which exist in both PC and R are ignored. Note that if multiple total matches exist in PC, that R will be glued at multiple points as seen in \cref{fig:multiple_total_satisfied_dependencies}. This ``gluing'' operation is also defined formally in \cref{def:rul_comb_partial_total}, as the addition of a delta graph.
 
-\begin{figure*}[htb]
-        \centering
-        \begin{subfigure}[b]{0.7\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/total_satisfied_dependencies.pdf}
-                \caption{Totally satisfied at one location}
-                \label{fig:total_satisfied_dependencies}
-        \end{subfigure}%
-        \\
-        \begin{subfigure}[b]{0.8\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/multiple_total_satisfied_dependencies.pdf}
-                \caption{Totally satisfied at multiple locations - \reviewer{Fix boxes on bottom}}
-                \label{fig:multiple_total_satisfied_dependencies}
-        \end{subfigure}%
-        \caption{R's dependencies are totally satisfied by PC}
-        \label{fig:totes_sat_deps}
-\end{figure*}
+%\begin{figure*}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.7\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/total_satisfied_dependencies.pdf}
+%                \caption{Totally satisfied at one location}
+%                \label{fig:total_satisfied_dependencies}
+%        \end{subfigure}%
+%        \\
+%        \begin{subfigure}[b]{0.8\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/building_path_conditions/multiple_total_satisfied_dependencies.pdf}
+%                \caption{Totally satisfied at multiple locations - \reviewer{Fix boxes on bottom}}
+%                \label{fig:multiple_total_satisfied_dependencies}
+%        \end{subfigure}%
+%        \caption{R's dependencies are totally satisfied by PC}
+%        \label{fig:totes_sat_deps}
+%\end{figure*}
 
 In the partially-satisfied case, rule R may or may not execute. Note that in \cref{fig:partial_satisfied_dependencies}, PC does not have the association between the A and B elements in the match graph. This means that it is possible that the input model for the transformation does not have this association present. In these transformation executions R would not execute.
 \cref{fig:partial_satisfied_dependencies} shows the two path conditions produced in this case. The first produced is a copy of PC, where R does not symbolically execute. The second is where R symbolically executes at the matched location. Therefore, R is glued onto PC, with the gluing step the same as in the totally-satisfied case above.

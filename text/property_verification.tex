@@ -178,24 +178,24 @@ Let $tr\in \textsc{Transf}^{sr}_{tg}$ be a transformation. Let also $p = \langle
 
 \Cref{fig:prop_execution_without_traceability} demonstrates how a property holds on a transformation execution. Note that the lack of traceability links in the property means no element creation dependencies have been specified. In contrast, the traceability links in the property in \cref{fig:prop_execution_with_traceability} specify that the 'x:X' element must have been created from the 'b:B' element in the transformation execution. This is not the case (as highlighted by the dashed red circle), and therefore the property does not hold on the transformation execution.
 
-\begin{figure}[htb]
-        \centering
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/property_proving/prop_execution_without_traceability.pdf}
-                \caption{Property holds}
-                \label{fig:prop_execution_without_traceability}
-        \end{subfigure}%
-        \\
-        \begin{subfigure}[b]{0.40\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/property_proving/prop_execution_with_traceability.pdf}
-                \caption{Property does not hold}
-                \label{fig:prop_execution_with_traceability}
-        \end{subfigure}%
-        \caption{Matching property to a transformation execution}
-        \label{fig:prop_execution}
-\end{figure}
+%\begin{figure}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/property_proving/prop_execution_without_traceability.pdf}
+%                \caption{Property holds}
+%                \label{fig:prop_execution_without_traceability}
+%        \end{subfigure}%
+%        \\
+%        \begin{subfigure}[b]{0.40\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/property_proving/prop_execution_with_traceability.pdf}
+%                \caption{Property does not hold}
+%                \label{fig:prop_execution_with_traceability}
+%        \end{subfigure}%
+%        \caption{Matching property to a transformation execution}
+%        \label{fig:prop_execution}
+%\end{figure}
 
 % \cref{def:sat_prop_pc} is similar to that of property satisfaction for a transformation execution, but for path conditions. Again, the property is isomorphically matched onto the respective graphs in the path condition.
 % 
@@ -247,24 +247,24 @@ As a result of taking rule combination (\cref{sec:building_pcs}) and overlap (\c
 
 In order to illustrate this limitation, consider a transformation having one single rule that matches an element of type A and that produces an element of type X. Our technique will create a path condition as seen in \cref{fig:unprovable_pc}, abstracting over the number of times this rule has executed. According to the definition of satisfaction of a property by a path condition in \cref{def:sat_prop_pc}, the property in \cref{fig:unprovable_prop} does not hold on the path condition in \cref{fig:unprovable_pc}, although intuitively it should.
 
-\begin{figure}[htb]
-        \centering
-        \begin{subfigure}[b]{0.144\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/property_proving/unprovable_rule.pdf}
-                \caption{Path condition created from a rule}
-                \label{fig:unprovable_pc}
-        \end{subfigure}%
-        ~~
-        \begin{subfigure}[b]{0.20\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/property_proving/unprovable_prop.pdf}
-                \caption{Property with multiple instances of rule elements}
-                \label{fig:unprovable_prop}
-        \end{subfigure}%
-        \caption{Example of unprovable property}
-        \label{fig:unprovable_property}
-\end{figure}
+%\begin{figure}[htb]
+%        \centering
+%        \begin{subfigure}[b]{0.144\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/property_proving/unprovable_rule.pdf}
+%                \caption{Path condition created from a rule}
+%                \label{fig:unprovable_pc}
+%        \end{subfigure}%
+%        ~~
+%        \begin{subfigure}[b]{0.20\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/property_proving/unprovable_prop.pdf}
+%                \caption{Property with multiple instances of rule elements}
+%                \label{fig:unprovable_prop}
+%        \end{subfigure}%
+%        \caption{Example of unprovable property}
+%        \label{fig:unprovable_property}
+%\end{figure}
 
 Although this might be seen as a limitation of our technique, our case studies thus far indicate that very interesting properties exist that exclusively regard interactions between different rules. Nonetheless, our technique could be extended in order to consider more than one exemplar of the same rule per path condition. In fact, theoretically we already consider more than one exemplar of each rule when we treat polymorphism during path condition generation (see \cref{def:path_cond_gen}). However, in this case all expanded rules for a rule $rl$ are considered to be different as they differ by at least the type of one match element. Although this extension seems to fit relatively simply in our current theory, additional steps would need to be taken to understand which rules would be interesting to replicate to prove a particular property, and how many exemplars of each rule should be considered. In operational terms the number of replicas to consider of each rule is very important, given the exponential complexity of our path condition generation and property proof algorithms. Another possibility to tackle this issue would be to investigate and implement a more powerful satisfaction relation between path conditions and properties than the one we now present in \cref{def:sat_prop_pc}.
 %Note however that the homomorphisms are injective when two elements belong to the same rule.\levi{explain this better}

@@ -138,26 +138,26 @@ selected from the current layer. The path condition and rule may combine in diff
 
 In ~\ref{fig:layers_pc}, combining the path condition PC with rule 1 has produced three path conditions: the unchanged PC, and two different possibilities of how the rule combined with PC (denoted PC + R1 and PC + R1'). These three path conditions are then combined with rule 2. Three further path conditions are produced, representing transformation executions where rule 2 does not execute. As well, three path conditions are produced that represent transformation executions where rule 2 does execute.
 
-
-\begin{figure}[htb]
-\centering
-        \begin{subfigure}[b]{0.480\textwidth}
-                \centering
-                \includegraphics[width=1\textwidth]{./figures/overview/layers_pc.pdf}
-                 \caption{Combining a path condition with two rules}
-                 \label{fig:layers_pc}
-        \end{subfigure}%
-        ~~
-        \begin{subfigure}[b]{0.48\textwidth}
-                        \centering
-                        
-             \includegraphics[width=1\textwidth]{./figures/overview/all_pcs.pdf}
-             \caption{Creating all path conditions for a layer}
-             \label{fig:all_pcs}
-	    \end{subfigure}%
-           \caption{Creating path conditions}
-         \label{fig:creating_pcs}
-\end{figure}
+%
+%\begin{figure}[htb]
+%\centering
+%        \begin{subfigure}[b]{0.480\textwidth}
+%                \centering
+%                \includegraphics[width=1\textwidth]{./figures/overview/layers_pc.pdf}
+%                 \caption{Combining a path condition with two rules}
+%                 \label{fig:layers_pc}
+%        \end{subfigure}%
+%        ~~
+%        \begin{subfigure}[b]{0.48\textwidth}
+%                        \centering
+%                        
+%             \includegraphics[width=1\textwidth]{./figures/overview/all_pcs.pdf}
+%             \caption{Creating all path conditions for a layer}
+%             \label{fig:all_pcs}
+%	    \end{subfigure}%
+%           \caption{Creating path conditions}
+%         \label{fig:creating_pcs}
+%\end{figure}
 
 
 Rules in DSLTrans may also define dependencies in which elements have been previously created in the transformation. These dependencies further restrict the ways that a path condition and rule may combine. These dependencies are checked against the path condition from the previous layer, not the path combination the rule is to be combined with. This is to preserve the semantics of DSLTrans rules, where a rule cannot depend upon the output of another rule in the same layer.
