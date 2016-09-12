@@ -1,55 +1,11 @@
 \section{Formal Background}
 \label{sec:formal_background}
 
-In this section we will introduce the formal concepts that will be used throughout all this paper. We start in \cref{sec:typed_graphs} by a few (typed) graph concepts that will be used as mathematical building blocks throughout this paper. In particular we will introduce the notion of typed graph, typed graph union and subset, and useful relations between typed graphs based on homomorphisms. Notice that these concepts are well known from graph theory and are only slightly customized for our purposes.
+In this section we will introduce formal structures and concepts that will be used throughout this paper. We start in Section \ref{subsec:typed_graphs} by a few (typed) graph concepts that will be used as mathematical building blocks. In particular we introduce our representation of typed graphs and useful relations between typed graphs based on homomorphisms. Notice that these concepts are well known from graph theory and we attempt to make minimal customizations for our purposes.
 
-\reviewer{Your formalisation is made more complex than necessary because you do not put
-the power of typed graphs to work. If your source and target metamodels have
-disjoint types (which you can assume without loss of generality) you can take
-their union, augmented with trace edge types from all target node types to all
-source node types, and take that to be the meta-model for an input-output model,
-and also for a rule. Suddenly you don’t have to carry arround the distinction be-
-tween Match and Apply (for rules) or input and output (for input-output models)
-around any more: they are just the projections onto the types of the source, resp.
-target metamodel.}
+This section is based on that of \cite{Barroca2013},
 
-\reviewer{Section 4.2.2 on “backward links” is rather confusing, as it speaks about trace-
-ability links being added to rules. You never add traceability links to rules any-
-where in the paper; in fact, your formal notion of a rule has no room for them.
-Instead, rules only have backward links. (The clarity of the the situation is not
-improved by the fact that those are labelled trace.)}
-
-\reviewer{I think the situation would be much more clear if you were to use the common
-notion of left hand side and right hand side of a rule. The left hand side of a
-rule rl is precisely your rule matcher, the right hand side is the entire rl augmented by
-your traceability links, as in 4.2.2. Suddenly we are back in a well-known graph
-transformation formalism, and your rules are in fact so simple (no deletion, no
-negative application conditions, injective matching) that I believe it makes no
-difference whether you use algebraic graph transformation or some more con-
-structively defined variant. The only standard notion is that of transitive closure
-in the left hand side; but there are plenty of GT tools that offer this extension.
-In fact I see no reason why your rule application would then not precisely coin-
-cide with the the same notion in, say, SPO graph rewriting; and I hope you agree
-that this would help you no end in explaining what you are doing. (If, on the
-other hand, there is after all some difference then this, too, would be interesting
-to know, as that difference is not at all apparent right now.)}
-
-\reviewer{Viewed like this, moreover, I think your notions of input-output models and rules
-are very close to triple graph transformation as used by Schrr at all. I think the
-main (if not only) difference lies in the fact that your "glue graph" is actually not
-a graph; instead, you use traceability edges directly from the target model to the
-source model. If you were to turn those edges into nodes with source and target
-edges, even that difference would disappear.}
-
-
-Armed with the fundamental notion of typed graph, we can then introduce other formal concepts in Sections~\ref{sec:DSLTrans_formal}, \ref{sec:DSLTrans_syntax} and \ref{sec:DSLTrans_semantics} which describe the artifacts from the modeling and transformation world that we require for our verification technique. Naturally, we start by introducing the central notion of \emph{metamodel}, allowing the description of the inputs and outputs of a model transformation. Other fundamental notions we will define in this section are \emph{model}, \emph{transformation rule}, \emph{transformation} and the semantic concept of \emph{model transformation execution}. Several auxiliary and intermediate notions for defining the syntax and semantics of our techniques will also be introduced here. 
-
-Note that this section presents a collection of formal tools that are used in the subsequent sections of this paper where the contributions of this paper are presented. It is meant as a formal reference for the upcoming formal development. %This section can be safely skipped or skimmed by the reader, who can return to these definitions punctually to understand the detailed formal underpinning of our approach. 
-
-\reviewer{There is a lot of redundancy in the paper, on several levels:
-  - input-output-models, path conditions and properties are
-    all defined very similarly. Couldn't you subsume them in a single
-    definition and spell out the differences?}
+Armed with these fundamental definitions, we can then introduce the formal concepts of the DSLTrans transformation language in Section~\ref{subsec:dsltrans_formal_structures}, and the symbolic representation of transformation executions in Section~\ref{subsubsec:path_condition_creation}.
 
 
 \newcommand{\defineggprime}{Let $\langle V,E,(s,t),\tau,VT,ET\rangle = g$, and\\ $\langle V',E',(s',t'),\tau',VT',ET'\rangle = g'$, where $g, g' \in \textsc{TG}$.}
@@ -85,9 +41,11 @@ A typed graph is a 6-tuple $\langle V,E,(s,t),\tau, \VT, \ET\rangle$ where:
 
 \subsubsection{Vertex and Edge Types}
 
-Note that the our verification technique is geared toward model-driven engineering. Therefore, the types of vertices and edges in our typed graphs will be drawn from a particular \textit{metamodel}. Sample metamodels for our running example can be seen in figures above \bentley{Fix.}. Note that DSLTrans rules (to be formally defined) will combine typed graphs with potentially different metamodels.
+Note that our verification technique is geared toward model-driven engineering. Therefore, the types of vertices and edges in our typed graphs will be drawn from a particular \textit{metamodel}. An example transformation with source and target metamodels is presented in Section~\ref{subsec:fam_to_persons_example}. Note that DSLTrans rules (to be formally defined) will consist of multiple typed graphs with potentially different metamodels.
 
-We assume that this metamodel provides the necessary vertex and edge types, with any collisions resolved by adding to the metamodel name. As well, we assume the presence of a partial ordering $\leq$ on the vertex and edge types for subtyping information.
+We assume that this metamodel provides the necessary vertex and edge types, and that all duplicate types have been resolved. 
+%As well, we assume that any name collisions arising from duplicate names in the source and target metamodel is resolved by appending the metamodel name to the vertex or edge type name.
+As well, we assume that the metamodel provides a partial ordering $\leq$ on the vertex and edge types for subtyping information.
 
 For convenience, we define some utility functions in our formalization to aid the treatment of typing:
 
@@ -155,11 +113,11 @@ Note: as a reviewer helpfully pointed out, we require that $s \cup s'$, $t \cup 
 
 For the formal development of our technique, we are interested in relations between typed graphs that preserve some graph structure and vertex/edge type, i.e. homomorphisms.
 
-However, our technique of symbolic execution of transformation rules means that we cannot rely on a trivial homomorphism. Instead our matching must be flexible about how vertices in the pattern graph may match over multiple vertices in the target graph.
+However, our technique of symbolic execution of transformation rules means that we cannot rely on a trivial homomorphism. Instead our matching must be flexible about how vertices in the pattern graph may match over multiple vertices in the target graph. The motivation for requiring this `one-to-many' matching is provided in Section~\ref{sec:abstraction_relation}.
 
 \subsubsection*{Typed Graph Homomorphism}
 
-The first typed graph homomorphism we define is standard, where the structure of the pattern graph must be found in the target graph. This is presented for the reader to appreciate the complications required for the next homomorphisms.
+The first typed graph homomorphism we define is standard in the literature, where the structure of the pattern graph is found one-to-one in the target graph. This homomorphism is presented for the reader to appreciate the complications required for the non-standard homomorphism.
 
 \begin{definition}{Typed Graph Homomorphism\\}
 \label{def:typed_graph_homomorphism}
@@ -186,7 +144,7 @@ A typed graph homomorphism from $g$ onto $g'$ is a function $f: f_v \cup f_e$ su
 
 \subsubsection*{Typed Graph Edge Homomorphism}
 
-Our technique also requires a form of graph homomorphism that primarily focuses on matching the edges of the graphs. This homomorphism will be an injective match regarding the edges, but note that a particular vertex in the pattern graph may match onto multiple vertices in the target graph. \bentley{What's the term for this?}
+Our technique also requires a form of graph homomorphism that primarily focuses on matching the edges of the graphs. This homomorphism will be an injective match regarding the edges, but note that a particular vertex in the pattern graph may match onto multiple vertices in the target graph. Thus, this homomorphism is `one-to-many'.
 
 \begin{definition}{Typed Graph Edge Homomorphism\\}
 \label{def:typed_graph_edge_homomorphism}
@@ -244,13 +202,16 @@ DSLTrans matching constructs allow for the matching of indirect links, where as 
 
 \begin{definition}{Transitive Closure\\}
 \label{def:instance_closure}
+Let $g$ be a graph $\langle V,E,(s, t),\tau\rangle \in \textsc{TG}$. Then the transitive closure $g^{*} = \langle V,E',(s', t'),\tau', \VT, \ET' \rangle \in \textsc{TG}$ is created by $E' = E \cup E_{tc}$. 
 
-Let $g$ be a graph $\langle V,E,(s, t),\tau\rangle \in \textsc{TG}$. Then the transitive closure $g^{*} = \langle V,E',(s', t'),\tau', \VT, \ET' \rangle \in \textsc{TG}$, where:
+The new edges $e_{tc} \in E_{tc}$ are created such that:
 
 \begin{itemize}
-\item $E' = E \cup v_1\xrightarrow{e''}v_2 | \exists v_1\xrightarrow{e_i}v_i, v_i\xrightarrow{e_j}v_j, \dots, v_k\xrightarrow{e_k}v_2 \land \mathit{isIndirect(e_i)}$
-\item \bentley{How to create s, t, and tau?}
+\item $v_1\xrightarrow{e_{tc}}v_2 | \exists v_1\xrightarrow{e_i}v_i, v_i\xrightarrow{e_j}v_j, \dots, v_k\xrightarrow{e_k}v_2$
+\item $s'(e_{tc}) = v_1$, $t'(e_{tc}) = v_2$
+\item $\tau(e_{tc}) = $
 \end{itemize}
+
 \end{definition}
 
 
