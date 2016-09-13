@@ -202,45 +202,42 @@ DSLTrans matching constructs allow for the matching of indirect links, where as 
 
 \begin{definition}{Transitive Closure\\}
 \label{def:instance_closure}
-Let $g$ be a graph $\langle V,E,(s, t),\tau\rangle \in \textsc{TG}$. Then the transitive closure $g^{*} = \langle V,E',(s', t'),\tau', \VT, \ET' \rangle \in \textsc{TG}$ is created by $E' = E \cup E_{tc}$. 
-
-The new edges $e_{tc} \in E_{tc}$ are created such that:
+Let $g$ be a graph $\langle V,E,(s, t),\tau\rangle \in \textsc{TG}$. Then the transitive closure $g^{*} = \langle V,E',(s', t'),\tau', \VT, \ET' \rangle \in \textsc{TG}$ is created such that:
 
 \begin{itemize}
+\item $E' = E \cup E_{tc}$ where each new edge $e_{tc} \in E_{tc}$ is created between vertices $v_1$ and $v_2$ in $V$:
+\begin{itemize}
 \item $v_1\xrightarrow{e_{tc}}v_2 | \exists v_1\xrightarrow{e_i}v_i, v_i\xrightarrow{e_j}v_j, \dots, v_k\xrightarrow{e_k}v_2$
+\end{itemize}
+
 \item $s'(e_{tc}) = v_1$, $t'(e_{tc}) = v_2$
-\item $\tau(e_{tc}) = $
+\item $\tau(e_{tc}) = \mathit{indirect}$
 \end{itemize}
 
 \end{definition}
 
 
-Given a graph, its transitive closure includes, besides the original graph, all the edges belonging to the transitive closure of indirect links in that graph. Note that these transitive edges are identified by the function $\mathit{isIndirect}$.
+Given a graph, its transitive closure includes, besides the original graph, all the edges belonging to the transitive closure of indirect links in that graph. Note that these transitive edges are given a special type \textit{indirect}, and will be identified by the function $\mathit{isIndirect}$.
 
 In the definitions that follow we will use the $*$ notation, as in \cref{def:instance_closure}, to denote the transitive closure of our structures.
 
 
-
-
-
 \subsubsection{Link Homomorphism}
 
-\begin{itemize}
-\item Backward links injectively match from contract into PC onto traceability links. Source and target of backward links on contract must match the source and target of the traceability link of the PC.
-\end{itemize}
-
-We must also define a function to match link structures, such as backward links and the traceability links (to be discussed).
+For convenience, we also define a function to match components in our structures which contains only links. An example would be the backward link construct for DSLTrans rules, as discussed in Section~\ref{subsec:dsltrans_formal_structures}.
 
 \begin{definition}{Link Homomorphism\\}
 \label{def:link_homomorphism}
-Consider two sets of links $L = \{E_{L}, (s_{L}, t_{L})\}$, and $T = \{E_{T}, (s_{T}, t_{T})\}$. Note that these could be backward links or traceability links.
+Consider two sets of links $A = \{E_{A}, (s_{A}, t_{A})\}$, and $B = \{E_{B}, (s_{B}, t_{B})\}$. Note that these could be backward links or traceability links.
 
-We define an injective homomorphism function $f$ to match $L$ over $T$, such that:
+We define a (trivial) injective homomorphism function $f$ to match $A$ over $B$, such that:
 
 \begin{itemize}
-\item $\forall e_L \in E_L:$
+\item $\forall e_A \in E_A:$
 \begin{itemize}
-\item $\forall e_T \in E_T | f(e_L) = e(T)$
+\item $\exists e_b \in E_{B} | f(e_A) = e_b$
+\item $f(s_{A}(e_A)) = s_{B}(e_B)$
+\item $f(t_{A}(e_A)) = t_{B}(e_B)$
 \end{itemize}
 \end{itemize} 
 \end{definition}
@@ -252,14 +249,15 @@ Note that the typing of these links will be given by the component in which they
 
 In the developments that follow, we will need to find morphisms between different structures.
 
-For example, we may need to find a homomorphism between two structures $S_1 = \langle A, B, L\rangle$ and  $S_2 = \langle A', B', L'\rangle$, where $A, A', B, B' \in TG$ and $L, L'$ are links of the form $\{E, (s, t)\}$.
+For example, we may need to find a homomorphism $m$ between two structures $S_1 = \langle A, B, L\rangle$ and  $S_2 = \langle A', B', L'\rangle$, where $A, A', B, B' \in TG$ and $L, L'$ are links of the form $\{E, (s, t)\}$.
 
-This overall homomorphism will compose the homomorphism $f(A) = A'$, $g(B) = B'$, $h(L) = L'$, where f and g are the homomorphisms to be found, and h is the link homomorphism.
+This overall homomorphism be composed of the sub-homomorphisms $f(A) = A'$, $g(B) = B'$, $h(L) = L'$, where $f$ and $g$ are the homomorphisms to be found, and $h$ is the link homomorphism. Note that $f$ and $g$ may have differing properties, such as being injective or not, motivating our consideration of three sub-morphisms.
 
-A reviewer pointed out that we also require that these sub-homomorphisms are consistent with each other. That is, the link homomorphism h must agree with 
-the bindings given by f and g.
+Our definitions for these structures require that the components (such as $A$, $B$, and $L$) are all disjoint. Thus we consider the homomorphism to be trivially composed: $m = f \cup g \cup h$. 
 
-\bentley{Complete this}
+However, a reviewer pointed out that we also require that these sub-homomorphisms are consistent with each other. Namely that the link homomorphism $h$ must agree with the bindings given by $f$ and $g$. That is:
+
+\bentley{Finish}
 
 
 
